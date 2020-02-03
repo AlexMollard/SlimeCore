@@ -44,6 +44,17 @@ int main()
 		glm::vec3(0.5f,-0.5f,0.0f)
 	};
 
+	glm::mat4 Projection = glm::perspective(90.0f, 16 / 9.0f, 0.1f, 5.0f);
+	glm::mat4 view = glm::lookAt(glm::vec3(0,0,1), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	glm::mat4 model = glm::mat4(1);
+
+	glm::mat4 pvm = Projection * view * model;
+
+	for (int i = 0; i < 6; i++)
+	{
+		vertices[i] = glm::vec3(pvm * glm::vec4(vertices[i], 1));
+	}
+
 	uint VAO;
 	uint VBO;
 	// int IBO;
