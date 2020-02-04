@@ -101,7 +101,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,7 +147,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="FlyCamera.h" />
+    <ClInclude Include="Shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\Fragment.shader" />
+    <None Include="..\Shaders\Vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
