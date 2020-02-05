@@ -18,7 +18,27 @@ using uint = unsigned int;
 // WindowSize
 int windowWidth, windowHeight;
 
+// Functions
+void processInput(GLFWwindow* window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void Update_Window();
+
+// Camera
+FlyCamera camera(glm::vec3(0.0f, 2.0f, 6.0f));
+float lastX = xRES / 2.0f;
+float lastY = yRES / 2.0f;
+bool firstMouse = true;
+
+// MPV
+glm::mat4 model;
+glm::mat4 projection;
+glm::mat4 view;
+
+// DeltaTime
+double last = 0.0;
+double now = 0.0;
+float delta = 1.0f;
 
 int main()
 {
@@ -39,6 +59,7 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	windowWidth = xRES;
 	windowHeight = yRES;
@@ -55,6 +76,7 @@ int main()
 
 	glClearColor(0.15f, 0.15f, 0.15f, 1);
 	glEnable(GL_DEPTH_TEST);
+
 
 	float vertices[] = {
 		 0.5f,  0.5f, -0.5f,  // front top right
@@ -73,16 +95,16 @@ int main()
 		1, 2, 3,   // front second triangle
 
 		4, 5, 7,   // back first triangle
-		5, 6, 7,    // back second triangle
+		5, 6, 7,   // back second triangle
 
 		4, 5, 1,   // right first triangle
-		1, 0, 4,    // right second triangle
+		1, 0, 4,   // right second triangle
 
 		3, 2, 6,   // left first triangle
-		6, 7, 3,    // left second triangle
+		6, 7, 3,   // left second triangle
 
 		0, 3, 7,   // top first triangle
-		7, 4, 0,    // top second triangle
+		7, 4, 0,   // top second triangle
 
 		1, 2, 6,   // bottom first triangle
 		6, 5, 1    // bottom second triangle
@@ -109,40 +131,28 @@ int main()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	/* Camera */
-	FlyCamera myCamera = FlyCamera(glm::vec3(0));
 	glm::mat4 model = glm::mat4(1);
-	glm::mat4 projection = myCamera.GetProjection();
-	myCamera.UpdateProjectionViewTransform();
-	glm::mat4 pvm = myCamera.GetProjectionView() * model;
 
 	Shader* myShader = new Shader("..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
 
-	float framecount = 0.0f;
-	glm::vec4 color = glm::vec4(0);
 	model = glm::translate(model, glm::vec3(0.0f,0.0f,-1.0f));
 	model = glm::rotate(model, 0.95f, glm::vec3(0.0f, 0.0f, 1.0f));
 	while (glfwWindowShouldClose(window) == false && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		framecount += 0.01f;
+		Update_Window(window);
+		processInput(window);
 
 		myShader->Use();
 
-		model = glm::rotate(model, 0.01f, glm::vec3(1.0f,0.0f,0.0f));
-		color = glm::vec4(glm::sin(framecount) / 2, glm::cos(framecount) / 2, glm::tan(framecount),0);
+		projection = glm::perspective(glm::radians(camera.Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+		view = camera.GetViewMatrix();
 
-		myShader->setMat4("projection_view_matrix", pvm);
-		myShader->setMat4("model_matrix", model);
-		myShader->setVec4("color", color);
-		
+
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 
 	glDeleteBuffers(1, &VAO);
@@ -155,6 +165,19 @@ int main()
 	return 0;
 }
 
+void Update_Window(GLFWwindow* window)
+{
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+
+	glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	now = glfwGetTime();
+	delta = (float)(now - last);
+	last = now;
+}
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glfwGetCurrentContext();
@@ -162,4 +185,37 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	windowWidth = width;
 	windowHeight = height;
 	glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = (float)xpos;
+		lastY = (float)ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = (float)xpos - lastX;
+	float yoffset = lastY - (float)ypos;
+
+	lastX = (float)xpos;
+	lastY = (float)ypos;
+
+	camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(FORWARD, delta);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(BACKWARD, delta);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, delta);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, delta);
 }
