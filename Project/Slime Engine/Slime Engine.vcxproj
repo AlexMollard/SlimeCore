@@ -147,14 +147,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c" />
+    <ClCompile Include="Application3D.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="FlyCamera.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application3D.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="FlyCamera.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>

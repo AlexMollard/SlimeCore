@@ -2,12 +2,14 @@
 #include "ext.hpp"
 #include "gl_core_4_5.h"
 #include "glfw3.h"
-#include "FlyCamera.h"
+#include "Camera.h"
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include "Shader.h"
+#include "Mesh.h"
+#include "GameObject.h"
 
 using uint = unsigned int;
 
@@ -22,10 +24,10 @@ int windowWidth, windowHeight;
 void processInput(GLFWwindow* window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void Update_Window();
+void Update_Window(GLFWwindow* window);
 
 // Camera
-FlyCamera camera(glm::vec3(0.0f, 2.0f, 6.0f));
+Camera camera(glm::vec3(0.0f, 2.0f, 6.0f));
 float lastX = xRES / 2.0f;
 float lastY = yRES / 2.0f;
 bool firstMouse = true;
@@ -78,87 +80,42 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 
-	float vertices[] = {
-		 0.5f,  0.5f, -0.5f,  // front top right
-		 0.5f, -0.5f, -0.5f,  // front bottom right
-		-0.5f, -0.5f, -0.5f,  // front bottom left
-		-0.5f,  0.5f, -0.5f,  // front top left 
-
-		 0.5f,  0.5f, 0.5f,  // back top right
-		 0.5f, -0.5f, 0.5f,  // back bottom right
-		-0.5f, -0.5f, 0.5f,  // back bottom left
-		-0.5f,  0.5f, 0.5f   // back top left 
-	};
-
-	unsigned int indices[] = {
-		0, 1, 3,   // front first triangle
-		1, 2, 3,   // front second triangle
-
-		4, 5, 7,   // back first triangle
-		5, 6, 7,   // back second triangle
-
-		4, 5, 1,   // right first triangle
-		1, 0, 4,   // right second triangle
-
-		3, 2, 6,   // left first triangle
-		6, 7, 3,   // left second triangle
-
-		0, 3, 7,   // top first triangle
-		7, 4, 0,   // top second triangle
-
-		1, 2, 6,   // bottom first triangle
-		6, 5, 1    // bottom second triangle
-	};
-
-	/* Create and load mesh */
-	uint VAO;
-	uint VBO;
-	uint IBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &IBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER,  sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glm::mat4 model = glm::mat4(1);
-
-	Shader* myShader = new Shader("..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
-
-	model = glm::translate(model, glm::vec3(0.0f,0.0f,-1.0f));
-	model = glm::rotate(model, 0.95f, glm::vec3(0.0f, 0.0f, 1.0f));
-	while (glfwWindowShouldClose(window) == false && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
+	GameObject** myObject = new GameObject * [100];
+	for (int i = 0; i < 100; i++)
 	{
-		Update_Window(window);
-		processInput(window);
+		myObject[i] = new GameObject(glm::vec3(i, 1, 1), glm::vec3(1), glm::vec3(1));
+	}
+	glm::mat4 projectionViewMat = glm::mat4(1);
 
-		myShader->Use();
+	float framecount = 0.0f;
+
+	while (glfwWindowShouldClose(window) == false)
+	{
+		framecount += 0.1f;
+		processInput(window);
+		Update_Window(window);
 
 		projection = glm::perspective(glm::radians(camera.Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 		view = camera.GetViewMatrix();
 
+		projectionViewMat = projection * view;
 
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		for (int i = 0; i < 100; i++)
+		{
 
+		myObject[i]->SetPos(glm::vec3(glm::cos(0.5f* framecount) + i, glm::sin(0.5f * framecount),0));
+
+		myObject[i]->AddRotate(0.05f,glm::vec3(1.0f, 0,0));
+
+		myObject[i]->Draw(&projectionViewMat);
+		}
 	}
 
-	glDeleteBuffers(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-
-	delete myShader;
+	for (int i = 0; i < 100; i++)
+	{
+	delete myObject[i];
+	}
+	delete myObject;
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
