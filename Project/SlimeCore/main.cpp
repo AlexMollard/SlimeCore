@@ -50,7 +50,7 @@ int main()
 	if (glfwInit() == false)
 		return -1;
 
-	GLFWwindow* window = glfwCreateWindow(xRES, yRES, "Slime Engine", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(xRES, yRES, "SlimeCore", nullptr, nullptr);
 
 	if (window == nullptr)
 	{
