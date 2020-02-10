@@ -76,18 +76,22 @@ int main()
 	// Graphic Card Driver version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	glClearColor(0.15f, 0.15f, 0.15f, 1);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
-	const int amount = 10;
-	GameObject** myObject = new GameObject * [amount];
-	for (int i = 0; i < amount; i++)
-	{
-		myObject[i] = new GameObject(glm::vec3(i, 1, 1), glm::vec3(1), glm::vec3(1));
-	}
+	//const int amount = 10;
+	GameObject* myObject = new GameObject();
+	//myObject->
+
 	glm::mat4 projectionViewMat = glm::mat4(1);
 
 	float framecount = 0.0f;
+
+	//glPolygonMode(GL_CULL_FACE, GL_FILL);
 
 	while (glfwWindowShouldClose(window) == false)
 	{
@@ -100,22 +104,16 @@ int main()
 
 		projectionViewMat = projection * view;
 
-		for (int i = 0; i < amount; i++)
-		{
 
-			myObject[i]->SetPos(glm::vec3(glm::cos(0.5f * framecount) + i, glm::sin(0.5f * framecount), 0));
+			//myObject->SetPos(glm::vec3(glm::cos(0.5f * framecount), glm::sin(0.5f * framecount), 0));
 
-			myObject[i]->AddRotate(0.05f, glm::vec3(1.0f, 0, 0));
+			//myObject->AddRotate(0.05f, glm::vec3(1.0f, 0, 0));
+			
+			myObject->Draw(&projectionViewMat);
 
-			myObject[i]->Draw(&projectionViewMat);
-		}
 	}
 
-	for (int i = 0; i < amount; i++)
-	{
-		delete myObject[i];
-	}
-	delete[] myObject;
+	delete myObject;
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

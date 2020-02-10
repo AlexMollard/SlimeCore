@@ -3,10 +3,11 @@
 #include "glm.hpp"
 #include "glfw3.h"
 #include "ext.hpp"
+#include "Primitives.h"
 class Mesh
 {
 public:
-	Mesh() : triCount(0), vao(0), vbo(0), ibo(0) {};
+	Mesh();
 	virtual ~Mesh();
 
 	struct Vertex
@@ -16,11 +17,12 @@ public:
 		glm::vec2 texCoord;
 	};
 
+	Primitives prim;
+
 	void InitialiseQuad();
 	virtual void Draw();
 
 protected:
-	unsigned int triCount;
 	unsigned int vao, vbo, ibo;
 };
 

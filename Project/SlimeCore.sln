@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Slime3D", "Slime3D\Slime3D.vcxproj", "{BCD2E362-0804-4B03-BC3C-DB7DA19A227B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{71005E8F-D41D-4E32-B314-58626D3FD484} = {71005E8F-D41D-4E32-B314-58626D3FD484}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SlimeCore", "SlimeCore\Slime Engine.vcxproj", "{71005E8F-D41D-4E32-B314-58626D3FD484}"
 EndProject
