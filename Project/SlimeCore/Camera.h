@@ -29,6 +29,9 @@ public:
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
 
+	glm::mat4 Projection = glm::mat4(1);
+	glm::mat4 ProjectionViewMat = glm::mat4(1);
+
 	float Yaw;
 	float Pitch;
 
@@ -37,13 +40,18 @@ public:
 	float Zoom = 0.0f;
 
 	// Constructor with vectors
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+	Camera(glm::mat4 projection, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
 	// Constructor with scalar values
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix();
+
+	glm::mat4 GetProjectionMatrix();
+
+	void UpdateProjectionViewMatrix();
+	glm::mat4 GetProjectionViewMatrix();
 
 	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);

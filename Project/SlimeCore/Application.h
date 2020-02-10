@@ -20,24 +20,16 @@ class Application
 {
 public:
 	Application() { Create(); };
+	~Application();
 	int Create();
 
 	GLFWwindow* window = nullptr;
 	using uint = unsigned int;
 
-	// WindowSize
-	int windowWidth, windowHeight;
-
-	// Camera
-	Camera* camera;
-	float lastX = xRES / 2.0f;
-	float lastY = yRES / 2.0f;
-	bool firstMouse = true;
-
 	// MPV
 	glm::mat4 projection;
 	glm::mat4 view;
-	glm::mat4 projectionViewMat;
+	glm::mat4* projectionViewMat = nullptr;
 
 	// DeltaTime
 	double last = 0.0;
@@ -49,8 +41,5 @@ public:
 	void Update();
 	void processInput(GLFWwindow* window);
 	void Update_Window(GLFWwindow* window);
-	
-	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 };
 

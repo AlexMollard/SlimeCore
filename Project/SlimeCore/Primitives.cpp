@@ -5,13 +5,20 @@
 
 Plane::Plane()
 {
-	vertices.push_back(glm::vec3(-0.5f, 0, 0.5f));
-	vertices.push_back(glm::vec3(0.5f, 0, 0.5f));
-	vertices.push_back(glm::vec3(-0.5f, 0, -0.5f));
+	vertices.push_back(glm::vec3(-0.5f, 0, 0.5f));	// Back-Left	0
+	vertices.push_back(glm::vec3(0.5f, 0, 0.5f));	// Back-Right	1
+	vertices.push_back(glm::vec3(-0.5f, 0, -0.5f));	// Front-Left	2
+	vertices.push_back(glm::vec3(0.5f, 0, -0.5f));	//Front-Right	3
 
-	vertices.push_back(glm::vec3(-0.5f, 0, -0.5f));
-	vertices.push_back(glm::vec3(0.5f, 0, 0.5f));
-	vertices.push_back(glm::vec3(0.5f, 0, -0.5f));
+	unsigned int planeIndices[] =
+	{
+		1, 2, 0,	// first triangle
+		3, 2, 1		// second triangle
+	};
+
+	int length = sizeof(planeIndices) / sizeof(unsigned int);
+
+	indices = std::vector<unsigned int>(planeIndices, planeIndices + length);
 }
 
 Cube::Cube()

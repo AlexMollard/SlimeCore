@@ -1,8 +1,25 @@
 #include "Application.h"
 
+// Camera
+Camera* camera = nullptr;
+float lastX = xRES / 2.0f;
+float lastY = yRES / 2.0f;
+bool firstMouse = true;
+
+// WindowSize
+int windowWidth, windowHeight;
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+
+Application::~Application()
+{
+	delete camera;
+}
+
 int Application::Create()
 {
-
 	if (glfwInit() == false)
 		return -1;
 
@@ -16,8 +33,8 @@ int Application::Create()
 
 	glfwMakeContextCurrent(window);
 
-	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	//glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	windowWidth = xRES;
 	windowHeight = yRES;
@@ -39,11 +56,9 @@ int Application::Create()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	camera = new Camera();
-	projectionViewMat = glm::mat4(1);
-	projection = glm::perspective(glm::radians(camera->Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-	view = camera->GetViewMatrix();
-	projectionViewMat = projection * view;
+	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+	camera = new Camera(projection);
+	projectionViewMat = &camera->ProjectionViewMat;
 	return 1;
 }
 
@@ -51,6 +66,7 @@ void Application::Update()
 {
 	processInput(window);
 	Update_Window(window);
+	camera->UpdateProjectionViewMatrix();
 }
 
 void Application::Update_Window(GLFWwindow* window)
@@ -66,7 +82,7 @@ void Application::Update_Window(GLFWwindow* window)
 	last = now;
 }
 
-void Application::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glfwGetCurrentContext();
 	glfwGetWindowSize(window, &width, &height);
@@ -75,7 +91,7 @@ void Application::framebuffer_size_callback(GLFWwindow* window, int width, int h
 	glViewport(0, 0, width, height);
 }
 
-void Application::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (firstMouse)
 	{

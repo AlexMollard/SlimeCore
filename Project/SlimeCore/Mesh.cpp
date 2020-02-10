@@ -12,9 +12,9 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &ibo);
 }
 
-void Mesh::InitialiseQuad()
-{
 
+void Mesh::create(Primitives::TYPE type, float radius, float halfLength, int slices)
+{
 	// Check if mesh is not yet made
 	assert(vao != 0);
 
@@ -27,8 +27,24 @@ void Mesh::InitialiseQuad()
 	glGenVertexArrays(1, &vbo);
 	glGenVertexArrays(1, &ibo);
 
-	prim = Plane::Create();
-
+	switch (type)
+	{
+	case Primitives::Plane:
+		prim = Plane::Create();
+		break;
+	case Primitives::Cube:
+		prim = Cube::Create();
+		break;
+	case Primitives::Cylinder:
+		prim = Cylinder::Create(radius, halfLength, slices);
+		break;
+	case Primitives::Sphere:
+		break;
+	case Primitives::Cone:
+		break;
+	default:
+		break;
+	}
 
 	// Fill vertex Buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -42,8 +58,8 @@ void Mesh::InitialiseQuad()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
 	// Unbind buffer
-	/*glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Mesh::Draw()

@@ -9,7 +9,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh
 	else
 	{
 		this->mesh = new Mesh();
-		this->mesh->InitialiseQuad();
+		this->mesh->create();
 	}
 
 	if (material != nullptr)
@@ -19,7 +19,21 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh
 
 	model[3] = glm::vec4(position, 1);
 	model = glm::scale(model, scale);
-	model = glm::rotate(model, 1.0f, rotation);
+
+	// Need to fix
+	//model = glm::rotate(model, 0.0f, rotation);
+}
+
+GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, float radius, float halflength, int slices)
+{
+	position = pos;
+
+	this->mesh = new Mesh();
+	this->mesh->create(type, radius, halflength, slices);
+
+	mat = new Material();
+
+	model[3] = glm::vec4(position, 1);
 }
 
 GameObject::~GameObject()

@@ -6,14 +6,19 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	Application* app = new Application();
+	GameObject* gm = new GameObject(glm::vec3(0, -1, 0), Primitives::TYPE::Plane);
+	GLFWwindow* window = glfwGetCurrentContext();
 
-	GameObject* gm = new GameObject();
-	float count = 0.0f;
-	while (true)
+	while (glfwWindowShouldClose(window) == false)
 	{
-		count += 0.5f;
-		gm->SetPos(glm::vec3(glm::cos(0.5f * count), glm::sin(0.5f * count), 0));
-		gm->Draw(&app->projectionViewMat);
+		gm->Draw(app->projectionViewMat);
 		app->Update();
 	}
+	
+	delete gm;
+	delete app;
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return 0;
 }
