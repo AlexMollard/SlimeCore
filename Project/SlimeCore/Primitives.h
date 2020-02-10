@@ -9,9 +9,7 @@ public:
 		Plane,
 		Cube,
 		Cylinder,
-		Tube,
 		Sphere,
-		Torus,
 		Cone
 	};
 
@@ -24,35 +22,36 @@ public:
 class Plane : public Primitives
 {
 	Plane();
+public:
+	TYPE type = TYPE::Plane;
+	static Primitives Create() {
+		return Plane();
+	}
 };
 
 class Cube : public Primitives
 {
 	Cube();
+public:
+	TYPE type = TYPE::Cube;
+	static Primitives Create() {
+		return Cube();
+	}
 };
 
 class Cylinder : public Primitives
 {
 	Cylinder(float radius, float halfLength, int slices);
 public:
+	TYPE type = TYPE::Cylinder;
 	static Primitives Create(float radius, float halfLength, int slices) {
 		return Cylinder(radius, halfLength, slices);
 	}
 };
 
-class Tube : public Primitives
-{
-	Tube();
-};
-
 class Sphere : public Primitives
 {
 	Sphere();
-};
-
-class Torus : public Primitives
-{
-	Torus();
 };
 
 class Cone : public Primitives

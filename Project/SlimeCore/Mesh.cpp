@@ -27,7 +27,7 @@ void Mesh::InitialiseQuad()
 	glGenVertexArrays(1, &vbo);
 	glGenVertexArrays(1, &ibo);
 
-	prim = Cylinder::Create(2.0f, .5f, 20);
+	prim = Plane::Create();
 
 
 	// Fill vertex Buffer

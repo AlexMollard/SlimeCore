@@ -31,8 +31,8 @@ Cube::Cube()
 		0, 1, 3,   // front first triangle
 		1, 2, 3,   // front second triangle
 
-		4, 5, 7,   // back first triangle
-		5, 6, 7,   // back second triangle
+		7, 5, 4,   // back first triangle
+		7, 6, 5,   // back second triangle
 
 		4, 5, 1,   // right first triangle
 		1, 0, 4,   // right second triangle
@@ -43,8 +43,8 @@ Cube::Cube()
 		0, 3, 7,   // top first triangle
 		7, 4, 0,   // top second triangle
 
-		1, 2, 6,   // bottom first triangle
-		6, 5, 1    // bottom second triangle
+		6, 2, 1,   // bottom first triangle
+		1, 5, 6    // bottom second triangle
 	};
 
 	int length = sizeof(cubeIndices) / sizeof(unsigned int);
@@ -102,21 +102,11 @@ Cylinder::Cylinder(float radius, float halfLength, int slices)
 
 }
 
-Tube::Tube()
-{
-
-}
-
 Sphere::Sphere()
 {
 
 }
 
-
-Torus::Torus()
-{
-
-}
 
 Cone::Cone()
 {
