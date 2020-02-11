@@ -10,7 +10,16 @@ class GameObject
 {
 public:
 	GameObject(glm::vec3 pos = glm::vec3(1), glm::vec3 scale = glm::vec3(1), glm::vec3 rot = glm::vec3(0), Mesh* mesh = nullptr, Material* material = nullptr);
-	GameObject(glm::vec3 pos = glm::vec3(1), Primitives::TYPE type = Primitives::TYPE::Cube, float radius = 1.0f, float halflength = 1.0f, int slices = 10);
+	
+	/*	Creates a primitive shape:
+		   Plane:     (No arguments needed). 
+		   Cube:      (No arguments needed).
+		   Cylinder:  (radius, halfLength, slices).
+		   Sphere:    (radius, sectorCount, stackCount).
+		   Cone:      f
+	 */
+	GameObject(glm::vec3 pos = glm::vec3(1), Primitives::TYPE type = Primitives::TYPE::Cube, float argOne = 1.0f, float argTwo = 1.0f, int argThree = 10);
+
 	virtual ~GameObject();
 
 	glm::mat4 GetModel();

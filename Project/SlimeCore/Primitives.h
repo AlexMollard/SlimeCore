@@ -1,6 +1,7 @@
 #pragma once
 #include "glm.hpp"
 #include <vector>
+#include <iostream>
 class Primitives
 {
 public:
@@ -10,12 +11,14 @@ public:
 		Cube,
 		Cylinder,
 		Sphere,
-		Cone
+		Torus
 	};
 
 	TYPE type;
 	std::vector<glm::vec3> vertices;
 	std::vector<unsigned int> indices;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec2> uvs;
 };
 
 
@@ -51,12 +54,22 @@ public:
 
 class Sphere : public Primitives
 {
-	Sphere();
+	Sphere(float radius, float sectorCount, int stackCount);
+public:
+	TYPE type = TYPE::Sphere;
+	static Primitives Create(float radius, float sectorCount, int stackCount) {
+		return Sphere(radius, sectorCount, stackCount);
+	}
 };
 
-class Cone : public Primitives
+class Torus : public Primitives
 {
-	Cone();
+	Torus(double r = 0.07, double c = 0.05, int rSeg = 16, int cSeg = 100, int texture = 0);
+public:
+	TYPE type = TYPE::Torus;
+	static Primitives Create(double r = 0.07, double c = 0.05, int rSeg = 16, int cSeg = 100, int texture = 0) {
+		return Torus(r, c, rSeg, cSeg, texture);
+	}
 };
 
 
