@@ -2,8 +2,7 @@
 
 // Camera
 Camera* camera = nullptr;
-float lastX = xRES / 2.0f;
-float lastY = yRES / 2.0f;
+float lastX, lastY;
 bool firstMouse = true;
 
 // WindowSize
@@ -18,12 +17,12 @@ Application::~Application()
 	delete camera;
 }
 
-int Application::Create()
+int Application::Create(int Width, int Height, std::string name)
 {
 	if (glfwInit() == false)
 		return -1;
 
-	window = glfwCreateWindow(xRES, yRES, "SlimeCore", nullptr, nullptr);
+	window = glfwCreateWindow(Width, Height, name.c_str(), nullptr, nullptr);
 
 	if (window == nullptr)
 	{
@@ -36,8 +35,11 @@ int Application::Create()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 
-	windowWidth = xRES;
-	windowHeight = yRES;
+	lastX = Width / 2.0f;
+	lastY = Height / 2.0f;
+
+	windowWidth = Width;
+	windowHeight = Height;
 
 	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
 	{
@@ -53,8 +55,8 @@ int Application::Create()
 
 	glClearColor(1.0, 0.75, 0.5,1.0f);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 	camera = new Camera(projection);

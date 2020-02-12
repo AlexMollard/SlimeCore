@@ -9,6 +9,8 @@
 class GameObject
 {
 public:
+	GameObject(Mesh* mesh = nullptr, Material* mat = nullptr, Shader* shader = nullptr, Texture* texture = nullptr);
+
 	GameObject(glm::vec3 pos = glm::vec3(1), glm::vec3 scale = glm::vec3(1), glm::vec3 rot = glm::vec3(0), Mesh* mesh = nullptr, Material* material = nullptr);
 	
 	/*	Creates a primitive shape:
@@ -16,7 +18,7 @@ public:
 		   Cube:      (No arguments needed).
 		   Cylinder:  (radius, halfLength, slices).
 		   Sphere:    (radius, sectorCount, stackCount).
-		   Cone:      f
+		   Torus:     (ring diameter, center diameter, Ring segments, Center Segments, int texture)
 	 */
 	GameObject(glm::vec3 pos = glm::vec3(1), Primitives::TYPE type = Primitives::TYPE::Cube, Texture* texture = nullptr, float argOne = 1.0f, float argTwo = 1.0f, int argThree = 10);
 

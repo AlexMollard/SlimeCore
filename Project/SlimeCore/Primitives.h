@@ -68,11 +68,11 @@ public:
 
 class Torus : public Primitives
 {
-	Torus(double r = 0.07, double c = 0.05, int rSeg = 16, int cSeg = 100, int texture = 0);
+	Torus(double r = 0.07, double c = 0.05, int rSeg = 16, int cSeg = 100);
 public:
 	TYPE type = TYPE::Torus;
 	static Primitives Create(double r = 0.07, double c = 0.05, int rSeg = 16, int cSeg = 100, int texture = 0) {
-		return Torus(r, c, rSeg, cSeg, texture);
+		return Torus(r, c, rSeg, cSeg);
 	}
 };
 

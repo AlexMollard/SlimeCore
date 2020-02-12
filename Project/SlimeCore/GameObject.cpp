@@ -1,5 +1,21 @@
 #include "GameObject.h"
 
+GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader, Texture* texture)
+{
+	if (mesh)
+		this->mesh = mesh;
+	else
+	{
+		this->mesh = new Mesh();
+		this->mesh->create(Primitives::TYPE::Cube);
+	}
+
+	if (mat)
+		this->mat = mat;
+	else
+		this->mat = new Material(shader ?  shader : nullptr, texture ? texture : nullptr);
+}
+
 GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh, Material* material)
 {
 	position = pos;
@@ -21,7 +37,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh
 	model = glm::scale(model, scale);
 
 	// Need to fix
-	//model = glm::rotate(model, 0.0f, rotation);
+	model = glm::rotate(model, 2.1f, rotation);
 }
 
 GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, Texture* texture, float argOne, float argTwo, int argThree)

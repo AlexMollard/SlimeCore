@@ -8,7 +8,7 @@ Material::Material(Shader* shader, Texture* texture)
 		this->shader = shader;
 
 	if (texture == nullptr)
-		this->texture = new Texture("..\\Images\\test.png");
+		this->texture = new Texture("..\\Images\\missingTex.png");
 	else
 	{
 		hasOwnTexture = true;
@@ -29,10 +29,14 @@ Shader* Material::GetShader()
 {
 	if (shader != nullptr)
 		return shader;
+
+	return nullptr;
 }
 
 Texture* Material::GetTexture()
 {
 	if (shader != nullptr)
 		return texture;
+
+	return nullptr;
 }

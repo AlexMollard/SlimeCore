@@ -12,16 +12,12 @@
 #include "Mesh.h"
 #include "GameObject.h"
 
-// Default screen res 
-#define xRES 1280
-#define yRES 720
-
 class Application
 {
 public:
-	Application() { Create(); };
+	Application(int windowWidth, int windowHeight, std::string name) { Create(windowWidth,windowHeight,name); };
 	~Application();
-	int Create();
+	int Create(int windowWidth, int windowHeight, std::string name);
 
 	GLFWwindow* window = nullptr;
 	using uint = unsigned int;
@@ -42,5 +38,6 @@ public:
 	void processInput(GLFWwindow* window);
 	void Update_Window(GLFWwindow* window);
 	Camera* GetCamera();
+	float* GetDeltaPointer() { return &delta; };
 };
 

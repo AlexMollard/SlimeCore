@@ -257,7 +257,7 @@ Sphere::Sphere(float radius, float sectorCount, int stackCount)
 }
 
 
-Torus::Torus(double r, double c, int rSeg, int cSeg, int texture)
+Torus::Torus(double r, double c, int rSeg, int cSeg)
 {
 	cSeg = 100;
 	for (int i = 0; i < rSeg; i++) {
