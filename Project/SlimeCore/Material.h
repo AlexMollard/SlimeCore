@@ -18,5 +18,6 @@ public:
 protected:
 	Shader* shader = nullptr;
 	Texture* texture = nullptr;
+	bool hasOwnTexture = false;
 };
 

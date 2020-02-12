@@ -18,7 +18,7 @@ public:
 		   Sphere:    (radius, sectorCount, stackCount).
 		   Cone:      f
 	 */
-	GameObject(glm::vec3 pos = glm::vec3(1), Primitives::TYPE type = Primitives::TYPE::Cube, float argOne = 1.0f, float argTwo = 1.0f, int argThree = 10);
+	GameObject(glm::vec3 pos = glm::vec3(1), Primitives::TYPE type = Primitives::TYPE::Cube, Texture* texture = nullptr, float argOne = 1.0f, float argTwo = 1.0f, int argThree = 10);
 
 	virtual ~GameObject();
 
@@ -28,7 +28,8 @@ public:
 
 	void SetPos(glm::vec3 newPos);
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);
-	// Add set scale
+	void SetScale(glm::vec3 newScale);
+
 protected:
 	glm::vec3 position = glm::vec3(1);
 	glm::vec3 rotation = glm::vec3(1);

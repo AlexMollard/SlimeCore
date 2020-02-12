@@ -65,9 +65,9 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 		// Normals
 		if (prim.normals.size() < 1)
 		{
-			newvertices.push_back(0);
-			newvertices.push_back(0);
-			newvertices.push_back(0);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
 		}
 		else
 		{

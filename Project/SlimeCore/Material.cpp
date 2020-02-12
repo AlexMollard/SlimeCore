@@ -8,10 +8,12 @@ Material::Material(Shader* shader, Texture* texture)
 		this->shader = shader;
 
 	if (texture == nullptr)
-		this->texture = new Texture("..\\Images\\test.jpg");
+		this->texture = new Texture("..\\Images\\test.png");
 	else
+	{
+		hasOwnTexture = true;
 		this->texture = texture;
-
+	}
 }
 
 Material::~Material()
@@ -19,7 +21,7 @@ Material::~Material()
 	if (shader)
 		delete shader;
 
-	if (texture)
+	if (texture && hasOwnTexture == false)
 		delete texture;
 }
 

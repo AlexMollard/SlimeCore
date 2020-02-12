@@ -24,14 +24,14 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh
 	//model = glm::rotate(model, 0.0f, rotation);
 }
 
-GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, float argOne, float argTwo, int argThree)
+GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, Texture* texture, float argOne, float argTwo, int argThree)
 {
 	position = pos;
 
 	this->mesh = new Mesh();
 	this->mesh->create(type, argOne, argTwo, argThree);
 
-	mat = new Material();
+	mat = new Material(nullptr, texture);
 
 	model[3] = glm::vec4(position, 1);
 }
@@ -58,6 +58,7 @@ void GameObject::Draw(glm::mat4* ProjectionView)
 	mat->GetShader()->Use();
 	mat->GetShader()->setMat4("ProjectionView", *ProjectionView);
 	mat->GetShader()->setMat4("Model", model);
+	mat->GetShader()->setVec3("lightPos", glm::vec3(0,1,0));
 	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
 
 	mesh->Draw(); 
@@ -73,4 +74,10 @@ void GameObject::AddRotate(float rotSpeed, glm::vec3 rotDIR)
 {
 	rotation = rotDIR;
 	model = glm::rotate(model, rotSpeed, rotation);
+}
+
+void GameObject::SetScale(glm::vec3 newScale)
+{
+	scale = newScale;
+	model = glm::scale(model, newScale);
 }
