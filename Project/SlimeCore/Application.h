@@ -41,5 +41,6 @@ public:
 	void Update();
 	void processInput(GLFWwindow* window);
 	void Update_Window(GLFWwindow* window);
+	Camera* GetCamera();
 };
 

@@ -21,6 +21,15 @@ Plane::Plane()
 	uvs.push_back(glm::vec2(0,0));
 	uvs.push_back(glm::vec2(1,0));
 
+	normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+	normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+	normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+	normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+	
+	
+	
+	
+
 	int length = sizeof(planeIndices) / sizeof(unsigned int);
 
 	indices = std::vector<unsigned int>(planeIndices, planeIndices + length);
@@ -81,8 +90,9 @@ Cube::Cube()
 	};
 
 	int length = sizeof(cubeIndices) / sizeof(unsigned int);
-
 	indices = std::vector<unsigned int>(cubeIndices, cubeIndices + length);
+
+	normals = CalculateVertNormals(vertices, indices);
 	
 	float cubeUvData[] = 
 	{
@@ -171,6 +181,9 @@ Cylinder::Cylinder(float radius, float halfLength, int slices)
 	indices.push_back(2);
 	indices.push_back(3);
 	indices.push_back(vertices.size() - 1);
+
+
+	normals = CalculateVertNormals(vertices, indices);
 
 }
 
@@ -275,4 +288,44 @@ Torus::Torus(double r, double c, int rSeg, int cSeg, int texture)
 			}
 		}
 	}
+
+	normals = CalculateVertNormals(vertices, indices);
+}
+
+glm::vec3 Primitives::calculateFaceNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c)
+{
+	return glm::cross(b - a, c - a);;
+}
+
+std::vector<glm::vec3> Primitives::CalculateVertNormals(std::vector<glm::vec3>& vertices, std::vector<unsigned int>& indices)
+{
+	std::vector<glm::vec3> newNormals;
+	
+	//Initialize Normals to Nothing
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		newNormals.push_back(glm::vec3(0));
+	}
+
+	//Loop Over Indicies 3 at a Time and Calculate the Face Normal for thoose 3 Verticies. Add Face normal onto Normals 
+	for (int i = 0; i < indices.size(); i+=3)
+	{
+		int a = indices[i];
+		int b = indices[i + 1];
+		int c = indices[i + 2];
+
+		glm::vec3 FaceNormal = (calculateFaceNormal(vertices[a], vertices[b], vertices[c]));
+
+		newNormals[a] += FaceNormal;
+		newNormals[b] += FaceNormal;
+		newNormals[c] += FaceNormal;
+	}
+
+	//Loop Over all Normals and Normalize them
+	for (int i = 0; i < newNormals.size(); i++)
+	{
+		newNormals[i] = glm::normalize(newNormals[i]);
+	}
+
+	return newNormals;
 }

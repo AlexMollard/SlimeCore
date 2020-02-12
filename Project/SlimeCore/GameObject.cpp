@@ -53,12 +53,13 @@ void GameObject::Update(float deltaTime)
 {
 }
 
-void GameObject::Draw(glm::mat4* ProjectionView)
+void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam, glm::vec3 lightPos)
 {
 	mat->GetShader()->Use();
 	mat->GetShader()->setMat4("ProjectionView", *ProjectionView);
 	mat->GetShader()->setMat4("Model", model);
-	mat->GetShader()->setVec3("lightPos", glm::vec3(0,1,0));
+	mat->GetShader()->setVec3("lightPos", lightPos);
+	mat->GetShader()->setVec3("viewPos", cam->Position);
 	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
 
 	mesh->Draw(); 

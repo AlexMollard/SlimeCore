@@ -5,7 +5,7 @@
 #include "glfw3.h"
 #include "Material.h"
 #include "Mesh.h"
-
+#include "Camera.h"
 class GameObject
 {
 public:
@@ -24,7 +24,7 @@ public:
 
 	glm::mat4 GetModel();
 	void Update(float deltaTime);
-	void Draw(glm::mat4* ProjectionView);
+	void Draw(glm::mat4* ProjectionView, Camera* cam, glm::vec3 lightPos);
 
 	void SetPos(glm::vec3 newPos);
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);

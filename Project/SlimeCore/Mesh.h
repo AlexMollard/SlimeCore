@@ -24,6 +24,8 @@ public:
 	void create(Primitives::TYPE type = Primitives::TYPE::Cube, float radius = 0.5f, float halfLength = 0.5f, int slices = 10);
 	virtual void Draw();
 
+	void RecalculateNormals();
+
 protected:
 	unsigned int vao, vbo, ibo;
 };

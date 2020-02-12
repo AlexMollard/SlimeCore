@@ -76,9 +76,18 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 			newvertices.push_back(prim.normals[i].z);
 		}
 
-		// UVS
-		newvertices.push_back(prim.uvs[i].x);
-		newvertices.push_back(prim.uvs[i].y);
+		if (prim.uvs.size() < 1)
+		{
+			newvertices.push_back(0.5);
+			newvertices.push_back(0.5);
+
+		}
+		else
+		{
+			// UVS
+			newvertices.push_back(prim.uvs[i].x);
+			newvertices.push_back(prim.uvs[i].y);
+		}
 	}
 
 	// Fill vertex Buffer

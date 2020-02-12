@@ -51,10 +51,10 @@ int Application::Create()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glClearColor(0.15f, 0.15f, 0.15f, 1);
+	glClearColor(1.0, 0.75, 0.5,1.0f);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 	camera = new Camera(projection);
@@ -74,12 +74,16 @@ void Application::Update_Window(GLFWwindow* window)
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 
-	glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	now = glfwGetTime();
 	delta = (float)(now - last);
 	last = now;
+}
+
+Camera* Application::GetCamera()
+{
+	return camera;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
