@@ -97,5 +97,9 @@ void main()
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
 		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
+	// Slime look
+	if (result.y < 0.65)
+		discard;
+
 	FragColour = vec4(result, 1.0);
 }

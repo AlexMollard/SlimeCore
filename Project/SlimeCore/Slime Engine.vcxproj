@@ -168,6 +168,8 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Shaders\DepthFragment.shader" />
+    <None Include="..\Shaders\DepthVertex.shader" />
     <None Include="..\Shaders\Fragment.shader" />
     <None Include="..\Shaders\litFragment.shader" />
     <None Include="..\Shaders\litVertex.shader" />

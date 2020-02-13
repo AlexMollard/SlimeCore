@@ -58,6 +58,7 @@ int Application::Create(int Width, int Height, std::string name)
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 	camera = new Camera(projection);
 	projectionViewMat = &camera->ProjectionViewMat;

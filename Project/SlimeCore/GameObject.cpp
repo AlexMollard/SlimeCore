@@ -3,7 +3,10 @@
 GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader, Texture* texture)
 {
 	if (mesh)
+	{
 		this->mesh = mesh;
+		userMesh = true;
+	}
 	else
 	{
 		this->mesh = new Mesh();
@@ -11,7 +14,10 @@ GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader, Texture* textu
 	}
 
 	if (mat)
+	{
 		this->mat = mat;
+		userMat = true;
+	}
 	else
 		this->mat = new Material(shader ?  shader : nullptr, texture ? texture : nullptr);
 }
@@ -20,8 +26,11 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh
 {
 	position = pos;
 	
-	if (mesh != nullptr)
+	if (mesh != nullptr) 
+	{
 		this->mesh = mesh;
+		userMesh = true;
+	}
 	else
 	{
 		this->mesh = new Mesh();
@@ -29,7 +38,10 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh
 	}
 
 	if (material != nullptr)
+	{
 		this->mat = material;
+		userMat = true;
+	}
 	else
 		mat = new Material();
 
@@ -46,17 +58,19 @@ GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, Texture* texture, f
 
 	this->mesh = new Mesh();
 	this->mesh->create(type, argOne, argTwo, argThree);
+	userMesh = false;
 
 	mat = new Material(nullptr, texture);
+	userMat = false;
 
 	model[3] = glm::vec4(position, 1);
 }
 
 GameObject::~GameObject()
 {
-	if(mat)
+	if(mat && !userMat)
 	delete mat;
-	if(mesh)
+	if(mesh && !userMesh)
 	delete mesh;
 }
 

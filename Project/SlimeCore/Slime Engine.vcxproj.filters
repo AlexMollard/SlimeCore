@@ -85,5 +85,11 @@
     <None Include="..\Shaders\litVertex.shader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\DepthVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\DepthFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

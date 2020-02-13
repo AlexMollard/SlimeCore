@@ -32,6 +32,9 @@ public:
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);
 	void SetScale(glm::vec3 newScale);
 
+	bool userMat = false;
+	bool userMesh = false;
+
 	Material* GetMaterial() { return mat; };
 	
 protected:
