@@ -26,12 +26,14 @@ public:
 
 	glm::mat4 GetModel();
 	void Update(float deltaTime);
-	void Draw(glm::mat4* ProjectionView, Camera* cam, glm::vec3 lightPos);
+	void Draw(glm::mat4* ProjectionView, Camera* cam);
 
 	void SetPos(glm::vec3 newPos);
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);
 	void SetScale(glm::vec3 newScale);
 
+	Material* GetMaterial() { return mat; };
+	
 protected:
 	glm::vec3 position = glm::vec3(1);
 	glm::vec3 rotation = glm::vec3(1);

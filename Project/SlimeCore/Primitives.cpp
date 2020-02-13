@@ -26,10 +26,6 @@ Plane::Plane()
 	normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
 	normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
 	
-	
-	
-	
-
 	int length = sizeof(planeIndices) / sizeof(unsigned int);
 
 	indices = std::vector<unsigned int>(planeIndices, planeIndices + length);

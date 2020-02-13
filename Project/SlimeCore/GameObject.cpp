@@ -69,13 +69,39 @@ void GameObject::Update(float deltaTime)
 {
 }
 
-void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam, glm::vec3 lightPos)
+void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam)
 {
 	mat->GetShader()->Use();
 	mat->GetShader()->setMat4("ProjectionView", *ProjectionView);
-	mat->GetShader()->setMat4("Model", model);
-	mat->GetShader()->setVec3("lightPos", lightPos);
 	mat->GetShader()->setVec3("viewPos", cam->Position);
+
+	mat->GetShader()->setMat4("Model", model);
+
+	// Material
+	mat->GetShader()->setVec3("material.ambient", mat->ambient);
+	mat->GetShader()->setVec3("material.diffuseColor", mat->diffuseColor);
+	mat->GetShader()->setVec3("material.specular", mat->specular);
+	mat->GetShader()->setFloat("material.shininess", mat->shininess);
+	
+	// Spot Lights
+	for (int i = 0; i < 4; i++)
+	{
+		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].position", mat->pointLights[i].lightPosition);
+		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].ambient", mat->pointLights[i].lightAmbient);
+		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].diffuse", mat->pointLights[i].lightDiffuse);
+		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].specular", mat->pointLights[i].lightSpecular);
+
+		mat->GetShader()->setFloat("pointLights[" + std::to_string(i) + "].constant", mat->pointLights[i].lightConstant);
+		mat->GetShader()->setFloat("pointLights[" + std::to_string(i) + "].linear", mat->pointLights[i].lightLinear);
+		mat->GetShader()->setFloat("pointLights[" + std::to_string(i) + "].quadratic", mat->pointLights[i].lightQuadratic);
+	}
+
+	// Directional Light
+	mat->GetShader()->setVec3("dirLight.direction", mat->dirLightDirection);
+	mat->GetShader()->setVec3("dirLight.ambient", mat->dirLightAmbient);
+	mat->GetShader()->setVec3("dirLight.diffuse", mat->dirLightDiffuse);
+	mat->GetShader()->setVec3("dirLight.specular", mat->dirLightSpecular);
+
 	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
 
 	mesh->Draw(); 
