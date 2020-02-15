@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

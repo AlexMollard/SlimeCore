@@ -11,7 +11,6 @@ int windowWidth, windowHeight;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
-
 Application::~Application()
 {
 	delete camera;
@@ -62,6 +61,7 @@ int Application::Create(int Width, int Height, std::string name)
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 	camera = new Camera(projection);
 	projectionViewMat = &camera->ProjectionViewMat;
+
 	return 1;
 }
 

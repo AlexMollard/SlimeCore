@@ -32,7 +32,6 @@ public:
 	double now = 0.0;
 	float delta = 1.0f;
 
-
 	// Functions
 	void Update();
 	void processInput(GLFWwindow* window);
