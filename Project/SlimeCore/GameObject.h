@@ -26,7 +26,8 @@ public:
 
 	glm::mat4 GetModel();
 	void Update(float deltaTime);
-	void Draw(glm::mat4* ProjectionView, Camera* cam);
+	void Draw(glm::mat4* ProjectionView = nullptr, Camera* cam = nullptr);
+	void UpdateUniforms(glm::mat4* ProjectionView, Camera* cam);
 
 	void SetPos(glm::vec3 newPos);
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);
@@ -35,6 +36,7 @@ public:
 	bool userMat = false;
 	bool userMesh = false;
 
+	Mesh* GetMesh() { return mesh; };
 	Material* GetMaterial() { return mat; };
 	
 protected:

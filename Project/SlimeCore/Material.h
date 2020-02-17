@@ -9,7 +9,7 @@
 class Material
 {
 public:
-	Material(Shader* shader = nullptr, Texture* = nullptr, glm::vec3 newAmbient = glm::vec3(1.0f,0.5f,0.31f), glm::vec3 newDiffuse = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
+	Material(Shader* shader = nullptr, Texture* = nullptr, glm::vec3 newAmbient = glm::vec3(0.2f, 0.05f, 0.04f), glm::vec3 newDiffuse = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
 	virtual ~Material();
 
 	Shader* GetShader();
@@ -21,7 +21,7 @@ public:
 	glm::vec3 specular = glm::vec3(1);
 	float shininess = 1.0f;
 
-	void setMatAtrributes(glm::vec3 newAmbient = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newDiffuseColor = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
+	void setMatAtrributes(glm::vec3 newAmbient = glm::vec3(0.4f, 0.05f, 0.14f), glm::vec3 newDiffuseColor = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
 	void setAmbient(glm::vec3 newAmbient)			{ ambient = newAmbient;		};
 	void setDiffuseColor(glm::vec3 newDiffuseColor)	{ diffuseColor = newDiffuseColor;};
 	void setSpecular(glm::vec3 newSpecular)			{ specular = newSpecular;	};

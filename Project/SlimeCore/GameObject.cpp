@@ -85,10 +85,18 @@ void GameObject::Update(float deltaTime)
 
 void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam)
 {
+	if (ProjectionView != nullptr && cam != nullptr)
+		UpdateUniforms(ProjectionView, cam);
+
+	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
+	mesh->draw(); 
+}
+
+void GameObject::UpdateUniforms(glm::mat4* ProjectionView, Camera* cam)
+{
 	mat->GetShader()->Use();
 	mat->GetShader()->setMat4("ProjectionView", *ProjectionView);
 	mat->GetShader()->setVec3("viewPos", cam->Position);
-
 	mat->GetShader()->setMat4("Model", model);
 
 	// Material
@@ -96,7 +104,7 @@ void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam)
 	mat->GetShader()->setVec3("material.diffuseColor", mat->diffuseColor);
 	mat->GetShader()->setVec3("material.specular", mat->specular);
 	mat->GetShader()->setFloat("material.shininess", mat->shininess);
-	
+
 	// Spot Lights
 	for (int i = 0; i < 4; i++)
 	{
@@ -115,10 +123,6 @@ void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam)
 	mat->GetShader()->setVec3("dirLight.ambient", mat->dirLightAmbient);
 	mat->GetShader()->setVec3("dirLight.diffuse", mat->dirLightDiffuse);
 	mat->GetShader()->setVec3("dirLight.specular", mat->dirLightSpecular);
-
-	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
-
-	mesh->Draw(); 
 }
 
 void GameObject::SetPos(glm::vec3 newPos)
