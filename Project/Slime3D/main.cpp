@@ -8,39 +8,37 @@ int main()
 	Application* app = new Application(1280, 720, "Slime Core");
 	GLFWwindow* window = glfwGetCurrentContext();
 
-	 // Setting variables
-	glm::vec3 lightPos[4] = { glm::vec3(0, 1, 0),glm::vec3(0, 1, 0),glm::vec3(0, 1, 0),glm::vec3(0, 1, 0) };
-	float& deltaTime = *app->GetDeltaPointer();
-	float timer = 0.0f;
+	ShaderManager* shaderManager = new ShaderManager();
+	MaterialManager* materialManager = new MaterialManager();
 
 	Texture* grass = new Texture("..\\Images\\grass.png");
 	Texture* dirt = new Texture("..\\Images\\dirt.png");
 	Texture* water = new Texture("..\\Images\\water.png");
 	Texture* light = new Texture("..\\Images\\light.png");
 
-	const int num = 25;
-	GameObject* ground[num][num];
+	shaderManager->CreateShader("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	shaderManager->CreateShader("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
 
-	for (int x = 0; x < num; x++)
-	{
-		for (int y = 0; y < num; y++)
-		{
-			float simplexNoise = glm::simplex(glm::vec2(x / 4.9f, y / 4.9f));
-			ground[x][y] = new GameObject(glm::vec3(
-				(x - (num / 2)) * 2.0f,
-				simplexNoise < 0.15f ? -3.2f : simplexNoise > 0.6f ? -1.2f : -3.0f,
-				(y - (num / 2)) * 2.0f),
-				Primitives::TYPE::Cube,
-				simplexNoise > 0.2f ? grass : simplexNoise > 0.10f ? dirt : water, 0.5f, 0.65f, 50);
-		}
-	}
+	materialManager->CreateMaterial("grassMat",shaderManager->GetShaderByName(false,"defaultShader"), grass);
+	materialManager->CreateMaterial("lightMat",shaderManager->GetShaderByIndex(1), light);
+
+	shaderManager->DebugManager();
+	materialManager->DebugManager();
+
+	// Setting variables
+	glm::vec3 lightPos[4] = { glm::vec3(0, 1, 0),glm::vec3(0, 1, 0),glm::vec3(0, 1, 0),glm::vec3(0, 1, 0) };
+	float& deltaTime = *app->GetDeltaPointer();
+	float timer = 0.0f;
+
+	Mesh* cube = new Mesh();
+	cube->create(Primitives::Cube);
+
+	GameObject* gm = new GameObject(cube, materialManager->GetMaterialByIndex(0),shaderManager->GetShaderByIndex(0));
 
 	// Testing
 	Mesh* lightMesh = new Mesh();
 	lightMesh->load("..\\Models\\teapot.obj");
-	Shader* lightShader = new Shader("..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
-	Material* lightMaterial = new Material(lightShader, light);
-	GameObject* lightOB[4] = { new GameObject(lightMesh, lightMaterial), new GameObject(lightMesh, lightMaterial), new GameObject(lightMesh, lightMaterial), new GameObject(lightMesh, lightMaterial)};
+	GameObject* lightOB[4] = { new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1))};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -52,30 +50,17 @@ int main()
 	{
 		timer += 0.5f * deltaTime;
 
-
-
 		for (int i = 0; i < 4; i++)
 		{
 			lightPos[i] = glm::vec3(glm::cos(i % 2 ? -timer : timer) * (i * 6), 1, glm::sin(i % 2 ? -timer : timer) * (i * 6));
 			lightOB[i]->SetPos(lightPos[i]);
 			lightOB[i]->Draw(app->projectionViewMat, app->GetCamera());
-			for (int x = 0; x < num; x++)
-			{
-				for (int y = 0; y < num; y++)
-				{
-					ground[x][y]->GetMaterial()->pointLights[i].SetLightPosition(lightPos[i]);
-				}
-			}
+			gm->GetMaterial()->pointLights[i].SetLightPosition(lightPos[i]);
+
 		}
 
-		for (int x = 0; x < num; x++)
-		{
-			for (int y = 0; y < num; y++)
-			{
-				ground[x][y]->GetMaterial()->SetDirectionalLightDirection(glm::vec3(cos(timer), -1.0f, -0.3f));
-				ground[x][y]->Draw(app->projectionViewMat, app->GetCamera());
-			}
-		}
+		gm->GetMaterial()->SetDirectionalLightDirection(glm::vec3(cos(timer), -1.0f, -0.3f));
+		gm->Draw(app->projectionViewMat, app->GetCamera());
 
 		app->Update();
 	}
@@ -84,16 +69,10 @@ int main()
 	{
 		delete lightOB[x];
 	}
-
-	for (int x = 0; x < num; x++)
-	{
-		for (int y = 0; y < num; y++)
-		{
-			delete ground[x][y];
-		}
-	}
-
-	delete lightMaterial;
+	delete cube;
+	delete materialManager;
+	delete shaderManager;
+	delete gm;
 	delete lightMesh;
 	delete grass;
 	delete water;

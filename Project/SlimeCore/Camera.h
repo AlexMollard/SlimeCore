@@ -1,7 +1,6 @@
 #pragma once
 #include "glm.hpp"
 #include "ext.hpp"
-
 #include <vector>
 
 enum Camera_Movement 

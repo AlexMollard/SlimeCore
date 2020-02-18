@@ -1,9 +1,16 @@
 #include "Material.h"
 
-Material::Material(Shader* shader, Texture* texture, glm::vec3 newAmbient, glm::vec3 newDiffuseColor, glm::vec3 newSpecular, float newShininess)
+Material::Material(const char* name,  Shader* shader, Texture* texture, glm::vec3 newAmbient, glm::vec3 newDiffuseColor, glm::vec3 newSpecular, float newShininess)
 {
+	// Set material name for lookup in future
+	this->name = name;
+
 	if (shader == nullptr)
-		this->shader = new Shader("..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	{
+		std::string shaderName = name;
+		shaderName.append("Shader");
+		this->shader = new Shader(shaderName.c_str(), "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	}
 	else
 		this->shader = shader;
 
@@ -23,9 +30,6 @@ Material::Material(Shader* shader, Texture* texture, glm::vec3 newAmbient, glm::
 
 Material::~Material()
 {
-	if (shader)
-		delete shader;
-
 	if (texture && hasOwnTexture == false)
 		delete texture;
 }

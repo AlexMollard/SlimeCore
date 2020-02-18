@@ -1,7 +1,10 @@
 #include "Shader.h"
-
-Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
+#include "gl_core_4_5.h"
+Shader::Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
+	// Set shader name for future lookup
+	this->name = name;
+
 	// 1. retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;
 	std::string fragmentCode;
@@ -110,7 +113,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
-void Shader::CheckCompileErrors(GLuint shader, std::string type)
+void Shader::CheckCompileErrors(unsigned int shader, std::string type)
 {
 	GLint success;
 	GLchar infoLog[1024];
