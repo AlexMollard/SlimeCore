@@ -19,7 +19,7 @@ GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader, Texture* textu
 		userMat = true;
 	}
 	else
-		this->mat = new Material("temp",shader ?  shader : nullptr, texture ? texture : nullptr);
+		this->mat = new Material("temp", shader ?  shader : nullptr, texture ? texture : nullptr);
 }
 
 GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh, Material* material)
@@ -66,19 +66,6 @@ GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, Texture* texture, f
 	model[3] = glm::vec4(position, 1);
 }
 
-GameObject::GameObject(glm::vec3 pos, Mesh* mesh, Material* mat, float argOne, float argTwo, int argThree)
-{
-	position = pos;
-
-	this->mesh = mesh;
-	userMesh = true;
-
-	this->mat = mat;
-	userMat = true;
-
-	model[3] = glm::vec4(position, 1);
-}
-
 GameObject::~GameObject()
 {
 	if(mat && !userMat)
@@ -100,7 +87,6 @@ void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam)
 {
 	if (ProjectionView != nullptr && cam != nullptr)
 		UpdateUniforms(ProjectionView, cam);
-
 
 	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
 	mesh->draw(); 

@@ -1,10 +1,8 @@
 #include "Material.h"
 
-Material::Material(const char* name,  Shader* shader, Texture* texture, glm::vec3 newAmbient, glm::vec3 newDiffuseColor, glm::vec3 newSpecular, float newShininess)
+Material::Material(const char* name, Shader* shader, Texture* texture, glm::vec3 newAmbient, glm::vec3 newDiffuseColor, glm::vec3 newSpecular, float newShininess)
 {
-	// Set material name for lookup in future
 	this->name = name;
-
 	if (shader == nullptr)
 	{
 		std::string shaderName = name;

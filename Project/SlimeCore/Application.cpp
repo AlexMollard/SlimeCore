@@ -14,14 +14,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 Application::~Application()
 {
 	delete camera;
-	//ImGui_ImplOpenGL3_Shutdown();
-	//ImGui_ImplGlfw_Shutdown();
-	//ImGui::DestroyContext();
 }
 
 int Application::Create(int Width, int Height, std::string name)
 {
-
 	if (glfwInit() == false)
 		return -1;
 
@@ -32,14 +28,8 @@ int Application::Create(int Width, int Height, std::string name)
 		glfwTerminate();
 		return -2;
 	}
-	glfwMakeContextCurrent(window);
 
-	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
-	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return -3;
-	}
+	glfwMakeContextCurrent(window);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
@@ -50,8 +40,15 @@ int Application::Create(int Width, int Height, std::string name)
 	windowWidth = Width;
 	windowHeight = Height;
 
+	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
+	{
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		return -3;
+	}
+
 	// Graphic Card Driver version
-	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl << std::endl;
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -59,16 +56,6 @@ int Application::Create(int Width, int Height, std::string name)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
-	// Setup Dear ImGui context
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGuiIO& io = ImGui::GetIO();
-	//// Setup Platform/Renderer bindings
-	//ImGui_ImplGlfw_InitForOpenGL(window, true);
-	//ImGui_ImplOpenGL3_Init("450");
-	//// Setup Dear ImGui style
-	//ImGui::StyleColorsDark();
 
 
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
@@ -80,20 +67,6 @@ int Application::Create(int Width, int Height, std::string name)
 
 void Application::Update()
 {
-	// feed inputs to dear imgui, start new frame
-	//ImGui_ImplOpenGL3_NewFrame();
-	//ImGui_ImplGlfw_NewFrame();
-	//ImGui::NewFrame();
-	//
-	//// render your GUI
-	//ImGui::Begin("Demo window");
-	//ImGui::Button("Hello!");
-	//ImGui::End();
-	//
-	//// Render dear imgui into screen
-	//ImGui::Render();
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 	processInput(window);
 	Update_Window(window);
 	camera->UpdateProjectionViewMatrix();

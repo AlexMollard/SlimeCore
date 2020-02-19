@@ -6,10 +6,18 @@ MaterialManager::MaterialManager()
 
 MaterialManager::~MaterialManager()
 {
+	printf("Deleteing MaterialManager:\n");
+
 	for (int i = 0; i < materialList.size(); i++)
 	{
-		delete materialList[i];
+		if (materialList[i] != nullptr)
+		{
+			printf(" - Deleteing material: %s.\n", materialList[i]->name);
+			delete materialList[i];
+			materialList[i] = nullptr;
+		}
 	}
+	printf("\n");
 }
 
 Material* MaterialManager::GetMaterialByName(bool creation, const char* name)
@@ -59,12 +67,12 @@ bool MaterialManager::AddMaterial(Material* newMaterial)
 
 bool MaterialManager::DebugManager()
 {
-	printf("\nMaterials: \n");
+	printf("Materials: \n");
 	for (int i = 0; i < materialList.size(); i++)
 	{
 		std::cout << " - " << materialList[i]->name << std::endl;
 	}
-	printf("------------------- \n");
+	printf("\n");
 
 	return true;
 }

@@ -20,7 +20,8 @@ Texture::Texture(std::string dir)
 	// Load Image and generate mipmaps
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load(dir.c_str(), &width, &height, &nrChannels, 0);
-	std::cout << "Texture: " << dir << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
+
+	//std::cout << "Texture: " << dir << " width: " << width << " height: " << height << " channel count: " << nrChannels << std::endl;
 	
 	if (data)
 	{

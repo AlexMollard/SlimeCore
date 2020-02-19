@@ -6,10 +6,18 @@ ShaderManager::ShaderManager()
 
 ShaderManager::~ShaderManager()
 {
+	printf("Deleteing ShaderManager:\n");
+
 	for (int i = 0; i < shaderList.size(); i++)
 	{
-		delete shaderList[i];
+		if (shaderList[i] != nullptr)
+		{
+			printf(" - Deleteing shader: %s.\n", shaderList[i]->name.c_str());
+			delete shaderList[i];
+			shaderList[i] = nullptr;
+		}
 	}
+	printf("\n");
 }
 
 Shader* ShaderManager::GetShaderByName(bool creation, const char* name)
@@ -58,11 +66,11 @@ bool ShaderManager::AddShader(Shader* newShader)
 
 bool ShaderManager::DebugManager()
 {
-	printf("\nShaders: \n");
+	printf("Shaders: \n");
 	for (int i = 0; i < shaderList.size(); i++)
 	{
 		std::cout << " - " << shaderList[i]->name << std::endl;
 	}
-	printf("------------------- \n");
+	printf("\n");
 	return true;
 }

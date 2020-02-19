@@ -1,22 +1,24 @@
 #pragma once
 #include "glm.hpp"
 #include "ext.hpp"
+#include "gl_core_4_5.h"
+#include "glfw3.h"
 #include <string>
 #include <vector>
-#include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 class Shader
 {	
 public:
 	unsigned int shader_ID = 0;
-	const char* name = "---";
+	std::string name = "DefaultName";
 
-	Shader(const char* shaderName, const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+	Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
 	~Shader();
 
 	unsigned int CompileShader(unsigned int type, const std::string& source);
-	void CheckCompileErrors(unsigned int shader, std::string type);
+	void CheckCompileErrors(GLuint shader, std::string type);
 	unsigned int GetID();
 	void Use() { glUseProgram(shader_ID); }
 

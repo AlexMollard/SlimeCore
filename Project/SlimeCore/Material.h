@@ -1,19 +1,21 @@
 #pragma once
 #include "glm.hpp"
 #include "ext.hpp"
+#include "gl_core_4_5.h"
+#include "glfw3.h"
 #include "Shader.h"
 #include "Texture.h"
 
 class Material
 {
 public:
-	const char* name = "Default Name";
-
 	Material(const char* name, Shader* shader = nullptr, Texture* = nullptr, glm::vec3 newAmbient = glm::vec3(0.2f, 0.05f, 0.04f), glm::vec3 newDiffuse = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
 	virtual ~Material();
 
 	Shader* GetShader();
 	Texture* GetTexture();
+	const char* name = "DefaultName";
+
 
 	// Materials
 	glm::vec3 ambient = glm::vec3(1);

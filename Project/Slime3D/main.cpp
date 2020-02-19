@@ -19,9 +19,10 @@ int main()
 	shaderManager->CreateShader("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
 	shaderManager->CreateShader("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
 
-	materialManager->CreateMaterial("grassMat",shaderManager->GetShaderByName(false,"defaultShader"), grass);
-	materialManager->CreateMaterial("lightMat",shaderManager->GetShaderByIndex(1), light);
+	materialManager->CreateMaterial("grassMat", shaderManager->GetShaderByName(false, "defaultShader"), grass);
+	materialManager->CreateMaterial("lightMat", shaderManager->GetShaderByIndex(1), light);
 
+	printf("\n");
 	shaderManager->DebugManager();
 	materialManager->DebugManager();
 
@@ -33,12 +34,12 @@ int main()
 	Mesh* cube = new Mesh();
 	cube->create(Primitives::Cube);
 
-	GameObject* gm = new GameObject(cube, materialManager->GetMaterialByIndex(0),shaderManager->GetShaderByIndex(0));
+	GameObject* gm = new GameObject(cube, materialManager->GetMaterialByIndex(0), shaderManager->GetShaderByIndex(0));
 
 	// Testing
 	Mesh* lightMesh = new Mesh();
 	lightMesh->load("..\\Models\\teapot.obj");
-	GameObject* lightOB[4] = { new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1))};
+	GameObject* lightOB[4] = { new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)) };
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -70,8 +71,8 @@ int main()
 		delete lightOB[x];
 	}
 	delete cube;
-	delete materialManager;
 	delete shaderManager;
+	delete materialManager;
 	delete gm;
 	delete lightMesh;
 	delete grass;
