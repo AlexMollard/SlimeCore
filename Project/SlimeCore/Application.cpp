@@ -1,4 +1,7 @@
 #include "Application.h"
+#include <stdio.h>
+#include <cstdlib>
+#include <sstream>
 
 // Camera
 Camera* camera = nullptr;
@@ -11,9 +14,13 @@ int windowWidth, windowHeight;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
+
 Application::~Application()
 {
 	delete camera;
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 int Application::Create(int Width, int Height, std::string name)
@@ -50,7 +57,17 @@ int Application::Create(int Width, int Height, std::string name)
 	// Graphic Card Driver version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl << std::endl;
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	// Setup Platform/Renderer bindings
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 450");
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glClearColor(0.2f, 0.05f, 0.04f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -74,6 +91,32 @@ void Application::Update()
 
 void Application::Update_Window(GLFWwindow* window)
 {
+	// feed inputs to dear imgui, start new frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	// Start of gui window
+	ImGui::Begin("Set Clear Color");
+
+	// color picker
+	static float color[4] = { 1.0f,1.0f,1.0f,1.0f };
+	ImGui::ColorEdit3("color", color);
+	glClearColor(color[0], color[1], color[2], color[3]);
+
+	// Frame Counter
+	std::stringstream convert;
+	convert << ImGui::GetFrameCount();
+	std::string frames = convert.str();
+	ImGui::Text(frames.c_str());
+
+	// End of gui window
+	ImGui::End();
+
+	// Render dear imgui into screen
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 

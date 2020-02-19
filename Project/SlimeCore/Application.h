@@ -1,4 +1,5 @@
 #pragma once
+
 #include "glm.hpp"
 #include "ext.hpp"
 #include "gl_core_4_5.h"
@@ -11,6 +12,9 @@
 #include "ShaderManager.h"
 #include "MaterialManager.h"
 #include "GameObject.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 class Application
 {

@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{45d3265d-d421-4b8d-a63e-222802240cc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IMgui">
+      <UniqueIdentifier>{e7b606e9-7e4b-4c35-a19b-af0c56d9d62c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c">
@@ -54,6 +57,24 @@
     <ClCompile Include="MaterialManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Dependencies\IMgui\imgui_demo.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\IMgui\imgui.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\IMgui\imgui_draw.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_glfw.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\IMgui\imgui_widgets.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -91,6 +112,27 @@
     </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\imgui.h">
+      <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_glfw.h">
+      <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\imgui_internal.h">
+      <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\imstb_rectpack.h">
+      <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\imstb_textedit.h">
+      <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\imstb_truetype.h">
+      <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.h">
+      <Filter>IMgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

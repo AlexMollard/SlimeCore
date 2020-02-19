@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,9 +148,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c" />
+    <ClCompile Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\Dependencies\IMgui\imgui.cpp" />
+    <ClCompile Include="..\Dependencies\IMgui\imgui_demo.cpp" />
+    <ClCompile Include="..\Dependencies\IMgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Dependencies\IMgui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="imgui_impl_glfw.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -161,9 +167,16 @@
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\Dependencies\IMgui\imgui.h" />
+    <ClInclude Include="..\Dependencies\IMgui\imgui_internal.h" />
+    <ClInclude Include="..\Dependencies\IMgui\imstb_rectpack.h" />
+    <ClInclude Include="..\Dependencies\IMgui\imstb_textedit.h" />
+    <ClInclude Include="..\Dependencies\IMgui\imstb_truetype.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialManager.h" />
     <ClInclude Include="Mesh.h" />
