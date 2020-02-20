@@ -9,8 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "ShaderManager.h"
-#include "MaterialManager.h"
+#include "ObjectManager.h"
 #include "GameObject.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"

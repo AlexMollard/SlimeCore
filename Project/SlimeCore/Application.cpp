@@ -100,7 +100,7 @@ void Application::Update_Window(GLFWwindow* window)
 	ImGui::Begin("Set Clear Color");
 
 	// color picker
-	static float color[4] = { 1.0f,1.0f,1.0f,1.0f };
+	static float color[4] = { 0.2f, 0.05f, 0.04f, 1.0f };
 	ImGui::ColorEdit3("color", color);
 	glClearColor(color[0], color[1], color[2], color[3]);
 

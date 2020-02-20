@@ -1,6 +1,6 @@
 #pragma once
 #include "Material.h"
-
+#include <vector>
 class MaterialManager
 {
 public:
@@ -12,7 +12,7 @@ public:
 
 	Material* MaterialNotFound(bool creation, const char* name = "---", int index = 404);
 	bool AddMaterial(Material* newMaterial);
-	bool CreateMaterial(const char* name, Shader* shader, Texture* texture);
+	bool CreateMaterial(const char* name, Texture* texture);
 
 	bool DebugManager();
 

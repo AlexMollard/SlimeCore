@@ -38,12 +38,12 @@ Material* MaterialManager::GetMaterialByIndex(int index)
 	return materialList[index] ? materialList[index] : MaterialNotFound(false, "---",index);
 }
 
-bool MaterialManager::CreateMaterial(const char* name, Shader* shader, Texture* texture)
+bool MaterialManager::CreateMaterial(const char* name, Texture* texture)
 {
 	if (GetMaterialByName(true,name) == nullptr)
 	{
 		printf("Creating Material with name: %s.\n", name);
-		AddMaterial(new Material(name, shader, texture));
+		AddMaterial(new Material(name, texture));
 		return true;
 	}
 

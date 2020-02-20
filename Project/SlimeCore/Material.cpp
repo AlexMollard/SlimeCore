@@ -1,16 +1,8 @@
 #include "Material.h"
 
-Material::Material(const char* name, Shader* shader, Texture* texture, glm::vec3 newAmbient, glm::vec3 newDiffuseColor, glm::vec3 newSpecular, float newShininess)
+Material::Material(const char* name, Texture* texture)
 {
 	this->name = name;
-	if (shader == nullptr)
-	{
-		std::string shaderName = name;
-		shaderName.append("Shader");
-		this->shader = new Shader(shaderName.c_str(), "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
-	}
-	else
-		this->shader = shader;
 
 	if (texture == nullptr)
 		this->texture = new Texture("..\\Images\\missingTex.png");
@@ -20,15 +12,14 @@ Material::Material(const char* name, Shader* shader, Texture* texture, glm::vec3
 		this->texture = texture;
 	}
 
-	setAmbient(newAmbient);
-	setDiffuseColor(newDiffuseColor);
-	setSpecular(newSpecular);
-	setShininess(newShininess);
+	setMatAtrributes();
+	pointLights->SetLightAttributes();
+	SetDirectionalLightAttributes();
 }
 
 Material::~Material()
 {
-	if (texture && hasOwnTexture == false)
+	if (texture)
 		delete texture;
 }
 
@@ -59,17 +50,9 @@ void Material::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 n
 	SetDirectionalLightSpecular(newSpecular);
 }
 
-Shader* Material::GetShader()
-{
-	if (shader != nullptr)
-		return shader;
-
-	return nullptr;
-}
-
 Texture* Material::GetTexture()
 {
-	if (shader != nullptr)
+	if (texture != nullptr)
 		return texture;
 
 	return nullptr;

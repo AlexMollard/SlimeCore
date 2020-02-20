@@ -75,6 +75,9 @@
     <ClCompile Include="..\Dependencies\IMgui\imgui_widgets.cpp">
       <Filter>IMgui</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.h">
       <Filter>IMgui</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

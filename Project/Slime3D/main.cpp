@@ -10,36 +10,48 @@ int main()
 
 	ShaderManager* shaderManager = new ShaderManager();
 	MaterialManager* materialManager = new MaterialManager();
-
-	Texture* grass = new Texture("..\\Images\\grass.png");
-	Texture* dirt = new Texture("..\\Images\\dirt.png");
-	Texture* water = new Texture("..\\Images\\water.png");
-	Texture* light = new Texture("..\\Images\\light.png");
+	ObjectManager* objectManager = new ObjectManager(materialManager,shaderManager, app->projectionViewMat);
 
 	shaderManager->CreateShader("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
 	shaderManager->CreateShader("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
 
-	materialManager->CreateMaterial("grassMat", shaderManager->GetShaderByName(false, "defaultShader"), grass);
-	materialManager->CreateMaterial("lightMat", shaderManager->GetShaderByIndex(1), light);
+	materialManager->CreateMaterial("grassMat", new Texture("..\\Images\\grass.png"));
+	materialManager->CreateMaterial("lightMat", new Texture("..\\Images\\light.png"));
 
 	printf("\n");
 	shaderManager->DebugManager();
 	materialManager->DebugManager();
 
 	// Setting variables
-	glm::vec3 lightPos[4] = { glm::vec3(0, 1, 0),glm::vec3(0, 1, 0),glm::vec3(0, 1, 0),glm::vec3(0, 1, 0) };
+	glm::vec3 lightPos[4] = { glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0) };
 	float& deltaTime = *app->GetDeltaPointer();
 	float timer = 0.0f;
+	int gridSize = 50;
 
 	Mesh* cube = new Mesh();
 	cube->create(Primitives::Cube);
 
-	GameObject* gm = new GameObject(cube, materialManager->GetMaterialByIndex(0), shaderManager->GetShaderByIndex(0));
+	std::vector<GameObject*> gm;
+	for (int x = 0; x < gridSize; x++)
+	{
+		for (int y = 0; y < gridSize; y++)
+		{
+			gm.push_back(new GameObject(cube, materialManager->GetMaterialByIndex(0), shaderManager->GetShaderByIndex(0)));
+			gm.back()->SetPos(glm::vec3((x * 2) - gridSize, 0, (y * 2) - gridSize));
+		}
+	}
+
+	objectManager->AddGameObjectArray(gm);
 
 	// Testing
-	Mesh* lightMesh = new Mesh();
-	lightMesh->load("..\\Models\\teapot.obj");
-	GameObject* lightOB[4] = { new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)), new GameObject(lightMesh, materialManager->GetMaterialByIndex(1)) };
+	GameObject* lightOB[4] = 
+	{ 
+		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
+		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
+		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
+		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1))
+	};
+	objectManager->AddGameObjectArray(lightOB,4);
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -53,32 +65,22 @@ int main()
 
 		for (int i = 0; i < 4; i++)
 		{
-			lightPos[i] = glm::vec3(glm::cos(i % 2 ? -timer : timer) * (i * 6), 1, glm::sin(i % 2 ? -timer : timer) * (i * 6));
+			lightPos[i] = glm::vec3(glm::cos(i % 2 ? -timer : timer) * (i * 6), 2, glm::sin(i % 2 ? -timer : timer) * (i * 6));
 			lightOB[i]->SetPos(lightPos[i]);
-			lightOB[i]->Draw(app->projectionViewMat, app->GetCamera());
-			gm->GetMaterial()->pointLights[i].SetLightPosition(lightPos[i]);
 
+			for (int x = 0; x < gm.size(); x++)
+				gm[x]->GetMaterial()->pointLights[i].SetLightPosition(lightPos[i]);
 		}
 
-		gm->GetMaterial()->SetDirectionalLightDirection(glm::vec3(cos(timer), -1.0f, -0.3f));
-		gm->Draw(app->projectionViewMat, app->GetCamera());
+		objectManager->Draw();
 
 		app->Update();
 	}
 
-	for (int x = 0; x < 4; x++)
-	{
-		delete lightOB[x];
-	}
 	delete cube;
 	delete shaderManager;
 	delete materialManager;
-	delete gm;
-	delete lightMesh;
-	delete grass;
-	delete water;
-	delete dirt;
-	delete light;
+	delete objectManager;
 	delete app;
 
 	glfwDestroyWindow(window);

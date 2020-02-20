@@ -1,77 +1,14 @@
 #include "GameObject.h"
 
-GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader, Texture* texture)
+GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader)
 {
-	if (mesh)
-	{
-		this->mesh = mesh;
-		userMesh = true;
-	}
-	else
-	{
-		this->mesh = new Mesh();
-		this->mesh->create(Primitives::TYPE::Cube);
-	}
-
-	if (mat)
-	{
-		this->mat = mat;
-		userMat = true;
-	}
-	else
-		this->mat = new Material("temp", shader ?  shader : nullptr, texture ? texture : nullptr);
-}
-
-GameObject::GameObject(glm::vec3 pos, glm::vec3 scale, glm::vec3 rot, Mesh* mesh, Material* material)
-{
-	position = pos;
-	
-	if (mesh != nullptr) 
-	{
-		this->mesh = mesh;
-		userMesh = true;
-	}
-	else
-	{
-		this->mesh = new Mesh();
-		this->mesh->create();
-	}
-
-	if (material != nullptr)
-	{
-		this->mat = material;
-		userMat = true;
-	}
-	else
-		mat = nullptr;
-
-	model[3] = glm::vec4(position, 1);
-	model = glm::scale(model, scale);
-
-	// Need to fix
-	model = glm::rotate(model, 2.1f, rotation);
-}
-
-GameObject::GameObject(glm::vec3 pos, Primitives::TYPE type, Texture* texture, float argOne, float argTwo, int argThree)
-{
-	position = pos;
-
-	this->mesh = new Mesh();
-	this->mesh->create(type, argOne, argTwo, argThree);
-	userMesh = false;
-
-	//mat = new Material(nullptr, texture);
-	userMat = false;
-
-	model[3] = glm::vec4(position, 1);
+	this->mesh = mesh;
+	this->mat = mat;
+	this->shader = shader;
 }
 
 GameObject::~GameObject()
 {
-	if(mat && !userMat)
-	delete mat;
-	if(mesh && !userMesh)
-	delete mesh;
 }
 
 glm::mat4 GameObject::GetModel()
@@ -83,46 +20,39 @@ void GameObject::Update(float deltaTime)
 {
 }
 
-void GameObject::Draw(glm::mat4* ProjectionView, Camera* cam)
-{
-	if (ProjectionView != nullptr && cam != nullptr)
-		UpdateUniforms(ProjectionView, cam);
-
-	glBindTexture(GL_TEXTURE_2D, mat->GetTexture()->textureID);
+void GameObject::Draw(glm::mat4* ProjectionView)
+{	
+	shader->setMat4("ProjectionView", *ProjectionView);
+	shader->setMat4("Model", model);
 	mesh->draw(); 
 }
 
-void GameObject::UpdateUniforms(glm::mat4* ProjectionView, Camera* cam)
+void GameObject::UpdateUniforms(glm::mat4* ProjectionView)
 {
-	mat->GetShader()->Use();
-	mat->GetShader()->setMat4("ProjectionView", *ProjectionView);
-	mat->GetShader()->setVec3("viewPos", cam->Position);
-	mat->GetShader()->setMat4("Model", model);
-
 	// Material
-	mat->GetShader()->setVec3("material.ambient", mat->ambient);
-	mat->GetShader()->setVec3("material.diffuseColor", mat->diffuseColor);
-	mat->GetShader()->setVec3("material.specular", mat->specular);
-	mat->GetShader()->setFloat("material.shininess", mat->shininess);
+	shader->setVec3("material.ambient", mat->ambient);
+	shader->setVec3("material.diffuseColor", mat->diffuseColor);
+	shader->setVec3("material.specular", mat->specular);
+	shader->setFloat("material.shininess", mat->shininess);
 
 	// Spot Lights
 	for (int i = 0; i < 4; i++)
 	{
-		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].position", mat->pointLights[i].lightPosition);
-		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].ambient", mat->pointLights[i].lightAmbient);
-		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].diffuse", mat->pointLights[i].lightDiffuse);
-		mat->GetShader()->setVec3("pointLights[" + std::to_string(i) + "].specular", mat->pointLights[i].lightSpecular);
-
-		mat->GetShader()->setFloat("pointLights[" + std::to_string(i) + "].constant", mat->pointLights[i].lightConstant);
-		mat->GetShader()->setFloat("pointLights[" + std::to_string(i) + "].linear", mat->pointLights[i].lightLinear);
-		mat->GetShader()->setFloat("pointLights[" + std::to_string(i) + "].quadratic", mat->pointLights[i].lightQuadratic);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].position", mat->pointLights[i].lightPosition);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", mat->pointLights[i].lightAmbient);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", mat->pointLights[i].lightDiffuse);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", mat->pointLights[i].lightSpecular);
+		
+		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", mat->pointLights[i].lightConstant);
+		shader->setFloat("pointLights[" + std::to_string(i) + "].linear", mat->pointLights[i].lightLinear);
+		shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", mat->pointLights[i].lightQuadratic);
 	}
 
 	// Directional Light
-	mat->GetShader()->setVec3("dirLight.direction", mat->dirLightDirection);
-	mat->GetShader()->setVec3("dirLight.ambient", mat->dirLightAmbient);
-	mat->GetShader()->setVec3("dirLight.diffuse", mat->dirLightDiffuse);
-	mat->GetShader()->setVec3("dirLight.specular", mat->dirLightSpecular);
+	shader->setVec3("dirLight.direction", mat->dirLightDirection);
+	shader->setVec3("dirLight.ambient", mat->dirLightAmbient);
+	shader->setVec3("dirLight.diffuse", mat->dirLightDiffuse);
+	shader->setVec3("dirLight.specular", mat->dirLightSpecular);
 }
 
 void GameObject::SetPos(glm::vec3 newPos)
