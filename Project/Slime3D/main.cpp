@@ -26,7 +26,7 @@ int main()
 	glm::vec3 lightPos[4] = { glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0) };
 	float& deltaTime = *app->GetDeltaPointer();
 	float timer = 0.0f;
-	int gridSize = 50;
+	int gridSize = 5;
 
 	Mesh* cube = new Mesh();
 	cube->create(Primitives::Cube);
@@ -58,6 +58,10 @@ int main()
 		lightOB[i]->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
 	}
 
+	int currentCubeIndex = 2;
+	GameObject* currentGameObject = nullptr;
+	glm::vec3 currentPOS = glm::vec3(0,2,0);
+
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{
@@ -73,6 +77,35 @@ int main()
 		}
 
 		objectManager->Draw();
+
+		// feed inputs to dear imgui, start new frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// Start of gui window
+		ImGui::Begin("Create Cube");
+
+		if (ImGui::Button("Create"))
+		{
+			objectManager->CreateGameObject(cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
+			currentGameObject = objectManager->objects.back();
+			currentCubeIndex+=2;
+		}
+
+		ImGui::SliderFloat("X: ", &currentPOS.x, -100.0f, 100.0f);
+		ImGui::SliderFloat("Y: ", &currentPOS.y, -100.0f, 100.0f);
+		ImGui::SliderFloat("Z: ", &currentPOS.z, -100.0f, 100.0f);
+
+		if (currentGameObject != nullptr)
+			currentGameObject->SetPos(currentPOS);
+
+		// End of gui window
+		ImGui::End();
+
+		// Render dear imgui into screen
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		app->Update();
 	}

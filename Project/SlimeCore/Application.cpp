@@ -91,31 +91,7 @@ void Application::Update()
 
 void Application::Update_Window(GLFWwindow* window)
 {
-	// feed inputs to dear imgui, start new frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
 
-	// Start of gui window
-	ImGui::Begin("Set Clear Color");
-
-	// color picker
-	static float color[4] = { 0.2f, 0.05f, 0.04f, 1.0f };
-	ImGui::ColorEdit3("color", color);
-	glClearColor(color[0], color[1], color[2], color[3]);
-
-	// Frame Counter
-	std::stringstream convert;
-	convert << ImGui::GetFrameCount();
-	std::string frames = convert.str();
-	ImGui::Text(frames.c_str());
-
-	// End of gui window
-	ImGui::End();
-
-	// Render dear imgui into screen
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -172,4 +148,8 @@ void Application::processInput(GLFWwindow* window)
 		camera->ProcessKeyboard(LEFT, delta);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera->ProcessKeyboard(RIGHT, delta);
+
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+		camera->LockMouse(window, glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
 }
