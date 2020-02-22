@@ -36,7 +36,7 @@ int main()
 	{
 		for (int y = 0; y < gridSize; y++)
 		{
-			gm.push_back(new GameObject(cube, materialManager->GetMaterialByIndex(0), shaderManager->GetShaderByIndex(0)));
+			gm.push_back(new GameObject("Green Cube: " + std::to_string(x) + ", " + std::to_string(y), cube, materialManager->GetMaterialByIndex(0), shaderManager->GetShaderByIndex(0)));
 			gm.back()->SetPos(glm::vec3((x * 2) - gridSize, 0, (y * 2) - gridSize));
 		}
 	}
@@ -46,10 +46,10 @@ int main()
 	// Testing
 	GameObject* lightOB[4] = 
 	{ 
-		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
-		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
-		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
-		new GameObject(cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1))
+		new GameObject("Light 0", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
+		new GameObject("Light 1", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
+		new GameObject("Light 2", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
+		new GameObject("Light 3", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1))
 	};
 	objectManager->AddGameObjectArray(lightOB,4);
 
@@ -58,9 +58,14 @@ int main()
 		lightOB[i]->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
 	}
 
-	int currentCubeIndex = 2;
+	int currentCubeIndex = 0;
 	GameObject* currentGameObject = nullptr;
 	glm::vec3 currentPOS = glm::vec3(0,2,0);
+
+	std::vector<const char*> names;
+	int currentName = 0;
+	objectManager->SetNamesVector();
+	names = objectManager->GetNameVector();
 
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
@@ -88,9 +93,11 @@ int main()
 
 		if (ImGui::Button("Create"))
 		{
-			objectManager->CreateGameObject(cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
+			objectManager->CreateGameObject("New Object: " + std::to_string(currentCubeIndex),cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
 			currentGameObject = objectManager->objects.back();
-			currentCubeIndex+=2;
+			currentCubeIndex++;
+			objectManager->SetNamesVector();
+			names = objectManager->GetNameVector();
 		}
 
 		ImGui::SliderFloat("X: ", &currentPOS.x, -100.0f, 100.0f);
@@ -99,6 +106,8 @@ int main()
 
 		if (currentGameObject != nullptr)
 			currentGameObject->SetPos(currentPOS);
+
+		ImGui::ListBox("Objects", &currentName, names.data(), names.size());
 
 		// End of gui window
 		ImGui::End();

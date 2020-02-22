@@ -1,7 +1,8 @@
 #include "GameObject.h"
 
-GameObject::GameObject(Mesh* mesh, Material* mat, Shader* shader)
+GameObject::GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader)
 {
+	this->name = name;
 	this->mesh = mesh;
 	this->mat = mat;
 	this->shader = shader;

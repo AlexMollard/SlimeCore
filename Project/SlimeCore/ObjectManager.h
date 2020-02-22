@@ -9,14 +9,17 @@ public:
 	ObjectManager(MaterialManager* matManager, ShaderManager* shaderManager, glm::mat4* projectionView);
 	~ObjectManager();
 
-	void CreateGameObject(Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos = glm::vec3(0));
-	void CreateGameObject(Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos = glm::vec3(0));
+	void CreateGameObject(std::string name, Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos = glm::vec3(0));
+	void CreateGameObject(std::string name, Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos = glm::vec3(0));
 	void AddGameObject(GameObject* gameObject);
 	void AddGameObjectArray(GameObject** gameObject, int amount);
 	void AddGameObjectArray(std::vector<GameObject*> gameObjects);
 	GameObject* GetGameObject(int index);
 	GameObject* GetGameObject(std::string name);
 	std::vector<GameObject*> GetGameObjectVector(int start, int end);
+
+	void SetNamesVector();
+	std::vector<const char*> GetNameVector();
 
 	bool Draw();
 	bool Update(float deltaTime);
@@ -27,4 +30,5 @@ public:
 	Shader* currentShader = nullptr;
 	Texture* currentTexture = nullptr;
 	glm::mat4* projectionView;
+	std::vector<const char*> names;
 };

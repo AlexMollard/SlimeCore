@@ -10,7 +10,7 @@
 class GameObject
 {
 public:
-	GameObject(Mesh* mesh, Material* mat, Shader* shader);
+	GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader);
 
 	virtual ~GameObject();
 

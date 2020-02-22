@@ -148,8 +148,18 @@ void Application::processInput(GLFWwindow* window)
 		camera->ProcessKeyboard(LEFT, delta);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera->ProcessKeyboard(RIGHT, delta);
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		camera->ProcessKeyboard(UP, delta);
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		camera->ProcessKeyboard(DOWN, delta);
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		camera->MovementSpeed = 20.5f;
+	else
+		camera->MovementSpeed = 10.5f;
 
 
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
-		camera->LockMouse(window, glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
+
+
+	camera->LockMouse(window, glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE);
 }

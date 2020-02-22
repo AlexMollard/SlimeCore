@@ -19,15 +19,15 @@ ObjectManager::~ObjectManager()
 	}
 }
 
-void ObjectManager::CreateGameObject(Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos)
+void ObjectManager::CreateGameObject(std::string name, Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(mesh, matManager->GetMaterialByIndex(materialIndex), shaderManager->GetShaderByIndex(shaderIndex)));
+	objects.push_back(new GameObject(name, mesh, matManager->GetMaterialByIndex(materialIndex), shaderManager->GetShaderByIndex(shaderIndex)));
 	objects.back()->SetPos(pos);
 }
 
-void ObjectManager::CreateGameObject(Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos)
+void ObjectManager::CreateGameObject(std::string name, Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(mesh, matManager->GetMaterialByName(true, materialName.c_str()), shaderManager->GetShaderByName(true, shaderName.c_str())));
+	objects.push_back(new GameObject(name, mesh, matManager->GetMaterialByName(true, materialName.c_str()), shaderManager->GetShaderByName(true, shaderName.c_str())));
 	objects.back()->SetPos(pos);
 }
 
@@ -88,6 +88,20 @@ std::vector<GameObject*> ObjectManager::GetGameObjectVector(int start, int end)
 	}
 
 	return gameObjects;
+}
+
+void ObjectManager::SetNamesVector()
+{
+	names.clear();
+	for (int i = 0; i < objects.size(); i++)
+	{
+		names.push_back(objects[i]->name.c_str());
+	}
+}
+
+std::vector<const char*> ObjectManager::GetNameVector()
+{
+	return names;
 }
 
 bool ObjectManager::Draw()
