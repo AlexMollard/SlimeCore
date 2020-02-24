@@ -11,7 +11,8 @@ public:
 		Cube,
 		Cylinder,
 		Sphere,
-		Torus
+		Torus,
+		SkyBox
 	};
 
 	TYPE type;
@@ -22,7 +23,6 @@ public:
 	std::vector<glm::vec2> uvs;
 	glm::vec3 calculateFaceNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c);
 	std::vector<glm::vec3> CalculateVertNormals(std::vector<glm::vec3>& vertices, std::vector<unsigned int>& indices);
-	
 };
 
 
@@ -76,5 +76,14 @@ public:
 	}
 };
 
+class SkyBox : public Primitives
+{
+	SkyBox();
+public:
+	TYPE type = TYPE::SkyBox;
+	static Primitives Create() {
+		return SkyBox();
+	}
+};
 
 

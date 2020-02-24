@@ -46,6 +46,9 @@ int main()
 	Mesh* cube = new Mesh();
 	cube->create(Primitives::Cube);
 
+	Mesh* skyBox = new Mesh();
+	skyBox->create(Primitives::SkyBox);
+
 	std::vector<GameObject*> gm;
 	for (int x = 0; x < gridSize; x++)
 	{
@@ -82,7 +85,7 @@ int main()
 	objectManager->SetNamesVector();
 	names = objectManager->GetNameVector();
 
-	objectManager->Create("SkyBox", cube, 2, 2);
+	objectManager->Create("SkyBox", skyBox, 2, 2);
 
 	objectManager->DebugAll();
 
@@ -139,6 +142,7 @@ int main()
 	}
 
 	delete cube;
+	delete skyBox;
 	delete shaderManager;
 	delete materialManager;
 	delete textureManager;

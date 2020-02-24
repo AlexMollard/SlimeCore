@@ -325,3 +325,49 @@ std::vector<glm::vec3> Primitives::CalculateVertNormals(std::vector<glm::vec3>& 
 
 	return newNormals;
 }
+
+
+SkyBox::SkyBox()
+{
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
+}

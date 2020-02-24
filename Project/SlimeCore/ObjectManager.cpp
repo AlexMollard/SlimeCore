@@ -133,9 +133,12 @@ bool ObjectManager::Draw()
 	{
 		if (objects[i]->name == "SkyBox")
 		{
+			objects[i]->shader->Use();
 			glDepthFunc(GL_LEQUAL);
+			glBindVertexArray(objects[i]->GetMesh()->m_meshChunks[0].vao);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, objects[i]->GetTexture()->textureID);
+			glUniform1i(glGetUniformLocation(objects[i]->shader->GetID(), "skybox"), objects[i]->GetTexture()->textureID);
 			objects[i]->Draw(projectionView);
 			glDepthFunc(GL_LESS);
 			continue;

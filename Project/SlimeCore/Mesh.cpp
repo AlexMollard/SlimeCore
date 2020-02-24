@@ -37,82 +37,104 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 		prim = Torus::Create(argOne, argTwo, argThree, 10);
 		hasIBO = true;
 		break;
+	case Primitives::SkyBox:
+		prim = SkyBox::Create();
+		hasIBO = false;
+		break;
 	default:
 		break;
 	}
 	
 	MeshChunk chunk;
 
-	// generate buffers
-	glGenBuffers(1, &chunk.vbo);
-	glGenBuffers(1, &chunk.ibo);
-	glGenVertexArrays(1, &chunk.vao);
-
-	// bind vertex array aka a mesh wrapper
-	glBindVertexArray(chunk.vao);
-
-	std::vector<float> newvertices;
-
-	for (int i = 0; i < prim.vertices.size(); i++)
+	if (hasIBO)
 	{
-		// Postitions
-		newvertices.push_back(prim.vertices[i].x);
-		newvertices.push_back(prim.vertices[i].y);
-		newvertices.push_back(prim.vertices[i].z);
+		// generate buffers
+		glGenBuffers(1, &chunk.vbo);
+		glGenBuffers(1, &chunk.ibo);
+		glGenVertexArrays(1, &chunk.vao);
 
-		// Normals
-		if (prim.normals.size() < 1)
+		// bind vertex array aka a mesh wrapper
+		glBindVertexArray(chunk.vao);
+
+		std::vector<float> newvertices;
+		for (int i = 0; i < prim.vertices.size(); i++)
 		{
-			newvertices.push_back(1);
-			newvertices.push_back(1);
-			newvertices.push_back(1);
-		}
-		else
-		{
-			newvertices.push_back(prim.normals[i].x);
-			newvertices.push_back(prim.normals[i].y);
-			newvertices.push_back(prim.normals[i].z);
+			// Postitions
+			newvertices.push_back(prim.vertices[i].x);
+			newvertices.push_back(prim.vertices[i].y);
+			newvertices.push_back(prim.vertices[i].z);
+
+			// Normals
+			if (prim.normals.size() < 1)
+			{
+				newvertices.push_back(1);
+				newvertices.push_back(1);
+				newvertices.push_back(1);
+			}
+			else
+			{
+				newvertices.push_back(prim.normals[i].x);
+				newvertices.push_back(prim.normals[i].y);
+				newvertices.push_back(prim.normals[i].z);
+			}
+
+			if (prim.uvs.size() < 1)
+			{
+				newvertices.push_back(0.5);
+				newvertices.push_back(0.5);
+
+			}
+			else
+			{
+				// UVS
+				newvertices.push_back(prim.uvs[i].x);
+				newvertices.push_back(prim.uvs[i].y);
+			}
 		}
 
-		if (prim.uvs.size() < 1)
-		{
-			newvertices.push_back(0.5);
-			newvertices.push_back(0.5);
+		// store index count for rendering
+		chunk.indexCount = (unsigned int)prim.indices.size();
 
-		}
-		else
-		{
-			// UVS
-			newvertices.push_back(prim.uvs[i].x);
-			newvertices.push_back(prim.uvs[i].y);
-		}
+		// Fill vertex Buffer
+		glBindBuffer(GL_ARRAY_BUFFER, chunk.vbo);
+		glBufferData(GL_ARRAY_BUFFER, newvertices.size() * sizeof(float), newvertices.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk.ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, prim.indices.size() * sizeof(unsigned int), prim.indices.data(), GL_STATIC_DRAW);
+
+		// Enable first element as position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// Enable second element as normals
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		// Enable third element as UVS
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+
+		// Unbind buffer
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		m_meshChunks.push_back(chunk);
+
+		return (void)0;
 	}
 
-	// store index count for rendering
-	chunk.indexCount = (unsigned int)prim.indices.size();
+	isSkyBox = true;
 
-	// Fill vertex Buffer
+	// skybox VAO
+	glGenVertexArrays(1, &chunk.vao);
+	glGenBuffers(1, &chunk.vbo);
+	glBindVertexArray(chunk.vao);
 	glBindBuffer(GL_ARRAY_BUFFER, chunk.vbo);
-	glBufferData(GL_ARRAY_BUFFER, newvertices.size() * sizeof(float), newvertices.data(), GL_STATIC_DRAW);
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk.ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, prim.indices.size() * sizeof(unsigned int), prim.indices.data(), GL_STATIC_DRAW);
 
-	// Enable first element as position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(prim.vertices), &prim.vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-
-	// Enable second element as normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	// Enable third element as UVS
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	// Unbind buffer
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	m_meshChunks.push_back(chunk);
 }
@@ -220,24 +242,31 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 
 void Mesh::draw(bool usePatches /* = false */) {
 
-	int program = -1;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+		int program = -1;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
-	if (program == -1) {
-		printf("No shader bound!\n");
-		return;
-	}
-	int currentMaterial = -1;
+		if (program == -1) {
+			printf("No shader bound!\n");
+			return;
+		}
+		int currentMaterial = -1;
 
-	// draw the mesh chunks
-	for (auto& c : m_meshChunks) {
-		// bind and draw geometry
-		glBindVertexArray(c.vao);
-		if (usePatches)
-			glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
-		else
-			glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+	if (!isSkyBox)
+	{
+		// draw the mesh chunks
+		for (auto& c : m_meshChunks) {
+			// bind and draw geometry
+			glBindVertexArray(c.vao);
+			if (usePatches)
+				glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
+			else
+				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+		}
+		return (void)0;
 	}
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
 }
 
 void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {

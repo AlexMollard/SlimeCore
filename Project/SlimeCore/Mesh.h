@@ -28,16 +28,17 @@ public:
 	void create(Primitives::TYPE type = Primitives::TYPE::Cube, float radius = 0.5f, float halfLength = 0.5f, int slices = 10);
 	bool load(const char* filename, bool loadTextures = true, bool flipTextureV = false);
 	virtual void draw(bool usePatches = false);
-protected:
-	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
-
 	struct MeshChunk {
 		unsigned int	vao, vbo, ibo;
 		unsigned int	indexCount;
 		int				materialID;
 	};
-
 	std::vector<MeshChunk>	m_meshChunks;
+protected:
+	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+
+
 	std::string fileName;
+	bool isSkyBox = false;
 };
 
