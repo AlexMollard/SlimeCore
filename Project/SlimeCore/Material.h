@@ -8,7 +8,7 @@
 class Material
 {
 public:
-	Material(const char* name, Texture* = nullptr);
+	Material(const char* name, Texture*);
 	virtual ~Material();
 
 	Texture* GetTexture();
@@ -67,6 +67,5 @@ public:
 	void SetDirectionalLightSpecular(glm::vec3 newSpecular) { dirLightSpecular = newSpecular; };
 protected:
 	Texture* texture = nullptr;
-	bool hasOwnTexture = false;
 };
 

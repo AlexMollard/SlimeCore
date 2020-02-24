@@ -7,12 +7,12 @@ public:
 	ShaderManager();
 	~ShaderManager();
 
-	Shader* GetShaderByName(bool creation, const char* name);
-	Shader* GetShaderByIndex(int index);
+	Shader* Get(const char* name, bool creation = false);
+	Shader* Get(int index);
 
-	Shader* ShaderNotFound(bool creation, const char* name = "---", int index = 404);
-	bool AddShader(Shader* newShader);
-	bool CreateShader(const char* name, const char* vertex, const char* fragment);
+	Shader* NotFound(bool creation, const char* name = "---", int index = 404);
+	bool Add(Shader* newShader);
+	bool Create(const char* name, const char* vertex, const char* fragment);
 
 	bool DebugManager();
 

@@ -4,13 +4,7 @@ Material::Material(const char* name, Texture* texture)
 {
 	this->name = name;
 
-	if (texture == nullptr)
-		this->texture = new Texture("..\\Images\\missingTex.png");
-	else
-	{
-		hasOwnTexture = true;
-		this->texture = texture;
-	}
+	this->texture = texture;
 
 	setMatAtrributes();
 	pointLights->SetLightAttributes();
@@ -19,8 +13,6 @@ Material::Material(const char* name, Texture* texture)
 
 Material::~Material()
 {
-	if (texture)
-		delete texture;
 }
 
 void Material::setMatAtrributes(glm::vec3 newAmbient, glm::vec3 newDiffuseColor, glm::vec3 newSpecular, float newShininess)

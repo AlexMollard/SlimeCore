@@ -1,16 +1,18 @@
 #pragma once
 #include <string>
 #include <iostream>
-#include "glfw3.h"
+
 
 
 
 class Texture
 {
 public:
-	Texture(std::string dir);
+	Texture(const char* name, std::string dir);
+	Texture(const char* name, unsigned int id);
 	~Texture();
 
+	const char* name = "Default Name";
 	unsigned int textureID = 0;
 };
 

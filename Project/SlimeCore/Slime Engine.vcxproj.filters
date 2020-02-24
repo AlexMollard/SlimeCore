@@ -69,13 +69,16 @@
     <ClCompile Include="imgui_impl_glfw.cpp">
       <Filter>IMgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.cpp">
-      <Filter>IMgui</Filter>
-    </ClCompile>
     <ClCompile Include="..\Dependencies\IMgui\imgui_widgets.cpp">
       <Filter>IMgui</Filter>
     </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\IMgui\imgui_impl_opengl3.cpp">
+      <Filter>IMgui</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,10 +137,13 @@
     <ClInclude Include="..\Dependencies\IMgui\imstb_truetype.h">
       <Filter>IMgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\Dependencies\IMgui\examples\imgui_impl_opengl3.h">
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\IMgui\imgui_impl_opengl3.h">
       <Filter>IMgui</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectManager.h">
+    <ClInclude Include="TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -158,6 +164,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\Shaders\DepthFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SkyBoxFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\SkyBoxVertex.shader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

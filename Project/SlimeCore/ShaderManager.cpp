@@ -20,7 +20,7 @@ ShaderManager::~ShaderManager()
 	printf("\n");
 }
 
-Shader* ShaderManager::GetShaderByName(bool creation, const char* name)
+Shader* ShaderManager::Get(const char* name, bool creation)
 {
 	for (int i = 0; i < shaderList.size(); i++)
 	{
@@ -30,27 +30,27 @@ Shader* ShaderManager::GetShaderByName(bool creation, const char* name)
 		}
 	}
 
-	return ShaderNotFound(creation, name);
+	return NotFound(creation, name);
 }
 
-Shader* ShaderManager::GetShaderByIndex(int index)
+Shader* ShaderManager::Get(int index)
 {
-	return shaderList[index] ? shaderList[index] : ShaderNotFound(false);
+	return shaderList[index] ? shaderList[index] : NotFound(false);
 }
 
-bool ShaderManager::CreateShader(const char* name, const char* vertex, const char* fragment)
+bool ShaderManager::Create(const char* name, const char* vertex, const char* fragment)
 {
-	if (GetShaderByName(true,name) == nullptr)
+	if (Get(name,true) == nullptr)
 	{
 		printf("Creating Shader with name: %s.\n", name);
-		AddShader(new Shader(name, vertex, fragment));
+		Add(new Shader(name, vertex, fragment));
 		return true;
 	}
 	printf("Shader already exist with name: %s.\n", name);
 	return false;
 }
 
-Shader* ShaderManager::ShaderNotFound(bool creation, const char* name, int index)
+Shader* ShaderManager::NotFound(bool creation, const char* name, int index)
 {
 	if (!creation)
 		printf("Shader Not Found with name: %s, index: %d.\n", name, index);
@@ -58,7 +58,7 @@ Shader* ShaderManager::ShaderNotFound(bool creation, const char* name, int index
 	return nullptr;
 }
 
-bool ShaderManager::AddShader(Shader* newShader)
+bool ShaderManager::Add(Shader* newShader)
 {
 	shaderList.push_back(newShader);
 	return true;

@@ -10,17 +10,32 @@ int main()
 
 	ShaderManager* shaderManager = new ShaderManager();
 	MaterialManager* materialManager = new MaterialManager();
-	ObjectManager* objectManager = new ObjectManager(materialManager,shaderManager, app->projectionViewMat);
+	TextureManager* textureManager = new TextureManager();
+	ObjectManager* objectManager = new ObjectManager(materialManager, shaderManager, textureManager, app->projectionViewMat);
 
-	shaderManager->CreateShader("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
-	shaderManager->CreateShader("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
+	shaderManager->Create("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	shaderManager->Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
+	shaderManager->Create("skyBoxShader", "..\\Shaders\\SkyBoxVertex.shader", "..\\Shaders\\SkyBoxFragment.shader");
 
-	materialManager->CreateMaterial("grassMat", new Texture("..\\Images\\grass.png"));
-	materialManager->CreateMaterial("lightMat", new Texture("..\\Images\\light.png"));
+	textureManager->Create("Grass Texture", "..\\Images\\grass.png");
+	textureManager->Create("Light Texture", "..\\Images\\light.png");
 
-	printf("\n");
-	shaderManager->DebugManager();
-	materialManager->DebugManager();
+	//Skybox
+	std::vector<std::string> faces
+	{
+		"..\\Images\\SkyBox\\skyrender0001.bmp",
+		"..\\Images\\SkyBox\\skyrender0002.bmp",
+		"..\\Images\\SkyBox\\skyrender0003.bmp",
+		"..\\Images\\SkyBox\\skyrender0004.bmp",
+		"..\\Images\\SkyBox\\skyrender0005.bmp",
+		"..\\Images\\SkyBox\\skyrender0006.bmp"
+	};
+	textureManager->CreateSkyBox(faces);
+
+
+	materialManager->Create("grassMat", textureManager->Get(0));
+	materialManager->Create("lightMat", textureManager->Get(1));
+	materialManager->Create("skyBoxMat", textureManager->Get(2));
 
 	// Setting variables
 	glm::vec3 lightPos[4] = { glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0) };
@@ -36,22 +51,22 @@ int main()
 	{
 		for (int y = 0; y < gridSize; y++)
 		{
-			gm.push_back(new GameObject("Green Cube: " + std::to_string(x) + ", " + std::to_string(y), cube, materialManager->GetMaterialByIndex(0), shaderManager->GetShaderByIndex(0)));
-			gm.back()->SetPos(glm::vec3((x * 2) - gridSize, 0, (y * 2) - gridSize));
+			gm.push_back(new GameObject("Green Cube: " + std::to_string(x) + ", " + std::to_string(y), cube, materialManager->Get(0), shaderManager->Get(0)));
+			gm.back()->SetPos(glm::vec3((x * 2) - gridSize, -5, (y * 2) - gridSize));
 		}
 	}
 
-	objectManager->AddGameObjectArray(gm);
+	objectManager->AddArray(gm);
 
 	// Testing
 	GameObject* lightOB[4] = 
 	{ 
-		new GameObject("Light 0", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
-		new GameObject("Light 1", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
-		new GameObject("Light 2", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1)),
-		new GameObject("Light 3", cube, materialManager->GetMaterialByIndex(1), shaderManager->GetShaderByIndex(1))
+		new GameObject("Light 0", cube, materialManager->Get(1), shaderManager->Get(1)),
+		new GameObject("Light 1", cube, materialManager->Get(1), shaderManager->Get(1)),
+		new GameObject("Light 2", cube, materialManager->Get(1), shaderManager->Get(1)),
+		new GameObject("Light 3", cube, materialManager->Get(1), shaderManager->Get(1))
 	};
-	objectManager->AddGameObjectArray(lightOB,4);
+	objectManager->AddArray(lightOB,4);
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -66,6 +81,10 @@ int main()
 	int currentName = 0;
 	objectManager->SetNamesVector();
 	names = objectManager->GetNameVector();
+
+	objectManager->Create("SkyBox", cube, 2, 2);
+
+	objectManager->DebugAll();
 
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
@@ -93,7 +112,7 @@ int main()
 
 		if (ImGui::Button("Create"))
 		{
-			objectManager->CreateGameObject("New Object: " + std::to_string(currentCubeIndex),cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
+			objectManager->Create("New Object: " + std::to_string(currentCubeIndex),cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
 			currentGameObject = objectManager->objects.back();
 			currentCubeIndex++;
 			objectManager->SetNamesVector();
@@ -122,6 +141,7 @@ int main()
 	delete cube;
 	delete shaderManager;
 	delete materialManager;
+	delete textureManager;
 	delete objectManager;
 	delete app;
 

@@ -1,10 +1,12 @@
 #include "Texture.h"
-
+#include "gl_core_4_5.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Texture::Texture(std::string dir)
+Texture::Texture(const char* name, std::string dir)
 {
+	this->name = name;
+
 	// Create and bind texture ID
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -34,6 +36,11 @@ Texture::Texture(std::string dir)
 	stbi_image_free(data);
 }
 
+Texture::Texture(const char* name, unsigned int id)
+{
+	this->name = name;
+	this->textureID = id;
+}
 Texture::~Texture()
 {
 

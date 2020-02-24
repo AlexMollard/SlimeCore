@@ -20,7 +20,7 @@ MaterialManager::~MaterialManager()
 	printf("\n");
 }
 
-Material* MaterialManager::GetMaterialByName(bool creation, const char* name)
+Material* MaterialManager::Get(const char* name, bool creation)
 {
 	for (int i = 0; i < materialList.size(); i++)
 	{
@@ -30,20 +30,20 @@ Material* MaterialManager::GetMaterialByName(bool creation, const char* name)
 		}
 	}
 
-	return MaterialNotFound(creation, name);
+	return NotFound(creation, name);
 }
 
-Material* MaterialManager::GetMaterialByIndex(int index)
+Material* MaterialManager::Get(int index)
 {
-	return materialList[index] ? materialList[index] : MaterialNotFound(false, "---",index);
+	return materialList[index] ? materialList[index] : NotFound(false, "---",index);
 }
 
-bool MaterialManager::CreateMaterial(const char* name, Texture* texture)
+bool MaterialManager::Create(const char* name, Texture* texture)
 {
-	if (GetMaterialByName(true,name) == nullptr)
+	if (Get(name,true) == nullptr)
 	{
 		printf("Creating Material with name: %s.\n", name);
-		AddMaterial(new Material(name, texture));
+		Add(new Material(name, texture));
 		return true;
 	}
 
@@ -51,7 +51,7 @@ bool MaterialManager::CreateMaterial(const char* name, Texture* texture)
 	return false;
 }
 
-Material* MaterialManager::MaterialNotFound(bool creation, const char* name, int index)
+Material* MaterialManager::NotFound(bool creation, const char* name, int index)
 {
 	if (!creation)
 		printf("Material Not Found with name: %s, index: %d.\n", name, index);
@@ -59,7 +59,7 @@ Material* MaterialManager::MaterialNotFound(bool creation, const char* name, int
 	return nullptr;
 }
 
-bool MaterialManager::AddMaterial(Material* newMaterial)
+bool MaterialManager::Add(Material* newMaterial)
 {
 	materialList.push_back(newMaterial);
 	return true;

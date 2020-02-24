@@ -161,5 +161,5 @@ void Application::processInput(GLFWwindow* window)
 
 
 
-	camera->LockMouse(window, glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE);
+	camera->LockMouse(window, glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) != GLFW_PRESS);
 }

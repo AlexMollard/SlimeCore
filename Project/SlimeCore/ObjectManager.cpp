@@ -1,9 +1,10 @@
 #include "ObjectManager.h"
 
-ObjectManager::ObjectManager(MaterialManager* matManager, ShaderManager* shaderManager, glm::mat4* projectionView)
+ObjectManager::ObjectManager(MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView)
 {
 	this->matManager = matManager;
 	this->shaderManager = shaderManager;
+	this->textureManager = textureManager;
 	this->projectionView = projectionView;
 }
 
@@ -19,35 +20,35 @@ ObjectManager::~ObjectManager()
 	}
 }
 
-void ObjectManager::CreateGameObject(std::string name, Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos)
+void ObjectManager::Create(std::string name, Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(name, mesh, matManager->GetMaterialByIndex(materialIndex), shaderManager->GetShaderByIndex(shaderIndex)));
+	objects.push_back(new GameObject(name, mesh, matManager->Get(materialIndex), shaderManager->Get(shaderIndex)));
 	objects.back()->SetPos(pos);
 }
 
-void ObjectManager::CreateGameObject(std::string name, Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos)
+void ObjectManager::Create(std::string name, Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(name, mesh, matManager->GetMaterialByName(true, materialName.c_str()), shaderManager->GetShaderByName(true, shaderName.c_str())));
+	objects.push_back(new GameObject(name, mesh, matManager->Get(materialName.c_str()), shaderManager->Get(shaderName.c_str())));
 	objects.back()->SetPos(pos);
 }
 
-void ObjectManager::AddGameObject(GameObject* gameObject)
+void ObjectManager::Add(GameObject* gameObject)
 {
 	objects.push_back(gameObject);
 }
 
-void ObjectManager::AddGameObjectArray(GameObject** gameObject, int amount)
+void ObjectManager::AddArray(GameObject** gameObject, int amount)
 {
 	for (int i = 0; i < amount; i++)
 		objects.push_back(gameObject[i]);
 }
 
-void ObjectManager::AddGameObjectArray(std::vector<GameObject*> gameObjects)
+void ObjectManager::AddArray(std::vector<GameObject*> gameObjects)
 {
-	AddGameObjectArray(gameObjects.data(), gameObjects.size());
+	AddArray(gameObjects.data(), gameObjects.size());
 }
 
-GameObject* ObjectManager::GetGameObject(int index)
+GameObject* ObjectManager::Get(int index)
 {
 	if (objects[index] == nullptr)
 	{
@@ -58,7 +59,7 @@ GameObject* ObjectManager::GetGameObject(int index)
 	return objects[index];
 }
 
-GameObject* ObjectManager::GetGameObject(std::string name)
+GameObject* ObjectManager::Get(std::string name)
 {
 	for (int i = 0; i < objects.size(); i++)
 	{
@@ -72,7 +73,7 @@ GameObject* ObjectManager::GetGameObject(std::string name)
 	return nullptr;
 }
 
-std::vector<GameObject*> ObjectManager::GetGameObjectVector(int start, int end)
+std::vector<GameObject*> ObjectManager::GetVector(int start, int end)
 {
 	if (start < 0 || end > objects.size())
 	{
@@ -104,10 +105,42 @@ std::vector<const char*> ObjectManager::GetNameVector()
 	return names;
 }
 
+bool ObjectManager::DebugManager()
+{
+	printf("GameObjects: \n");
+	for (int i = 0; i < objects.size(); i++)
+	{
+		std::cout << " - " << objects[i]->name << std::endl;
+	}
+	printf("\n");
+
+	return true;
+}
+
+bool ObjectManager::DebugAll()
+{
+	printf("\n");
+	DebugManager();
+	shaderManager->DebugManager();
+	textureManager->DebugManager();
+	matManager->DebugManager();
+	return true;
+}
+
 bool ObjectManager::Draw()
 {
 	for (int i = 0; i < objects.size(); i++)
 	{
+		if (objects[i]->name == "SkyBox")
+		{
+			glDepthFunc(GL_LEQUAL);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, objects[i]->GetTexture()->textureID);
+			objects[i]->Draw(projectionView);
+			glDepthFunc(GL_LESS);
+			continue;
+		}
+
 		if (currentShader != objects[i]->shader)
 		{
 			objects[i]->shader->Use();
