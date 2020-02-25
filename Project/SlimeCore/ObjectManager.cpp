@@ -1,11 +1,12 @@
 #include "ObjectManager.h"
 
-ObjectManager::ObjectManager(MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView)
+ObjectManager::ObjectManager(MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView, glm::vec3* camPos)
 {
 	this->matManager = matManager;
 	this->shaderManager = shaderManager;
 	this->textureManager = textureManager;
 	this->projectionView = projectionView;
+	this->camPos = camPos;
 }
 
 ObjectManager::~ObjectManager()
@@ -32,6 +33,15 @@ void ObjectManager::Create(std::string name, Mesh* mesh, std::string materialNam
 	objects.back()->SetPos(pos);
 }
 
+void ObjectManager::Swap(int objIndex, int vectorPos)
+{
+	GameObject* movingOBJ = objects[objIndex];
+	GameObject* tempOBJ = objects[vectorPos];
+
+	objects[vectorPos] = movingOBJ;
+	objects[objIndex] = tempOBJ;
+}
+
 void ObjectManager::Add(GameObject* gameObject)
 {
 	objects.push_back(gameObject);
@@ -46,6 +56,39 @@ void ObjectManager::AddArray(GameObject** gameObject, int amount)
 void ObjectManager::AddArray(std::vector<GameObject*> gameObjects)
 {
 	AddArray(gameObjects.data(), gameObjects.size());
+}
+
+void ObjectManager::MoveObject(GameObject* obj, int newPos)
+{
+	int currentPos = FindIndex(obj);
+}
+
+int ObjectManager::FindIndex(GameObject* object)
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (objects[i] == object)
+		{
+			return i;
+		}
+	}
+
+	printf("Object not found");
+	return 404;
+}
+
+int ObjectManager::FindIndex(std::string name)
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (objects[i]->name == name)
+		{
+			return i;
+		}
+	}
+
+	printf("Object not found");
+	return 404;
 }
 
 GameObject* ObjectManager::Get(int index)
@@ -138,7 +181,6 @@ bool ObjectManager::Draw()
 			glBindVertexArray(objects[i]->GetMesh()->m_meshChunks[0].vao);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, objects[i]->GetTexture()->textureID);
-			glUniform1i(glGetUniformLocation(objects[i]->shader->GetID(), "skybox"), objects[i]->GetTexture()->textureID);
 			objects[i]->Draw(projectionView);
 			glDepthFunc(GL_LESS);
 			continue;
@@ -148,7 +190,7 @@ bool ObjectManager::Draw()
 		{
 			objects[i]->shader->Use();
 			currentShader = objects[i]->shader;
-			objects[i]->UpdateUniforms(projectionView);
+			objects[i]->UpdateUniforms(projectionView,*camPos);
 		}
 
 		if (objects[i]->GetTexture() != currentTexture)

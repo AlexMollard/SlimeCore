@@ -155,6 +155,7 @@
     <ClCompile Include="..\Dependencies\IMgui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="imgui_impl_glfw.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="..\Dependencies\IMgui\imstb_truetype.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="Material.h" />

@@ -242,14 +242,14 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 
 void Mesh::draw(bool usePatches /* = false */) {
 
-		int program = -1;
-		glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+	int program = -1;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
-		if (program == -1) {
-			printf("No shader bound!\n");
-			return;
-		}
-		int currentMaterial = -1;
+	if (program == -1) {
+		printf("No shader bound!\n");
+		return;
+	}
+	int currentMaterial = -1;
 
 	if (!isSkyBox)
 	{
@@ -262,11 +262,10 @@ void Mesh::draw(bool usePatches /* = false */) {
 			else
 				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
 		}
-		return (void)0;
+		return;
 	}
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
 }
 
 void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {

@@ -28,13 +28,14 @@ void GameObject::Draw(glm::mat4* ProjectionView)
 	mesh->draw(); 
 }
 
-void GameObject::UpdateUniforms(glm::mat4* ProjectionView)
+void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
 {
 	// Material
 	shader->setVec3("material.ambient", mat->ambient);
 	shader->setVec3("material.diffuseColor", mat->diffuseColor);
 	shader->setVec3("material.specular", mat->specular);
 	shader->setFloat("material.shininess", mat->shininess);
+	shader->setVec3("viewPos", cameraPos);
 
 	// Spot Lights
 	for (int i = 0; i < 4; i++)
@@ -60,6 +61,11 @@ void GameObject::SetPos(glm::vec3 newPos)
 {
 	position = newPos;
 	model[3] = glm::vec4(newPos,1);
+}
+
+glm::vec3 GameObject::GetPos()
+{
+	return position;
 }
 
 void GameObject::AddRotate(float rotSpeed, glm::vec3 rotDIR)

@@ -17,9 +17,10 @@ public:
 	glm::mat4 GetModel();
 	void Update(float deltaTime);
 	void Draw(glm::mat4* ProjectionView = nullptr);
-	void UpdateUniforms(glm::mat4* ProjectionView);
+	void UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos);
 
 	void SetPos(glm::vec3 newPos);
+	glm::vec3 GetPos();
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);
 	void SetScale(glm::vec3 newScale);
 

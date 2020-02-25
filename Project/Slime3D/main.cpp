@@ -11,7 +11,7 @@ int main()
 	ShaderManager* shaderManager = new ShaderManager();
 	MaterialManager* materialManager = new MaterialManager();
 	TextureManager* textureManager = new TextureManager();
-	ObjectManager* objectManager = new ObjectManager(materialManager, shaderManager, textureManager, app->projectionViewMat);
+	ObjectManager* objectManager = new ObjectManager(materialManager, shaderManager, textureManager, app->projectionViewMat, &app->GetCamera()->Position);
 
 	shaderManager->Create("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
 	shaderManager->Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
@@ -38,7 +38,7 @@ int main()
 	materialManager->Create("skyBoxMat", textureManager->Get(2));
 
 	// Setting variables
-	glm::vec3 lightPos[4] = { glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0) };
+	glm::vec3 lightPos[4] = { glm::vec3(1, 2, 0),glm::vec3(2, 2, 1),glm::vec3(3, 2, 2),glm::vec3(4, 2, 3) };
 	float& deltaTime = *app->GetDeltaPointer();
 	float timer = 0.0f;
 	int gridSize = 5;
@@ -71,6 +71,10 @@ int main()
 	};
 	objectManager->AddArray(lightOB,4);
 
+	int lightPos1 = objectManager->FindIndex("Light 0");
+	for (int i = 0; i < 4; i++)
+		objectManager->Get(lightPos1 + i)->SetPos(glm::vec3((i-2) * 3,2,(i-2) * 3));
+
 	for (int i = 0; i < 4; i++)
 	{
 		lightOB[i]->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
@@ -84,11 +88,13 @@ int main()
 	int currentName = 0;
 	objectManager->SetNamesVector();
 	names = objectManager->GetNameVector();
-
+	int currentgameindex = 0;
+	currentPOS = objectManager->objects[currentgameindex]->GetPos();
 	objectManager->Create("SkyBox", skyBox, 2, 2);
+	//objectManager->Swap(objectManager->objects.size() - 1, 0);
+
 
 	objectManager->DebugAll();
-
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{
@@ -96,8 +102,7 @@ int main()
 
 		for (int i = 0; i < 4; i++)
 		{
-			lightPos[i] = glm::vec3(glm::cos(i % 2 ? -timer : timer) * (i * 6), 2, glm::sin(i % 2 ? -timer : timer) * (i * 6));
-			lightOB[i]->SetPos(lightPos[i]);
+			lightPos[i] = lightOB[i]->GetPos();
 
 			for (int x = 0; x < gm.size(); x++)
 				gm[x]->GetMaterial()->pointLights[i].SetLightPosition(lightPos[i]);
@@ -117,9 +122,17 @@ int main()
 		{
 			objectManager->Create("New Object: " + std::to_string(currentCubeIndex),cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
 			currentGameObject = objectManager->objects.back();
+			currentgameindex = objectManager->objects.size();
 			currentCubeIndex++;
 			objectManager->SetNamesVector();
+			currentName = names.size();
 			names = objectManager->GetNameVector();
+		}
+
+		if (currentgameindex != currentName)
+		{
+			currentPOS = currentGameObject->GetPos();
+			currentgameindex = objectManager->FindIndex(currentGameObject);
 		}
 
 		ImGui::SliderFloat("X: ", &currentPOS.x, -100.0f, 100.0f);
@@ -130,6 +143,9 @@ int main()
 			currentGameObject->SetPos(currentPOS);
 
 		ImGui::ListBox("Objects", &currentName, names.data(), names.size());
+
+		currentGameObject = objectManager->objects[currentName];
+
 
 		// End of gui window
 		ImGui::End();

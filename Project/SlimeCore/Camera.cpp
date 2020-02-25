@@ -27,6 +27,11 @@ glm::mat4 Camera::GetViewMatrix()
 	return glm::lookAt(Position, Position + Front, Up);
 }
 
+glm::mat4 Camera::GetViewWithoutPosition()
+{
+	return glm::lookAt(glm::vec3(), Front, Up);
+}
+
 glm::mat4 Camera::GetProjectionMatrix()
 {
 	return Projection;
