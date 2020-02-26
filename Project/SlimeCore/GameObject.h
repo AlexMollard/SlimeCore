@@ -7,6 +7,8 @@
 #include "ShaderManager.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "Types.h"
+
 class GameObject
 {
 public:
@@ -26,7 +28,7 @@ public:
 
 	Mesh* GetMesh() { return mesh; };
 	Material* GetMaterial() { return mat; };
-	Texture* GetTexture() { return mat->GetTexture(); };
+	Texture* GetTexture(TEXTURETYPE type);
 	Shader* shader = nullptr;
 	std::string name = "Default GameObject";
 	bool isSkyBox = false;

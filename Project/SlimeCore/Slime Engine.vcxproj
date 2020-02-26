@@ -194,6 +194,7 @@
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\DepthFragment.shader" />

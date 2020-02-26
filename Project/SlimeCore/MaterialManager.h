@@ -12,7 +12,7 @@ public:
 
 	Material* NotFound(bool creation, const char* name = "---", int index = 404);
 	bool Add(Material* newMaterial);
-	bool Create(const char* name, Texture* texture);
+	bool Create(const char* name, Texture* diffuse);
 
 	bool DebugManager();
 protected:

@@ -8,10 +8,14 @@
 class Material
 {
 public:
-	Material(const char* name, Texture*);
+	Material(const char* name, Texture* diffuse, Texture* specMap = nullptr, Texture* normalMap = nullptr, Texture* specColorMap = nullptr);
 	virtual ~Material();
 
-	Texture* GetTexture();
+	Texture* GetDiffuse();
+	Texture* GetSpecMap();
+	Texture* GetNormalMap();
+	Texture* GetSpecColorMap();
+
 	const char* name = "DefaultName";
 
 	// Materials
@@ -21,15 +25,15 @@ public:
 	float shininess = 1.0f;
 
 	void setMatAtrributes(glm::vec3 newAmbient = glm::vec3(0.4f, 0.05f, 0.14f), glm::vec3 newDiffuseColor = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
-	void setAmbient(glm::vec3 newAmbient)			{ ambient = newAmbient;		};
-	void setDiffuseColor(glm::vec3 newDiffuseColor)	{ diffuseColor = newDiffuseColor;};
-	void setSpecular(glm::vec3 newSpecular)			{ specular = newSpecular;	};
-	void setShininess(float newShininess)			{ shininess = newShininess; };
+	void setAmbient(glm::vec3 newAmbient)			{ ambient = newAmbient;		}
+	void setDiffuseColor(glm::vec3 newDiffuseColor)	{ diffuseColor = newDiffuseColor;}
+	void setSpecular(glm::vec3 newSpecular)			{ specular = newSpecular;	}
+	void setShininess(float newShininess)			{ shininess = newShininess; }
 
 	// SpotLight
 	struct PointLight
 	{
-		PointLight() { SetLightAttributes(); };
+		PointLight() { SetLightAttributes(); }
 
 		glm::vec3 lightPosition = glm::vec3(0, 1, 0);
 		glm::vec3 lightAmbient = glm::vec3(1);
@@ -41,14 +45,14 @@ public:
 		float lightQuadratic = 0.032f;
 
 		void SetLightAttributes(glm::vec3 newAmbient = glm::vec3(0.2f), glm::vec3 newDiffuse = glm::vec3(0.5f), glm::vec3 newSpecular = glm::vec3(1.0f), float newConstant = 1.0f, float newLinear = 0.09f, float newQuadratic = 0.032f);
-		void SetLightPosition(glm::vec3 newLightPos) { lightPosition = newLightPos; };
-		void SetLightAmbient(glm::vec3 newAmbient) { lightAmbient = newAmbient; };
-		void SetLightDiffuse(glm::vec3 newDiffuse) { lightDiffuse = newDiffuse; };
-		void SetLightSpecular(glm::vec3 newSpecular) { lightSpecular = newSpecular; };
+		void SetLightPosition(glm::vec3 newLightPos) { lightPosition = newLightPos; }
+		void SetLightAmbient(glm::vec3 newAmbient) { lightAmbient = newAmbient; }
+		void SetLightDiffuse(glm::vec3 newDiffuse) { lightDiffuse = newDiffuse; }
+		void SetLightSpecular(glm::vec3 newSpecular) { lightSpecular = newSpecular; }
 
-		void SetLightConstant(float newLightConstant) { lightConstant = newLightConstant; };
-		void SetLightLinear(float newLightLinear) { lightLinear = newLightLinear; };
-		void SetLightQuadratic(float newLightQuadratic) { lightQuadratic = newLightQuadratic; };
+		void SetLightConstant(float newLightConstant) { lightConstant = newLightConstant; }
+		void SetLightLinear(float newLightLinear) { lightLinear = newLightLinear; }
+		void SetLightQuadratic(float newLightQuadratic) { lightQuadratic = newLightQuadratic; }
 	};
 	PointLight pointLights[4];
 
@@ -61,11 +65,18 @@ public:
 	glm::vec3 dirLightSpecular = glm::vec3(1.0f);
 	
 	void SetDirectionalLightAttributes(glm::vec3 newDirection = glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3 newAmbient = glm::vec3(0.2f), glm::vec3 newDiffuse = glm::vec3(0.5f), glm::vec3 newSpecular = glm::vec3(1.0f));
-	void SetDirectionalLightDirection(glm::vec3 newDirection) { dirLightDirection = newDirection; };
-	void SetDirectionalLightAmbient(glm::vec3 newAmbient) { dirLightAmbient = newAmbient; };
-	void SetDirectionalLightDiffuse(glm::vec3 newDiffuse) { dirLightDiffuse = newDiffuse; };
-	void SetDirectionalLightSpecular(glm::vec3 newSpecular) { dirLightSpecular = newSpecular; };
-protected:
-	Texture* texture = nullptr;
-};
+	void SetDirectionalLightDirection(glm::vec3 newDirection) { dirLightDirection = newDirection; }
+	void SetDirectionalLightAmbient(glm::vec3 newAmbient) { dirLightAmbient = newAmbient; }
+	void SetDirectionalLightDiffuse(glm::vec3 newDiffuse) { dirLightDiffuse = newDiffuse; }
+	void SetDirectionalLightSpecular(glm::vec3 newSpecular) { dirLightSpecular = newSpecular; }
+	
+	bool hasSpecMap = false;
+	bool hasNormalMap = false;
+	bool hasSpecColorMap = false;
 
+protected:
+	Texture* diffuse = nullptr;
+	Texture* specMap = nullptr;
+	Texture* normalMap = nullptr;
+	Texture* specColorMap = nullptr;
+};

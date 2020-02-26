@@ -1,9 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
-
-
-
+#include "Types.h"
 
 class Texture
 {

@@ -11,15 +11,28 @@ public:
 	void Render();
 	void FirstFrame();
 
+	void MeshGUI();
+	void MaterialGUI();
+	void ShaderGUI();
+
 protected:
 	ObjectManager* objManager = nullptr;
 
 	//Debug Vars
-	int currentCubeIndex = 0;
-	GameObject* currentGameObject = nullptr;
-	glm::vec3 currentPOS = glm::vec3(0, 2, 0);
-	std::vector<const char*> names;
-	int currentName = 0;
-	Mesh* cube = nullptr;
+	std::string TextBoxString;
+	char* cstr = nullptr;
+	
+	bool* staticBool = nullptr;
+	bool* shadowCastBool = nullptr;
+
+	std::vector<std::string> componentList;
+	const char* currentComponent;
+
+	// Material tab
+	std::vector<std::string> diffuseList;
+	const char* currentDiffuse;
+
+	std::vector<std::string> specularList;
+	const char* currentSpecular;
 };
 

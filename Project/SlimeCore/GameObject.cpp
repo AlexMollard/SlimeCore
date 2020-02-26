@@ -79,3 +79,28 @@ void GameObject::SetScale(glm::vec3 newScale)
 	scale = newScale;
 	model = glm::scale(model, newScale);
 }
+
+Texture* GameObject::GetTexture(TEXTURETYPE type)
+{
+	switch (type)
+	{
+	case TEXTURETYPE::Diffuse:
+		return mat->GetDiffuse();
+		break;
+	case TEXTURETYPE::Specular:
+		return mat->GetSpecMap();
+		break;
+	case TEXTURETYPE::Normal:
+		return mat->GetNormalMap();
+		break;
+	case TEXTURETYPE::SpecularColor:
+		return mat->GetSpecColorMap();
+		break;
+	case TEXTURETYPE::SkyBox:
+		printf("There is no skybox vector");
+		break;
+	default:
+		break;
+	}
+	return nullptr;
+}

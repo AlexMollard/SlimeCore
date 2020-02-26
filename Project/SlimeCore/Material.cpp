@@ -1,10 +1,22 @@
 #include "Material.h"
 
-Material::Material(const char* name, Texture* texture)
+Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* specColorMap)
 {
 	this->name = name;
 
-	this->texture = texture;
+	this->diffuse = diffuse;
+	
+	if (specMap)
+		hasSpecMap = true;
+	this->specMap = specMap;
+	
+	if (normalMap)
+		hasNormalMap = true;
+	this->normalMap = normalMap;
+
+	if (specColorMap)
+		hasSpecColorMap = true;
+	this->specColorMap = specColorMap;
 
 	setMatAtrributes();
 	pointLights->SetLightAttributes();
@@ -42,10 +54,34 @@ void Material::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 n
 	SetDirectionalLightSpecular(newSpecular);
 }
 
-Texture* Material::GetTexture()
+Texture* Material::GetDiffuse()
 {
-	if (texture != nullptr)
-		return texture;
+	if (diffuse != nullptr)
+		return diffuse;
+
+	return nullptr;
+}
+
+Texture* Material::GetSpecMap()
+{
+	if (specMap != nullptr)
+		return specMap;
+
+	return nullptr;
+}
+
+Texture* Material::GetNormalMap()
+{
+	if (normalMap != nullptr)
+		return normalMap;
+
+	return nullptr;
+}
+
+Texture* Material::GetSpecColorMap()
+{
+	if (specColorMap != nullptr)
+		return specColorMap;
 
 	return nullptr;
 }

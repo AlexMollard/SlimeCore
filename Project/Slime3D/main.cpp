@@ -31,9 +31,17 @@ int main()
 		"..\\Images\\SkyBox\\skyrender0006.bmp"
 	};
 	textureManager->CreateSkyBox(faces);
-	textureManager->Create("Grass Texture", "..\\Images\\grass.png");
-	materialManager->Create("skyBoxMat", textureManager->Get(0));
-	materialManager->Create("grassMat", textureManager->Get(1));
+	textureManager->Create("Grass Texture", "..\\Images\\grass.png",TEXTURETYPE::Diffuse);
+	textureManager->Create("Water Texture", "..\\Images\\water.png", TEXTURETYPE::Diffuse);
+	textureManager->Create("Dirt Texture", "..\\Images\\dirt.png", TEXTURETYPE::Diffuse);
+	textureManager->Create("White Texture", "..\\Images\\light.png", TEXTURETYPE::Diffuse);
+	textureManager->Create("Slime Texture", "..\\Images\\missingTex.png", TEXTURETYPE::Diffuse);
+	textureManager->Create("UV Texture", "..\\Images\\test.jpg", TEXTURETYPE::Diffuse);
+	textureManager->Create("Spec Texture", "..\\Images\\test.jpg", TEXTURETYPE::Specular);
+
+	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Diffuse));
+	materialManager->Create("grassMat", textureManager->Get(1, TEXTURETYPE::Diffuse));
+	materialManager->Create("testMat", textureManager->Get(2, TEXTURETYPE::Diffuse));
 
 
 	Mesh* cube = new Mesh();

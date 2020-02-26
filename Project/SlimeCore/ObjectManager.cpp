@@ -141,6 +141,7 @@ void ObjectManager::SetNamesVector()
 	{
 		names.push_back(objects[i]->name.c_str());
 	}
+	textureManager->SetNameList();
 }
 
 std::vector<const char*> ObjectManager::GetNameVector()
@@ -181,10 +182,10 @@ bool ObjectManager::Draw()
 			objects[i]->UpdateUniforms(projectionView, *camPos);
 		}
 
-		if (objects[i]->GetTexture() != currentTexture)
+		if (objects[i]->GetTexture(TEXTURETYPE::Diffuse) != currentTexture)
 		{
-			currentTexture = objects[i]->GetTexture();
-			glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture()->textureID);
+			currentTexture = objects[i]->GetTexture(TEXTURETYPE::Diffuse);
+			glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Diffuse)->textureID);
 		}
 
 		if (objects[i]->name == "SkyBox")
