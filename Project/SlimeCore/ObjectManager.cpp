@@ -174,23 +174,11 @@ bool ObjectManager::Draw()
 {
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->name == "SkyBox")
-		{
-			objects[i]->shader->Use();
-			glDepthFunc(GL_LEQUAL);
-			glBindVertexArray(objects[i]->GetMesh()->m_meshChunks[0].vao);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, objects[i]->GetTexture()->textureID);
-			objects[i]->Draw(projectionView);
-			glDepthFunc(GL_LESS);
-			continue;
-		}
-
 		if (currentShader != objects[i]->shader)
 		{
 			objects[i]->shader->Use();
 			currentShader = objects[i]->shader;
-			objects[i]->UpdateUniforms(projectionView,*camPos);
+			objects[i]->UpdateUniforms(projectionView, *camPos);
 		}
 
 		if (objects[i]->GetTexture() != currentTexture)
@@ -199,7 +187,17 @@ bool ObjectManager::Draw()
 			glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture()->textureID);
 		}
 
+		if (objects[i]->name == "SkyBox")
+		{
+			glDepthMask(GL_FALSE);
+			objects[i]->Draw(projectionView);
+			glDepthMask(GL_TRUE);
+
+			continue;
+		}
+
 		objects[i]->Draw(projectionView);
+
 	}
 	return true;
 }

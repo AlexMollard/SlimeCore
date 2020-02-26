@@ -329,45 +329,98 @@ std::vector<glm::vec3> Primitives::CalculateVertNormals(std::vector<glm::vec3>& 
 
 SkyBox::SkyBox()
 {
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f) * glm::vec3(-1));    // Top Right Of The Quad (Top)
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f) * glm::vec3(-1));    // Top Left Of The Quad (Top)
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f) * glm::vec3(-1));    // Bottom Left Of The Quad (Top)
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f) * glm::vec3(-1));    // Bottom Right Of The Quad (Top)
 
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f) * glm::vec3(-1));    // Top Right Of The Quad (Bottom)
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f) * glm::vec3(-1));    // Top Left Of The Quad (Bottom)
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f) * glm::vec3(-1));    // Bottom Left Of The Quad (Bottom)
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f) * glm::vec3(-1));    // Bottom Right Of The Quad (Bottom
 
-	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f) * glm::vec3(-1));    // Top Right Of The Quad (Front)
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f) * glm::vec3(-1));    // Top Left Of The Quad (Front)
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f) * glm::vec3(-1));    // Bottom Left Of The Quad (Front)
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f) * glm::vec3(-1));    // Bottom Right Of The Quad (Front)
 
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f) * glm::vec3(-1));    // Top Right Of The Quad (Back)
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f) * glm::vec3(-1));    // Top Left Of The Quad (Back)
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f) * glm::vec3(-1));    // Bottom Left Of The Quad (Back)
+	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f) * glm::vec3(-1));    // Bottom Right Of The Quad (Back)
 
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
-	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 1.0f) * glm::vec3(-1));    // Top Right Of The Quad (Left)
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, -1.0f) * glm::vec3(-1));    // Top Left Of The Quad (Left)
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f) * glm::vec3(-1));    // Bottom Left Of The Quad (Left)
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f) * glm::vec3(-1));    // Bottom Right Of The Quad (Left)
 
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
-	vertices.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
-	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
+	vertices.push_back(glm::vec3(1.0f, 1.0f, -1.0f) * glm::vec3(-1));    // Top Right Of The Quad (Right)
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 1.0f) * glm::vec3(-1));    // Top Left Of The Quad (Right)
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 1.0f) * glm::vec3(-1));    // Bottom Left Of The Quad (Right)
+	vertices.push_back(glm::vec3(1.0f, -1.0f, -1.0f) * glm::vec3(-1));    // Bottom Right Of The Quad (Right)
+
+
+	unsigned int cubeIndices[] =
+	{
+		0, 1, 3,	// Top
+		1, 2, 3,	// Top
+
+		5, 7, 4,	// Bottom
+		7, 5, 6,	// Bottom
+
+		8, 9, 10,	// Front
+		10, 11, 8,	//  Front
+
+		12, 13, 14,	// Back
+		14, 15, 12,	//  Back
+
+		16, 17, 18,	// Left
+		18, 19, 16,	//  Left
+
+		20, 21, 22,	// Right
+		22, 23, 20	//  Right
+	};
+
+	int length = sizeof(cubeIndices) / sizeof(unsigned int);
+	indices = std::vector<unsigned int>(cubeIndices, cubeIndices + length);
+
+	normals = CalculateVertNormals(vertices, indices);
+
+	float cubeUvData[] =
+	{
+		1.0f, 0.0f,	   // Top Right Of The Quad (Top)
+		0.0f, 0.0f,	    // Top Left Of The Quad (Top)
+		0.0f, 1.0f,	   // Bottom Left Of The Quad (Top)
+		1.0f, 1.0f,	  // Bottom Right Of The Quad (Top)
+
+		1.0f, 0.0f,	   // Top Right Of The Quad (Bottom)
+		0.0f, 0.0f,	    // Top Left Of The Quad (Bottom)
+		0.0f, 1.0f,	     // Bottom Left Of The Quad (Bottom)
+		1.0f, 1.0f,	    // Bottom Right Of The Quad (Bottom
+
+		1.0f, 0.0f,	  // Top Right Of The Quad (Front)
+		0.0f, 0.0f,	   // Top Left Of The Quad (Front)
+		0.0f, 1.0f,	    // Bottom Left Of The Quad (Front)
+		1.0f, 1.0f,	   // Bottom Right Of The Quad (Front)
+
+		1.0f, 1.0f,	    // Top Right Of The Quad (Back)
+		0.0f, 1.0f,	     // Top Left Of The Quad (Back)
+		0.0f, 0.0f,	    // Bottom Left Of The Quad (Back)
+		1.0f, 0.0f,	   // Bottom Right Of The Quad (Back)
+
+		1.0f, 0.0f,	   // Top Right Of The Quad (Left)
+		0.0f, 0.0f,	    // Top Left Of The Quad (Left)
+		0.0f, 1.0f,	     // Bottom Left Of The Quad (Left)
+		1.0f, 1.0f,	    // Bottom Right Of The Quad (Left)
+
+		1.0f, 0.0f,	   // Top Right Of The Quad (Right)
+		0.0f, 0.0f,	  // Top Left Of The Quad (Right)
+		0.0f, 1.0f,	   // Bottom Left Of The Quad (Right)
+		1.0f, 1.0f	    // Bottom Right Of The Quad (Right)
+	};
+
+
+	glm::vec2* arr = (glm::vec2*)cubeUvData;
+	int n = sizeof(cubeUvData) / sizeof(cubeUvData[0]);
+	uvs = std::vector<glm::vec2>(arr, arr + n);
 }

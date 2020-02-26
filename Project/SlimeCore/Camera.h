@@ -50,9 +50,6 @@ public:
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetViewWithoutPosition();
-
-	
-
 	glm::mat4 GetProjectionMatrix();
 
 	void UpdateProjectionViewMatrix();
