@@ -5,31 +5,38 @@ int main()
 	// Check for Memory Leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	// Create Application
 	Application* app = new Application(1280, 720, "Slime Core");
 	GLFWwindow* window = glfwGetCurrentContext();
 
+	// Create Managers
 	ShaderManager* shaderManager = new ShaderManager();
 	TextureManager* textureManager = new TextureManager();
 	MaterialManager* materialManager = new MaterialManager(textureManager);
 	MeshManager* meshManager = new MeshManager();
 	ObjectManager* objectManager = new ObjectManager(meshManager, materialManager, shaderManager, textureManager, app->projectionViewMat, &app->GetCamera()->Position);
+	
+	// Creating debugging GUI
 	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager);
 
 	// Setting variables
 	float& deltaTime = *app->GetDeltaPointer();
 	float timer = 0.0f;
 
-	//Skybox
+	// Shaders
 	shaderManager->Create("skyBoxShader", "..\\Shaders\\SkyBoxVertex.shader", "..\\Shaders\\SkyBoxFragment.shader");
 	shaderManager->Create("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	shaderManager->Create("pbrShader", "..\\Shaders\\PbrVertex.shader", "..\\Shaders\\PbrFragment.shader");
+	
+	//Skybox
 	std::vector<std::string> faces
 	{
-		"..\\Images\\SkyBox\\skyrender0001.bmp",
-		"..\\Images\\SkyBox\\skyrender0002.bmp",
-		"..\\Images\\SkyBox\\skyrender0003.bmp",
-		"..\\Images\\SkyBox\\skyrender0004.bmp",
-		"..\\Images\\SkyBox\\skyrender0005.bmp",
-		"..\\Images\\SkyBox\\skyrender0006.bmp"
+		"..\\Images\\SkyBox\\right.png",
+		"..\\Images\\SkyBox\\left.png",
+		"..\\Images\\SkyBox\\top.png",
+		"..\\Images\\SkyBox\\bottom.png",
+		"..\\Images\\SkyBox\\front.png",
+		"..\\Images\\SkyBox\\back.png"
 	};
 	textureManager->CreateSkyBox(faces);
 	
@@ -65,17 +72,22 @@ int main()
 
 	// Materials
 	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Diffuse));
-	materialManager->Create("grassMat", textureManager->Get(1, TEXTURETYPE::Diffuse));
-	materialManager->Create("testMat", textureManager->Get(2, TEXTURETYPE::Diffuse));
+	materialManager->Create("grassMat", textureManager->Get(0, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient));
+	materialManager->Create("waterMat", textureManager->Get(1, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient));
+	materialManager->Create("dirtMat", textureManager->Get(2, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient));
 
-
+	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
 	meshManager->Create("Cube", Primitives::Cube);
 	meshManager->Create("Plane", Primitives::Plane);
 	meshManager->Create("Cylinder", Primitives::Cylinder);
 
+	// Objects
 	objectManager->Create("SkyBox", 0, 0, 0);
-	objectManager->Create("Block", 1, 1, 1);
+	objectManager->Create("Block", 1, 2, 2);
+	objectManager->Create("Ground", 2, 1, 2);
+	objectManager->Get("Ground")->SetScale(glm::vec3(100,1,100));
+	objectManager->Get("Ground")->SetPos(glm::vec3(0,-5,0));
 
 	objectManager->DebugAll();
 	debugGui->FirstFrame();
@@ -84,12 +96,20 @@ int main()
 	{
 		timer += 0.5f * deltaTime;
 		
+		// Set SkyBox on camera
 		objectManager->objects[0]->SetPos(app->GetCamera()->Position);
+
+		// Draw Objects
 		objectManager->Draw();
+
+		// Draw Gui
 		debugGui->Render();
+
+		// Update callbacks ect.
 		app->Update();
 	}
 
+	// Delete pointers
 	delete shaderManager;
 	delete meshManager;
 	delete materialManager;
@@ -98,7 +118,9 @@ int main()
 	delete debugGui;
 	delete app;
 
+	// Destroy openGL instance
 	glfwDestroyWindow(window);
 	glfwTerminate();
+
 	return 0;
 }

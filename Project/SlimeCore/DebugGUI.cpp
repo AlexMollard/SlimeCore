@@ -149,9 +149,8 @@ void DebugGUI::MaterialGUI()
 	ImGui::SameLine(100.0f);
 	if (ImGui::Button("CREATE", ImVec2(200, 50)))
 	{
-		materialList = matManager->GetNames();
 		matManager->Create(
-			objName,
+			matName,
 			*shininess,
 			glm::vec3(ambColor[0], ambColor[1], ambColor[2]),
 			glm::vec3(difColor[0], difColor[1], difColor[2]),
@@ -161,8 +160,9 @@ void DebugGUI::MaterialGUI()
 			std::string(currentNormal),
 			std::string(currentAmbient)
 		);
+		materialList = matManager->GetNames();
 
-
+		currentMaterial = materialList.back().c_str();
 	}
 	ImGui::End();
 
@@ -232,7 +232,7 @@ void DebugGUI::ObjectGUI()
 			glm::vec4(rot[0], rot[1], rot[2], rot[3]),
 			glm::vec3(scale[0], scale[1], scale[2]),
 			std::string(currentMesh),
-			std::string(currentMaterial)
+			currentMaterial
 		);
 
 	}

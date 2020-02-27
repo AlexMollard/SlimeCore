@@ -43,7 +43,7 @@ bool MaterialManager::Create(const char* name, Texture* texture)
 {
 	if (Get(name,true) == nullptr)
 	{
-		printf("Creating Material with name: %s.\n", name);
+		//printf("Creating Material with name: %s.\n", name);
 		Add(new Material(name, texture));
 		return true;
 	}
@@ -51,13 +51,24 @@ bool MaterialManager::Create(const char* name, Texture* texture)
 	printf("Material already exist with name: %s.\n", name);
 	return false;
 }
-bool MaterialManager::Create(std::string name, float shininess, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName)
+bool MaterialManager::Create(const char* name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient)
 {
-	Material* mat = new Material(name.c_str(), textureManager->Get(diffuseName.c_str(), TEXTURETYPE::Diffuse), textureManager->Get(specularName.c_str(), TEXTURETYPE::Specular), textureManager->Get(normalName.c_str(), TEXTURETYPE::Normal), textureManager->Get(ambientName.c_str(), TEXTURETYPE::Ambient));
-	mat->setMatAtrributes(ambientColor, diffuseColor, specularColor, shininess);
-	Add(mat);
-	printf("IMGUI just made a material: %s/n", name);
-	return true;
+	if (Get(name,true) == nullptr)
+	{
+		//printf("Creating Material with name: %s.\n", name);
+		Add(new Material(name, diffuse, specular, normal, ambient));
+		return true;
+	}
+
+	printf("Material already exist with name: %s.\n", name);
+	return false;
+}
+
+void MaterialManager::Create(std::string name, float shininess, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName)
+{
+	Add(new Material(name.c_str(), textureManager->Get(diffuseName.c_str(), TEXTURETYPE::Diffuse), textureManager->Get(specularName.c_str(), TEXTURETYPE::Specular), textureManager->Get(normalName.c_str(), TEXTURETYPE::Normal), textureManager->Get(ambientName.c_str(), TEXTURETYPE::Ambient)));
+	materialList.back()->setMatAtrributes(ambientColor, diffuseColor, specularColor, shininess);
+	printf("IMGUI just made a material: %s\n", materialList.back()->name);
 }
 
 int MaterialManager::GetIndex(std::string name)
@@ -112,4 +123,23 @@ bool MaterialManager::DebugManager()
 	printf("\n");
 
 	return true;
+}
+
+void MaterialManager::SetSpotLightPos(glm::vec3 lightOne, glm::vec3 lightTwo, glm::vec3 lightThree, glm::vec3 lightFour)
+{
+	for (int i = 0; i < materialList.size(); i++)
+	{
+		materialList[i]->pointLights[0].SetLightPosition(lightOne);
+		materialList[i]->pointLights[1].SetLightPosition(lightTwo);
+		materialList[i]->pointLights[2].SetLightPosition(lightThree);
+		materialList[i]->pointLights[3].SetLightPosition(lightFour);
+	}
+}
+
+void MaterialManager::SetDirLightDirection(glm::vec3 direction)
+{
+	for (int i = 0; i < materialList.size(); i++)
+	{
+		materialList[i]->SetDirectionalLightDirection(direction);
+	}
 }

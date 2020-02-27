@@ -84,7 +84,7 @@ bool TextureManager::Create(const char* name, std::string dir, TEXTURETYPE type)
 {
 	if (Get(name,type, true) == nullptr)
 	{
-		printf("Creating Texture with name: %s.\n", name);
+		//printf("Creating Texture with name: %s.\n", name);
 		Add(new Texture(name, dir), type);
 		return true;
 	}
@@ -178,10 +178,10 @@ unsigned int TextureManager::CreateSkyBox(std::vector<std::string> faces)
 		for (unsigned int i = 0; i < faces.size(); i++)
 		{
 			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+			//std::cout << faces[i] << ": " << nrChannels << std::endl;
 			if (data)
 			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data
 				);
 				stbi_image_free(data);
 			}

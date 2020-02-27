@@ -16,7 +16,7 @@ public:
 	Texture* GetNormalMap();
 	Texture* GetSpecColorMap();
 
-	const char* name = "DefaultName";
+	std::string name = "DefaultName";
 
 	// Materials
 	glm::vec3 ambient = glm::vec3(1);

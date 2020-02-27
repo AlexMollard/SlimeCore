@@ -36,7 +36,7 @@ void ObjectManager::Create(std::string name, std::string  meshName, std::string 
 
 void ObjectManager::Create(std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName)
 {
-	GameObject* go = new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get("defaultShader"));
+	GameObject* go = new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get("pbrShader"));
 	go->SetPos(pos);
 	go->SetScale(scale);
 	Add(go);
@@ -183,6 +183,9 @@ bool ObjectManager::DebugAll()
 
 bool ObjectManager::Draw()
 {
+	matManager->SetSpotLightPos(glm::vec3(2,1, glm::cos(glfwGetTime())), glm::vec3(glm::cos(glfwGetTime()), 1, 2), glm::vec3(2, 1, 4), glm::vec3(4, glm::cos(glfwGetTime()), -2));
+	matManager->SetDirLightDirection(glm::vec3(glm::cos(glfwGetTime()),-1,-0.3));
+	//std::cout << glfwGetTime() << std::endl;
 	for (int i = 0; i < objects.size(); i++)
 	{
 		if (currentShader != objects[i]->shader)
@@ -192,14 +195,54 @@ bool ObjectManager::Draw()
 			objects[i]->UpdateUniforms(projectionView, *camPos);
 		}
 
-		if (objects[i]->GetTexture(TEXTURETYPE::Diffuse) != currentTexture)
+		if (currentMaterial != objects[i]->GetMaterial())
 		{
-			currentTexture = objects[i]->GetTexture(TEXTURETYPE::Diffuse);
+			currentMaterial = objects[i]->GetMaterial();
+			currentDiffuse = nullptr;
+			currentSpecular = nullptr;
+			currentNormal = nullptr;
+			currentAmbient = nullptr;
+		}
+
+		if (objects[i]->GetTexture(TEXTURETYPE::Diffuse) != currentDiffuse)
+		{
+			objects[i]->shader->setInt("diffuseTexture", 0);
+			currentDiffuse = objects[i]->GetTexture(TEXTURETYPE::Diffuse);
+			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
 			glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Diffuse)->textureID);
+		}
+
+		if (objects[i]->GetTexture(TEXTURETYPE::Specular) != nullptr)
+		{
+
+			if (objects[i]->GetTexture(TEXTURETYPE::Specular) != currentSpecular)
+			{
+				objects[i]->shader->setInt("specularTexture", 1);
+				currentSpecular = objects[i]->GetTexture(TEXTURETYPE::Specular);
+				glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
+				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Specular)->textureID);
+			}
+
+			if (objects[i]->GetTexture(TEXTURETYPE::Normal) != currentNormal)
+			{
+				objects[i]->shader->setInt("normalTexture", 2);
+				currentNormal = objects[i]->GetTexture(TEXTURETYPE::Normal);
+				glActiveTexture(GL_TEXTURE0 + 2); // Texture unit 2
+				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Normal)->textureID);
+			}
+
+			if (objects[i]->GetTexture(TEXTURETYPE::Ambient) != currentAmbient)
+			{
+				objects[i]->shader->setInt("ambientTexture", 3);
+				currentAmbient = objects[i]->GetTexture(TEXTURETYPE::Ambient);
+				glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
+				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Ambient)->textureID);
+			}
 		}
 
 		if (objects[i]->name == "SkyBox")
 		{
+			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
 			glDepthMask(GL_FALSE);
 			objects[i]->Draw(projectionView);
 			glDepthMask(GL_TRUE);

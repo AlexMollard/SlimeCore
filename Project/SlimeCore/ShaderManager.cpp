@@ -42,7 +42,7 @@ bool ShaderManager::Create(const char* name, const char* vertex, const char* fra
 {
 	if (Get(name,true) == nullptr)
 	{
-		printf("Creating Shader with name: %s.\n", name);
+		//printf("Creating Shader with name: %s.\n", name);
 		Add(new Shader(name, vertex, fragment));
 		return true;
 	}

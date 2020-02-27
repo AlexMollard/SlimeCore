@@ -193,5 +193,11 @@
     <None Include="..\Shaders\SkyBoxVertex.shader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\PbrFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\PbrVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

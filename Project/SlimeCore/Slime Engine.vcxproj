@@ -204,6 +204,8 @@
     <None Include="..\Shaders\Fragment.shader" />
     <None Include="..\Shaders\litFragment.shader" />
     <None Include="..\Shaders\litVertex.shader" />
+    <None Include="..\Shaders\PbrFragment.shader" />
+    <None Include="..\Shaders\PbrVertex.shader" />
     <None Include="..\Shaders\SkyBoxFragment.shader" />
     <None Include="..\Shaders\SkyBoxVertex.shader" />
     <None Include="..\Shaders\Vertex.shader" />

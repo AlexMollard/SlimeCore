@@ -42,7 +42,13 @@ public:
 	TextureManager* textureManager = nullptr;
 	MeshManager* meshManager = nullptr;
 	Shader* currentShader = nullptr;
-	Texture* currentTexture = nullptr;
+	Material* currentMaterial = nullptr;
+
+	Texture* currentDiffuse = nullptr;
+	Texture* currentSpecular = nullptr;
+	Texture* currentNormal = nullptr;
+	Texture* currentAmbient = nullptr;
+	
 	glm::mat4* projectionView;
 	std::vector<const char*> names;
 	glm::vec3* camPos;
