@@ -37,8 +37,8 @@ protected:
 	std::vector<Texture*> normalList;
 	std::vector<std::string> normalNames;
 
-	std::vector<Texture*> specularColorList;
-	std::vector<std::string> specularColorNames;
+	std::vector<Texture*> ambientList;
+	std::vector<std::string> ambientNames;
 
 	Texture* skyBox;
 	unsigned int skyboxID = 0;

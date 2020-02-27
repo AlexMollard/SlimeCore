@@ -19,7 +19,7 @@ struct Vertex {
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(const char* name, const char* dir = nullptr);
 	~Mesh();
 
 	Primitives prim;
@@ -34,11 +34,10 @@ public:
 		int				materialID;
 	};
 	std::vector<MeshChunk>	m_meshChunks;
+	const char* name;
 protected:
 	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 
-
 	std::string fileName;
-	bool isSkyBox = false;
 };
 

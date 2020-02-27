@@ -4,6 +4,6 @@ enum class TEXTURETYPE
 	Diffuse,
 	Specular,
 	Normal,
-	SpecularColor,
+	Ambient,
 	SkyBox
 };

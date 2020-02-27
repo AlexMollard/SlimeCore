@@ -2,6 +2,7 @@
 #include "gl_core_4_5.h"
 #include "stb_image.h"
 
+
 TextureManager::TextureManager()
 {
 }
@@ -14,9 +15,39 @@ TextureManager::~TextureManager()
 	{
 		if (diffuseList[i] != nullptr)
 		{
-			printf(" - Deleteing Texture: %s.\n", diffuseList[i]->name);
+			printf(" - Deleteing Diffuse Texture: %s.\n", diffuseList[i]->name);
 			delete diffuseList[i];
 			diffuseList[i] = nullptr;
+		}
+	}
+
+	for (int i = 0; i < specularList.size(); i++)
+	{
+		if (specularList[i] != nullptr)
+		{
+			printf(" - Deleteing Specular Texture: %s.\n", specularList[i]->name);
+			delete specularList[i];
+			specularList[i] = nullptr;
+		}
+	}
+
+	for (int i = 0; i < normalList.size(); i++)
+	{
+		if (normalList[i] != nullptr)
+		{
+			printf(" - Deleteing Normal Texture: %s.\n", normalList[i]->name);
+			delete normalList[i];
+			normalList[i] = nullptr;
+		}
+	}
+
+	for (int i = 0; i < ambientList.size(); i++)
+	{
+		if (ambientList[i] != nullptr)
+		{
+			printf(" - Deleteing Ambient Texture: %s.\n", ambientList[i]->name);
+			delete ambientList[i];
+			ambientList[i] = nullptr;
 		}
 	}
 
@@ -27,11 +58,12 @@ TextureManager::~TextureManager()
 
 Texture* TextureManager::Get(const char* name, TEXTURETYPE type, bool creation)
 {
+	std::vector<std::string> textureNameList = GetNameList(type);
 	std::vector<Texture*> textureList = GetTextureList(type);
 
-	for (int i = 0; i < textureList.size(); i++)
+	for (int i = 0; i < textureNameList.size(); i++)
 	{
-		if (textureList[i]->name == name)
+		if (textureNameList[i] == std::string(name))
 		{
 			return textureList[i];
 		}
@@ -42,7 +74,10 @@ Texture* TextureManager::Get(const char* name, TEXTURETYPE type, bool creation)
 
 Texture* TextureManager::Get(int index, TEXTURETYPE type)
 {
-	return diffuseList[index] ? diffuseList[index] : NotFound(false, "---", index);
+	std::vector<Texture*> textureList = GetTextureList(type);
+
+
+	return textureList[index] ? textureList[index] : NotFound(false, "---", index);
 }
 
 bool TextureManager::Create(const char* name, std::string dir, TEXTURETYPE type)
@@ -87,12 +122,12 @@ void TextureManager::SetNameList()
 		}
 	}
 
-	if (specularColorList.size() > 0)
+	if (ambientList.size() > 0)
 	{
-		specularColorNames.clear();
-		for (int i = 0; i < specularColorList.size(); i++)
+		ambientNames.clear();
+		for (int i = 0; i < ambientList.size(); i++)
 		{
-			specularColorNames.push_back(specularColorList[i]->name);
+			ambientNames.push_back(ambientList[i]->name);
 		}
 	}
 }
@@ -111,8 +146,8 @@ std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
 	case TEXTURETYPE::Normal:
 		return normalNames;
 		break;
-	case TEXTURETYPE::SpecularColor:
-		return specularColorNames;
+	case TEXTURETYPE::Ambient:
+		return ambientNames;
 		break;
 	case TEXTURETYPE::SkyBox:
 		printf("There is no skybox vector");
@@ -124,9 +159,11 @@ std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
 
 int TextureManager::GetTextureIndex(std::string name, TEXTURETYPE type)
 {
-	for (int i = 0; i < diffuseNames.size(); i++)
+	std::vector<Texture*> textureList = GetTextureList(type);
+
+	for (int i = 0; i < textureList.size(); i++)
 	{
-		if (diffuseNames[i] == name)
+		if (textureList[i]->name == name)
 			return i;
 	}
 	return 0;
@@ -190,8 +227,8 @@ std::vector<Texture*> TextureManager::GetTextureList(TEXTURETYPE type)
 	case TEXTURETYPE::Normal:
 		return normalList;
 		break;
-	case TEXTURETYPE::SpecularColor:
-		return specularColorList;
+	case TEXTURETYPE::Ambient:
+		return ambientList;
 		break;
 	case TEXTURETYPE::SkyBox:
 		printf("There is no skybox vector");
@@ -214,8 +251,8 @@ bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)
 	case TEXTURETYPE::Normal:
 		normalList.push_back(newTexture);
 		break;
-	case TEXTURETYPE::SpecularColor:
-		specularColorList.push_back(newTexture);
+	case TEXTURETYPE::Ambient:
+		ambientList.push_back(newTexture);
 		break;
 	case TEXTURETYPE::SkyBox:
 		skyBox = newTexture;
@@ -230,11 +267,32 @@ bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)
 bool TextureManager::DebugManager()
 {
 	printf("Textures: \n");
+	printf(" Diffuse: \n");
 	for (int i = 0; i < diffuseList.size(); i++)
 	{
-		std::cout << " - " << diffuseList[i]->name << std::endl;
+		std::cout << "  - " << diffuseList[i]->name << std::endl;
+	}
+	printf("\n");
+	
+	printf(" Specular: \n");
+	for (int i = 0; i < specularList.size(); i++)
+	{
+		std::cout << "  - " << specularList[i]->name << std::endl;
 	}
 	printf("\n");
 
+	printf(" Normal: \n");
+	for (int i = 0; i < normalList.size(); i++)
+	{
+		std::cout << "  - " << normalList[i]->name << std::endl;
+	}
+	printf("\n");
+
+	printf(" Ambient: \n");
+	for (int i = 0; i < ambientList.size(); i++)
+	{
+		std::cout << "  - " << ambientList[i]->name << std::endl;
+	}
+	printf("\n");
 	return true;
 }

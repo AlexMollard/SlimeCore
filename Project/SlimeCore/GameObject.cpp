@@ -93,7 +93,7 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 	case TEXTURETYPE::Normal:
 		return mat->GetNormalMap();
 		break;
-	case TEXTURETYPE::SpecularColor:
+	case TEXTURETYPE::Ambient:
 		return mat->GetSpecColorMap();
 		break;
 	case TEXTURETYPE::SkyBox:

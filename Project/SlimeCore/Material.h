@@ -8,7 +8,7 @@
 class Material
 {
 public:
-	Material(const char* name, Texture* diffuse, Texture* specMap = nullptr, Texture* normalMap = nullptr, Texture* specColorMap = nullptr);
+	Material(const char* name, Texture* diffuse, Texture* specMap = nullptr, Texture* normalMap = nullptr, Texture* ambientMap = nullptr);
 	virtual ~Material();
 
 	Texture* GetDiffuse();

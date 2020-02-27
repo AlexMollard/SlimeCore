@@ -6,33 +6,56 @@
 class DebugGUI
 {
 public:
-	DebugGUI(ObjectManager* objManager);
+	DebugGUI(ObjectManager* objManager, MeshManager* meshManager);
 	~DebugGUI();
 	void Render();
 	void FirstFrame();
 
-	void MeshGUI();
 	void MaterialGUI();
-	void ShaderGUI();
+	void ObjectGUI();
 
 protected:
 	ObjectManager* objManager = nullptr;
+	MeshManager* meshManager = nullptr;
+	MaterialManager* matManager = nullptr;
 
 	//Debug Vars
-	std::string TextBoxString;
-	char* cstr = nullptr;
+	float pos[3] = { 0,0,0 };
+	float rot[4] = { 0,0,0,0 };
+	float scale[3] = { 1,1,1 };
+
+	std::string objName = "Testing";
+	char* objNameCharP = nullptr;
 	
 	bool* staticBool = nullptr;
 	bool* shadowCastBool = nullptr;
 
-	std::vector<std::string> componentList;
-	const char* currentComponent;
+	std::vector<std::string> meshList;
+	const char* currentMesh;
+
+	std::vector<std::string> materialList;
+	const char* currentMaterial;
+
 
 	// Material tab
+	std::string matName = "Testing";
+	char* matNameCharP = nullptr;
+
+	float* shininess = new float(1);
+	float ambColor[3] = { 1,1,1 };
+	float difColor[3] = { 1,1,1 };
+	float specColor[3] = { 1,1,1 };
+
 	std::vector<std::string> diffuseList;
 	const char* currentDiffuse;
 
 	std::vector<std::string> specularList;
 	const char* currentSpecular;
+
+	std::vector<std::string> normalList;
+	const char* currentNormal;
+
+	std::vector<std::string> ambientList;
+	const char* currentAmbient;
 };
 

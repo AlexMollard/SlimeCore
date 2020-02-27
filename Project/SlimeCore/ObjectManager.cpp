@@ -1,10 +1,11 @@
 #include "ObjectManager.h"
 
-ObjectManager::ObjectManager(MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView, glm::vec3* camPos)
+ObjectManager::ObjectManager(MeshManager* meshManager, MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView, glm::vec3* camPos)
 {
 	this->matManager = matManager;
 	this->shaderManager = shaderManager;
 	this->textureManager = textureManager;
+	this->meshManager = meshManager;
 	this->projectionView = projectionView;
 	this->camPos = camPos;
 }
@@ -21,16 +22,25 @@ ObjectManager::~ObjectManager()
 	}
 }
 
-void ObjectManager::Create(std::string name, Mesh* mesh, int materialIndex, int shaderIndex, glm::vec3 pos)
+void ObjectManager::Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(name, mesh, matManager->Get(materialIndex), shaderManager->Get(shaderIndex)));
+	objects.push_back(new GameObject(name, meshManager->Get(meshIndex), matManager->Get(materialIndex), shaderManager->Get(shaderIndex)));
 	objects.back()->SetPos(pos);
 }
 
-void ObjectManager::Create(std::string name, Mesh* mesh, std::string materialName, std::string shaderName, glm::vec3 pos)
+void ObjectManager::Create(std::string name, std::string  meshName, std::string materialName, std::string shaderName, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(name, mesh, matManager->Get(materialName.c_str()), shaderManager->Get(shaderName.c_str())));
+	objects.push_back(new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get(shaderName.c_str())));
 	objects.back()->SetPos(pos);
+}
+
+void ObjectManager::Create(std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName)
+{
+	GameObject* go = new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get("defaultShader"));
+	go->SetPos(pos);
+	go->SetScale(scale);
+	Add(go);
+	printf("IMGUI just made a object: %s/n", name);
 }
 
 void ObjectManager::Swap(int objIndex, int vectorPos)

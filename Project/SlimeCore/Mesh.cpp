@@ -1,7 +1,11 @@
 #include "Mesh.h"
 
-Mesh::Mesh()
+Mesh::Mesh(const char* name, const char* dir)
 {
+	this->name = name;
+
+	if (dir != nullptr)
+		load(dir);
 }
 
 Mesh::~Mesh()
