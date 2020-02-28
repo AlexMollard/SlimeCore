@@ -1,4 +1,5 @@
 #include "MaterialManager.h"
+#include <iostream>
 
 MaterialManager::MaterialManager(TextureManager* textureManager)
 {
@@ -7,13 +8,10 @@ MaterialManager::MaterialManager(TextureManager* textureManager)
 
 MaterialManager::~MaterialManager()
 {
-	printf("Deleteing MaterialManager:\n");
-
 	for (int i = 0; i < materialList.size(); i++)
 	{
 		if (materialList[i] != nullptr)
 		{
-			printf(" - Deleteing material: %s.\n", materialList[i]->name);
 			delete materialList[i];
 			materialList[i] = nullptr;
 		}

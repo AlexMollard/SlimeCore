@@ -172,6 +172,7 @@
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Dependencies\dirent\include\dirent.h" />
     <ClInclude Include="..\Dependencies\IMgui\imgui.h" />
     <ClInclude Include="..\Dependencies\IMgui\imgui_impl_opengl3.h" />
     <ClInclude Include="..\Dependencies\IMgui\imgui_internal.h" />

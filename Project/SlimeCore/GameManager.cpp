@@ -1,6 +1,6 @@
 #include "GameManager.h"
 
-GameManager::GameManager(Camera* mainCamera)
+GameManager::GameManager()
 {
 	//camera = mainCamera;
 	//shaderManager = new ShaderManager();

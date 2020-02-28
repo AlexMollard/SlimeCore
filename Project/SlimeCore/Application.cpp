@@ -158,8 +158,5 @@ void Application::processInput(GLFWwindow* window)
 	else
 		camera->MovementSpeed = 10.5f;
 
-
-
-
 	camera->LockMouse(window, glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) != GLFW_PRESS);
 }

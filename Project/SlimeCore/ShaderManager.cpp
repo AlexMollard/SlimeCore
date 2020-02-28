@@ -6,13 +6,10 @@ ShaderManager::ShaderManager()
 
 ShaderManager::~ShaderManager()
 {
-	printf("Deleteing ShaderManager:\n");
-
 	for (int i = 0; i < shaderList.size(); i++)
 	{
 		if (shaderList[i] != nullptr)
 		{
-			printf(" - Deleteing shader: %s.\n", shaderList[i]->name.c_str());
 			delete shaderList[i];
 			shaderList[i] = nullptr;
 		}
@@ -42,7 +39,6 @@ bool ShaderManager::Create(const char* name, const char* vertex, const char* fra
 {
 	if (Get(name,true) == nullptr)
 	{
-		//printf("Creating Shader with name: %s.\n", name);
 		Add(new Shader(name, vertex, fragment));
 		return true;
 	}

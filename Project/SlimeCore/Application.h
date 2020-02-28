@@ -1,15 +1,7 @@
 #pragma once
 
-#include "glm.hpp"
-#include "ext.hpp"
-#include "gl_core_4_5.h"
-#include "glfw3.h"
-#include "Camera.h"
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include "GameManager.h"
+#include "Camera.h"
 #include "DebugGUI.h"
 
 class Application

@@ -9,15 +9,19 @@ public:
 	TextureManager();
 	~TextureManager();
 
-	Texture* Get(const char* name, TEXTURETYPE type, bool creation = false);
+	Texture* Get(std::string, TEXTURETYPE type, bool creation = false);
 	Texture* Get(int index, TEXTURETYPE type);
 
-	Texture* NotFound(bool creation, const char* name = "---", int index = 404);
+	Texture* NotFound(bool creation, std::string name = "---", int index = 404);
 
 	std::vector<Texture*> GetTextureList(TEXTURETYPE type);
 
+	void ImportAllTextures();
+	std::vector<std::string> GetAllFiles(std::string dir);
+
 	bool Add(Texture* newTexture, TEXTURETYPE type);
-	bool Create(const char* name, std::string dir, TEXTURETYPE type);
+	bool Create(std::string, std::string dir, TEXTURETYPE type);
+	void Create(std::vector<std::string> dirs, TEXTURETYPE type);
 
 	void SetNameList();
 	std::vector<std::string> GetNameList(TEXTURETYPE type);

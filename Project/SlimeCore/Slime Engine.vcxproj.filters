@@ -167,6 +167,9 @@
     <ClInclude Include="MeshManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Dependencies\dirent\include\dirent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\Fragment.shader">

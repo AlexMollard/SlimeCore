@@ -1,21 +1,18 @@
 #include "TextureManager.h"
 #include "gl_core_4_5.h"
 #include "stb_image.h"
-
-
+#include "dirent.h"
+#include <iostream>
 TextureManager::TextureManager()
 {
 }
 
 TextureManager::~TextureManager()
 {
-	printf("Deleteing TextureManager:\n");
-
 	for (int i = 0; i < diffuseList.size(); i++)
 	{
 		if (diffuseList[i] != nullptr)
 		{
-			printf(" - Deleteing Diffuse Texture: %s.\n", diffuseList[i]->name);
 			delete diffuseList[i];
 			diffuseList[i] = nullptr;
 		}
@@ -25,7 +22,6 @@ TextureManager::~TextureManager()
 	{
 		if (specularList[i] != nullptr)
 		{
-			printf(" - Deleteing Specular Texture: %s.\n", specularList[i]->name);
 			delete specularList[i];
 			specularList[i] = nullptr;
 		}
@@ -35,7 +31,6 @@ TextureManager::~TextureManager()
 	{
 		if (normalList[i] != nullptr)
 		{
-			printf(" - Deleteing Normal Texture: %s.\n", normalList[i]->name);
 			delete normalList[i];
 			normalList[i] = nullptr;
 		}
@@ -45,7 +40,6 @@ TextureManager::~TextureManager()
 	{
 		if (ambientList[i] != nullptr)
 		{
-			printf(" - Deleteing Ambient Texture: %s.\n", ambientList[i]->name);
 			delete ambientList[i];
 			ambientList[i] = nullptr;
 		}
@@ -55,18 +49,16 @@ TextureManager::~TextureManager()
 	{
 		if (roughList[i] != nullptr)
 		{
-			printf(" - Deleteing Rough Texture: %s.\n", roughList[i]->name);
 			delete roughList[i];
 			roughList[i] = nullptr;
 		}
 	}
 
-	printf(" - Deleteing Texture: SkyBox");
 	delete skyBox;
 	printf("\n");
 }
 
-Texture* TextureManager::Get(const char* name, TEXTURETYPE type, bool creation)
+Texture* TextureManager::Get(std::string name, TEXTURETYPE type, bool creation)
 {
 	std::vector<std::string> textureNameList = GetNameList(type);
 	std::vector<Texture*> textureList = GetTextureList(type);
@@ -90,17 +82,24 @@ Texture* TextureManager::Get(int index, TEXTURETYPE type)
 	return textureList[index] ? textureList[index] : NotFound(false, "---", index);
 }
 
-bool TextureManager::Create(const char* name, std::string dir, TEXTURETYPE type)
+bool TextureManager::Create(std::string name, std::string dir, TEXTURETYPE type)
 {
 	if (Get(name,type, true) == nullptr)
 	{
-		//printf("Creating Texture with name: %s.\n", name);
 		Add(new Texture(name, dir), type);
 		return true;
 	}
 
-	printf("Texture already exist with name: %s.\n", name);
+	printf("Texture already exist with name: %s.\n", name.c_str());
 	return false;
+}
+
+void TextureManager::Create(std::vector<std::string> dirs, TEXTURETYPE type)
+{
+	for (int i = 0; i < dirs.size(); i += 2)
+	{
+		Create(dirs[i], dirs[i + 1], type);
+	}
 }
 
 void TextureManager::SetNameList()
@@ -228,10 +227,10 @@ Texture* TextureManager::GetSkyBox()
 	return skyBox;
 }
 
-Texture* TextureManager::NotFound(bool creation, const char* name, int index)
+Texture* TextureManager::NotFound(bool creation, std::string name, int index)
 {
 	if (!creation)
-		printf("Texture Not Found with name: %s, index: %d.\n", name, index);
+		printf("Texture Not Found with name: %s, index: %d.\n", name.c_str(), index);
 
 	return nullptr;
 }
@@ -261,6 +260,39 @@ std::vector<Texture*> TextureManager::GetTextureList(TEXTURETYPE type)
 	default:
 		break;
 	}
+}
+
+void TextureManager::ImportAllTextures()
+{
+	Create(GetAllFiles("..\\Images\\Diffuse\\"), TEXTURETYPE::Diffuse);
+	Create(GetAllFiles("..\\Images\\Specular\\"), TEXTURETYPE::Specular);
+	Create(GetAllFiles("..\\Images\\Normal\\"), TEXTURETYPE::Normal);
+	Create(GetAllFiles("..\\Images\\Ambient\\"), TEXTURETYPE::Ambient);
+	Create(GetAllFiles("..\\Images\\Rough\\"), TEXTURETYPE::Rough);
+}
+
+std::vector<std::string> TextureManager::GetAllFiles(std::string dirType)
+{
+	std::vector<std::string> fileNames;
+	DIR* dir;
+	struct dirent* ent;
+	if ((dir = opendir(dirType.c_str())) != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_name[0] != 46)
+			{
+				fileNames.push_back(ent->d_name);
+				fileNames.push_back(std::string(dirType.c_str()) + ent->d_name);
+			}
+		}
+		closedir(dir);
+	}
+	else {
+		/* could not open directory */
+		perror("");
+	}
+
+	return fileNames;
 }
 
 bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)

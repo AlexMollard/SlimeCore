@@ -1,6 +1,5 @@
 #pragma once
 #include "Material.h"
-#include <vector>
 #include "TextureManager.h"
 
 class MaterialManager

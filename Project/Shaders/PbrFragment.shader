@@ -160,5 +160,5 @@ void main()
     color = pow(color, vec3(1.0 / 2.2));
 
 
-    FragColor = vec4(Tangent, 1.0);
+    FragColor = vec4(color, 1.0);
 }

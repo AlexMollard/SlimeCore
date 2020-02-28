@@ -1,13 +1,9 @@
 #pragma once
 #include "glm.hpp"
-#include "ext.hpp"
-#include "gl_core_4_5.h"
-#include "glfw3.h"
-#include "MaterialManager.h"
-#include "ShaderManager.h"
 #include "Mesh.h"
-#include "Camera.h"
 #include "Types.h"
+#include "Shader.h"
+#include "Material.h"
 
 class GameObject
 {

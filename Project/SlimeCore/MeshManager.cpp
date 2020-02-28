@@ -6,13 +6,10 @@ MeshManager::MeshManager()
 
 MeshManager::~MeshManager()
 {
-	printf("Deleteing MeshManager:\n");
-
 	for (int i = 0; i < meshList.size(); i++)
 	{
 		if (meshList[i] != nullptr)
 		{
-			printf(" - Deleteing mesh: %s.\n", meshList[i]->name);
 			delete meshList[i];
 			meshList[i] = nullptr;
 		}
@@ -70,7 +67,6 @@ bool MeshManager::Create(const char* name, Primitives::TYPE type)
 {
 	if (Get(name, true) == nullptr)
 	{
-		//printf("Creating Mesh with name: %s.\n", name);
 		Add(new Mesh(name));
 		meshList.back()->create(type);
 		return true;

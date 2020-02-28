@@ -7,10 +7,9 @@
 class GameManager
 {
 public:
-	GameManager(Camera* mainCamera);
+	GameManager();
 	~GameManager();
 
-	Camera* camera = nullptr;
 	MaterialManager* materialManager = nullptr;
 	ShaderManager* shaderManager = nullptr;
 	TextureManager* textureManager = nullptr;
