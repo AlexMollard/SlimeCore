@@ -29,9 +29,9 @@ public:
 	Mesh* GetMesh() { return mesh; };
 	Material* GetMaterial() { return mat; };
 	Texture* GetTexture(TEXTURETYPE type);
-	Shader* shader = nullptr;
 	std::string name = "Default GameObject";
 	bool isSkyBox = false;
+	Shader* shader = nullptr;
 protected:
 	glm::vec3 position = glm::vec3(1);
 	glm::vec3 rotation = glm::vec3(1);
