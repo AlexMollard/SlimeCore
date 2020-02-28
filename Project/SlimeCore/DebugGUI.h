@@ -57,5 +57,8 @@ protected:
 
 	std::vector<std::string> ambientList;
 	const char* currentAmbient;
+
+	std::vector<std::string> roughList;
+	const char* currentRough;
 };
 

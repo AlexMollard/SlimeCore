@@ -22,10 +22,11 @@ ObjectManager::~ObjectManager()
 	}
 }
 
-void ObjectManager::Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos)
+GameObject* ObjectManager::Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos)
 {
 	objects.push_back(new GameObject(name, meshManager->Get(meshIndex), matManager->Get(materialIndex), shaderManager->Get(shaderIndex)));
 	objects.back()->SetPos(pos);
+	return objects.back();
 }
 
 void ObjectManager::Create(std::string name, std::string  meshName, std::string materialName, std::string shaderName, glm::vec3 pos)
@@ -40,7 +41,7 @@ void ObjectManager::Create(std::string name, bool isStatic, glm::vec3 pos, glm::
 	go->SetPos(pos);
 	go->SetScale(scale);
 	Add(go);
-	printf("IMGUI just made a object: %s/n", name);
+	std::cout << "IMGUI just made a object: " << name << std::endl;
 }
 
 void ObjectManager::Swap(int objIndex, int vectorPos)
@@ -183,7 +184,6 @@ bool ObjectManager::DebugAll()
 
 bool ObjectManager::Draw()
 {
-	matManager->SetSpotLightPos(glm::vec3(2,1, glm::cos(glfwGetTime())), glm::vec3(glm::cos(glfwGetTime()), 1, 2), glm::vec3(2, 1, 4), glm::vec3(4, glm::cos(glfwGetTime()), -2));
 	matManager->SetDirLightDirection(glm::vec3(glm::cos(glfwGetTime()),-1,-0.3));
 	//std::cout << glfwGetTime() << std::endl;
 	for (int i = 0; i < objects.size(); i++)
@@ -237,6 +237,14 @@ bool ObjectManager::Draw()
 				currentAmbient = objects[i]->GetTexture(TEXTURETYPE::Ambient);
 				glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
 				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Ambient)->textureID);
+			}
+
+			if (objects[i]->GetTexture(TEXTURETYPE::Rough) != currentRough)
+			{
+				objects[i]->shader->setInt("roughTexture", 3);
+				currentRough = objects[i]->GetTexture(TEXTURETYPE::Rough);
+				glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
+				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Rough)->textureID);
 			}
 		}
 

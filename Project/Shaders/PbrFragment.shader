@@ -4,11 +4,14 @@ out vec4 FragColor;
 in vec2 TexCoord;
 in vec3 WorldPos;
 in vec3 Normal;
+in vec3 Tangent;
+in vec3 BiTangent;
 
 uniform sampler2D diffuseTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D ambientTexture;
+uniform sampler2D roughTexture;
 
 uniform vec3 viewPos;
 
@@ -45,15 +48,8 @@ vec3 getNormalFromMap()
 {
 	vec3 tangentNormal = texture(normalTexture, TexCoord).xyz * 2.0 - 1.0;
 
-	vec3 Q1 = dFdx(WorldPos);
-	vec3 Q2 = dFdy(WorldPos);
-	vec2 st1 = dFdx(TexCoord);
-	vec2 st2 = dFdy(TexCoord);
-
 	vec3 N = normalize(Normal);
-	vec3 T = normalize(Q1 * st2.t - Q2 * st1.t);
-	vec3 B = -normalize(cross(N, T));
-	mat3 TBN = mat3(T, B, N);
+	mat3 TBN = mat3(Tangent, BiTangent, N);
 
 	return normalize(TBN * tangentNormal);
 }
@@ -103,9 +99,8 @@ void main()
     vec3 albedo = pow(texture(diffuseTexture, TexCoord).rgb, vec3(2.2));
     float metallic = texture(specularTexture, TexCoord).r;
     float ao = texture(ambientTexture, TexCoord).r;
+    float roughness = texture(roughTexture, TexCoord).r;
 
-    //NEED TO ADD ROGH MAP
-    float roughness = texture(diffuseTexture, TexCoord).r;
 
     vec3 N = getNormalFromMap();
     vec3 V = normalize(viewPos - WorldPos);
@@ -155,7 +150,7 @@ void main()
 
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.1) * albedo * ao;
 
     vec3 color = ambient + Lo;
 
@@ -164,5 +159,6 @@ void main()
     // gamma correct
     color = pow(color, vec3(1.0 / 2.2));
 
-    FragColor = vec4(color, 1.0);
+
+    FragColor = vec4(Tangent, 1.0);
 }

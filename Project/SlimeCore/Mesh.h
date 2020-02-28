@@ -14,6 +14,7 @@ struct Vertex {
 
 						// normal-mapping data
 	glm::vec4 tangent;	// added to attrib location 3
+	glm::vec3 bitangent;	// added to attrib location 4
 };
 
 class Mesh

@@ -51,6 +51,9 @@ void DebugGUI::FirstFrame()
 	ambientList = objManager->textureManager->GetNameList(TEXTURETYPE::Ambient);
 	currentAmbient = ambientList[0].c_str();
 
+	roughList = objManager->textureManager->GetNameList(TEXTURETYPE::Rough);
+	currentRough = roughList[0].c_str();
+
 	meshList = meshManager->GetNames();
 	currentMesh = meshList[1].c_str();
 
@@ -139,10 +142,26 @@ void DebugGUI::MaterialGUI()
 		ImGui::EndCombo();
 	}
 
-	ImGui::InputFloat("Shininess", shininess);
-	ImGui::InputFloat3("Ambient Color", ambColor, 2);
-	ImGui::InputFloat3("Diffuse Color", difColor, 2);
-	ImGui::InputFloat3("Specular Color", specColor, 2);
+	// Rough
+	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, ImVec2(150, 150));
+	ImGui::SameLine(160.0f);
+	ImGui::Text("Rough: ");
+	ImGui::SameLine(240.0f);
+	ImGui::PushItemWidth(150.0f);
+	if (ImGui::BeginCombo("##RoughTexture", currentRough))
+	{
+		for (int n = 0; n < roughList.size(); n++)
+		{
+			bool is_selected = (currentRough == roughList[n].c_str());
+			if (ImGui::Selectable(roughList[n].c_str(), is_selected))
+				currentRough = roughList[n].c_str();
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+
 
 	ImGui::NewLine();
 	ImGui::NewLine();
@@ -151,14 +170,11 @@ void DebugGUI::MaterialGUI()
 	{
 		matManager->Create(
 			matName,
-			*shininess,
-			glm::vec3(ambColor[0], ambColor[1], ambColor[2]),
-			glm::vec3(difColor[0], difColor[1], difColor[2]),
-			glm::vec3(specColor[0], specColor[1], specColor[2]),
 			std::string(currentDiffuse),
 			std::string(currentSpecular),
 			std::string(currentNormal),
-			std::string(currentAmbient)
+			std::string(currentAmbient),
+			std::string(currentRough)
 		);
 		materialList = matManager->GetNames();
 

@@ -10,7 +10,7 @@ public:
 	ObjectManager(MeshManager* meshManager, MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView, glm::vec3* cameraPos);
 	~ObjectManager();
 
-	void Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos = glm::vec3(0));
+	GameObject* Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos = glm::vec3(0));
 	void Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, glm::vec3 pos = glm::vec3(0));
 
 	//ImGUI
@@ -48,6 +48,7 @@ public:
 	Texture* currentSpecular = nullptr;
 	Texture* currentNormal = nullptr;
 	Texture* currentAmbient = nullptr;
+	Texture* currentRough = nullptr;
 	
 	glm::mat4* projectionView;
 	std::vector<const char*> names;

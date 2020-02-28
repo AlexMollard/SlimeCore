@@ -51,6 +51,16 @@ TextureManager::~TextureManager()
 		}
 	}
 
+	for (int i = 0; i < roughList.size(); i++)
+	{
+		if (roughList[i] != nullptr)
+		{
+			printf(" - Deleteing Rough Texture: %s.\n", roughList[i]->name);
+			delete roughList[i];
+			roughList[i] = nullptr;
+		}
+	}
+
 	printf(" - Deleteing Texture: SkyBox");
 	delete skyBox;
 	printf("\n");
@@ -130,6 +140,15 @@ void TextureManager::SetNameList()
 			ambientNames.push_back(ambientList[i]->name);
 		}
 	}
+
+	if (roughList.size() > 0)
+	{
+		roughNames.clear();
+		for (int i = 0; i < roughList.size(); i++)
+		{
+			roughNames.push_back(roughList[i]->name);
+		}
+	}
 }
 
 std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
@@ -151,6 +170,9 @@ std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
 		break;
 	case TEXTURETYPE::SkyBox:
 		printf("There is no skybox vector");
+		break;
+	case TEXTURETYPE::Rough:
+		return roughNames;
 		break;
 	default:
 		break;
@@ -233,6 +255,9 @@ std::vector<Texture*> TextureManager::GetTextureList(TEXTURETYPE type)
 	case TEXTURETYPE::SkyBox:
 		printf("There is no skybox vector");
 		break;
+	case TEXTURETYPE::Rough:
+		return roughList;
+		break;
 	default:
 		break;
 	}
@@ -256,6 +281,9 @@ bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)
 		break;
 	case TEXTURETYPE::SkyBox:
 		skyBox = newTexture;
+		break;
+	case TEXTURETYPE::Rough:
+		roughList.push_back(newTexture);
 		break;
 	default:
 		break;
@@ -292,6 +320,13 @@ bool TextureManager::DebugManager()
 	for (int i = 0; i < ambientList.size(); i++)
 	{
 		std::cout << "  - " << ambientList[i]->name << std::endl;
+	}
+	printf("\n");
+
+	printf(" Rough: \n");
+	for (int i = 0; i < ambientList.size(); i++)
+	{
+		std::cout << "  - " << roughList[i]->name << std::endl;
 	}
 	printf("\n");
 	return true;

@@ -15,8 +15,8 @@ public:
 	Material* NotFound(bool creation, const char* name = "---", int index = 404);
 	bool Add(Material* newMaterial);
 	bool Create(const char* name, Texture* diffuse);
-	bool Create(const char* name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient);
-	void Create(std::string name, float shininess, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, std::string diffuseName, std::string specularName = "none", std::string normalName = "none", std::string ambientName = "none");
+	bool Create(const char* name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough);
+	void Create(std::string name, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName, std::string roughName);
 	int GetIndex(std::string name);
 	void SetNames();
 	std::vector<std::string> GetNames();

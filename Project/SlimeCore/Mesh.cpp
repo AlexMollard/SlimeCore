@@ -81,6 +81,7 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 			newvertices.push_back(prim.normals[i].z);
 		}
 
+		// UVS
 		if (prim.uvs.size() < 1)
 		{
 			newvertices.push_back(0.5);
@@ -89,9 +90,36 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 		}
 		else
 		{
-			// UVS
 			newvertices.push_back(prim.uvs[i].x);
 			newvertices.push_back(prim.uvs[i].y);
+		}
+
+		// Tangents
+		if (prim.tangents.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(prim.tangents[i].x);
+			newvertices.push_back(prim.tangents[i].y);
+			newvertices.push_back(prim.tangents[i].z);
+		}
+
+		// Biangents
+		if (prim.biTangents.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(prim.biTangents[i].x);
+			newvertices.push_back(prim.biTangents[i].y);
+			newvertices.push_back(prim.biTangents[i].z);
 		}
 	}
 
@@ -106,16 +134,24 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, prim.indices.size() * sizeof(unsigned int), prim.indices.data(), GL_STATIC_DRAW);
 
 	// Enable first element as position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// Enable second element as normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	// Enable third element as UVS
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	// Enable third element as Tangents
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	// Enable third element as BiTangents
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+	glEnableVertexAttribArray(4);
 
 	// Unbind buffer
 	glBindVertexArray(0);
@@ -188,6 +224,8 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 			// flip the T / V (might not always be needed, depends on how mesh was made)
 			if (hasTexture)
 				vertices[i].texcoord = glm::vec2(s.mesh.texcoords[i * 2 + 0], flipTextureV ? 1.0f - s.mesh.texcoords[i * 2 + 1] : s.mesh.texcoords[i * 2 + 1]);
+
+		
 		}
 
 		// calculate for normal mapping
@@ -200,17 +238,25 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 		// fill vertex buffer
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
-		// enable first element as positions
+		// Enable first element as position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
-		// enable normals
+		// Enable second element as normals
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)(sizeof(glm::vec3) * 1));
 
-		// enable texture coords
+		// Enable third element as UVS
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec3) * 2));
+
+		// Enable third element as Tangents
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(8 * sizeof(float)));
+		glEnableVertexAttribArray(3);
+
+		// Enable third element as BiTangents
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(12 * sizeof(float)));
+		glEnableVertexAttribArray(4);
 
 		// bind 0 for safety
 		glBindVertexArray(0);
@@ -305,6 +351,8 @@ void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<un
 
 		// Calculate handedness (direction of bitangent)
 		vertices[a].tangent.w = (glm::dot(glm::cross(glm::vec3(n), glm::vec3(t)), glm::vec3(tan2[a])) < 0.0F) ? 1.0F : -1.0F;
+
+		vertices[a].bitangent = glm::cross(n, t);
 	}
 
 	delete[] tan1;

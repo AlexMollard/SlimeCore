@@ -51,12 +51,13 @@ bool MaterialManager::Create(const char* name, Texture* texture)
 	printf("Material already exist with name: %s.\n", name);
 	return false;
 }
-bool MaterialManager::Create(const char* name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient)
+
+bool MaterialManager::Create(const char* name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough)
 {
-	if (Get(name,true) == nullptr)
+	if (Get(name, true) == nullptr)
 	{
 		//printf("Creating Material with name: %s.\n", name);
-		Add(new Material(name, diffuse, specular, normal, ambient));
+		Add(new Material(name, diffuse, specular, normal, ambient, rough));
 		return true;
 	}
 
@@ -64,11 +65,13 @@ bool MaterialManager::Create(const char* name, Texture* diffuse, Texture* specul
 	return false;
 }
 
-void MaterialManager::Create(std::string name, float shininess, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName)
+void MaterialManager::Create(std::string name, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName, std::string roughName)
 {
-	Add(new Material(name.c_str(), textureManager->Get(diffuseName.c_str(), TEXTURETYPE::Diffuse), textureManager->Get(specularName.c_str(), TEXTURETYPE::Specular), textureManager->Get(normalName.c_str(), TEXTURETYPE::Normal), textureManager->Get(ambientName.c_str(), TEXTURETYPE::Ambient)));
-	materialList.back()->setMatAtrributes(ambientColor, diffuseColor, specularColor, shininess);
-	printf("IMGUI just made a material: %s\n", materialList.back()->name);
+	if (Get(name.c_str(), true) == nullptr)
+	{
+		Add(new Material(name.c_str(), textureManager->Get(diffuseName.c_str(), TEXTURETYPE::Diffuse), textureManager->Get(specularName.c_str(), TEXTURETYPE::Specular), textureManager->Get(normalName.c_str(), TEXTURETYPE::Normal), textureManager->Get(ambientName.c_str(), TEXTURETYPE::Ambient), textureManager->Get(roughName.c_str(), TEXTURETYPE::Rough)));
+		std::cout << "IMGUI just made a material: " << name << std::endl;
+	}
 }
 
 int MaterialManager::GetIndex(std::string name)

@@ -20,9 +20,12 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> triangles;
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> biTangents;
 	std::vector<glm::vec2> uvs;
 	glm::vec3 calculateFaceNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c);
 	std::vector<glm::vec3> CalculateVertNormals(std::vector<glm::vec3>& vertices, std::vector<unsigned int>& indices);
+	void CalculateTangents();
 };
 
 

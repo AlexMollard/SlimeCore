@@ -8,13 +8,15 @@
 class Material
 {
 public:
-	Material(const char* name, Texture* diffuse, Texture* specMap = nullptr, Texture* normalMap = nullptr, Texture* ambientMap = nullptr);
+	Material(const char* name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap);
+	Material(const char* name, Texture* diffuse);
 	virtual ~Material();
 
 	Texture* GetDiffuse();
 	Texture* GetSpecMap();
 	Texture* GetNormalMap();
-	Texture* GetSpecColorMap();
+	Texture* GetAmbientMap();
+	Texture* GetRoughMap();
 
 	std::string name = "DefaultName";
 
@@ -44,7 +46,7 @@ public:
 		float lightLinear = 0.09f;
 		float lightQuadratic = 0.032f;
 
-		void SetLightAttributes(glm::vec3 newAmbient = glm::vec3(0.2f), glm::vec3 newDiffuse = glm::vec3(0.5f), glm::vec3 newSpecular = glm::vec3(1.0f), float newConstant = 1.0f, float newLinear = 0.09f, float newQuadratic = 0.032f);
+		void SetLightAttributes(glm::vec3 newAmbient = glm::vec3(0.2f), glm::vec3 newDiffuse = glm::vec3(1.0f), glm::vec3 newSpecular = glm::vec3(1.0f), float newConstant = 1.0f, float newLinear = 0.09f, float newQuadratic = 0.032f);
 		void SetLightPosition(glm::vec3 newLightPos) { lightPosition = newLightPos; }
 		void SetLightAmbient(glm::vec3 newAmbient) { lightAmbient = newAmbient; }
 		void SetLightDiffuse(glm::vec3 newDiffuse) { lightDiffuse = newDiffuse; }
@@ -73,10 +75,12 @@ public:
 	bool hasSpecMap = false;
 	bool hasNormalMap = false;
 	bool hasSpecColorMap = false;
+	bool hasRoughMap = false;
 
 protected:
 	Texture* diffuse = nullptr;
 	Texture* specMap = nullptr;
 	Texture* normalMap = nullptr;
-	Texture* specColorMap = nullptr;
+	Texture* ambientMap = nullptr;
+	Texture* roughMap = nullptr;
 };

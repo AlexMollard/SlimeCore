@@ -1,6 +1,6 @@
 #include "Material.h"
 
-Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* specColorMap)
+Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap)
 {
 	this->name = name;
 
@@ -14,9 +14,28 @@ Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture
 		hasNormalMap = true;
 	this->normalMap = normalMap;
 
-	if (specColorMap)
+	if (ambientMap)
 		hasSpecColorMap = true;
-	this->specColorMap = specColorMap;
+	this->ambientMap = ambientMap;
+
+	if (ambientMap)
+		hasRoughMap = true;
+	this->roughMap = roughMap;
+
+	setMatAtrributes();
+	pointLights->SetLightAttributes();
+	SetDirectionalLightAttributes();
+}
+
+Material::Material(const char* name, Texture* diffuse)
+{
+	this->name = name;
+
+	this->diffuse = diffuse;
+	this->specMap = nullptr;
+	this->normalMap = nullptr;
+	this->ambientMap = nullptr;
+	this->roughMap = nullptr;
 
 	setMatAtrributes();
 	pointLights->SetLightAttributes();
@@ -78,10 +97,18 @@ Texture* Material::GetNormalMap()
 	return nullptr;
 }
 
-Texture* Material::GetSpecColorMap()
+Texture* Material::GetAmbientMap()
 {
-	if (specColorMap != nullptr)
-		return specColorMap;
+	if (ambientMap != nullptr)
+		return ambientMap;
+
+	return nullptr;
+}
+
+Texture* Material::GetRoughMap()
+{
+	if (roughMap != nullptr)
+		return roughMap;
 
 	return nullptr;
 }

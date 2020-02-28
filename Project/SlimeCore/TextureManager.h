@@ -40,6 +40,9 @@ protected:
 	std::vector<Texture*> ambientList;
 	std::vector<std::string> ambientNames;
 
+	std::vector<Texture*> roughList;
+	std::vector<std::string> roughNames;
+
 	Texture* skyBox;
 	unsigned int skyboxID = 0;
 };
