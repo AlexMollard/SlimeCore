@@ -21,8 +21,19 @@ void DebugGUI::Render()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	ObjectGUI();
-	MaterialGUI();
+	MainMenuBar();
+
+	if (objectWindowVisable)
+		ObjectGUI();
+	
+	if (materialWindowVisable)
+		MaterialGUI();
+
+	if (profilerVisable)
+		ProfilerGUI();
+
+	if (hierarchyWindowVisable)
+		HierarchyGUI();
 
 	// Render dear imgui into screen
 	ImGui::Render();
@@ -31,7 +42,11 @@ void DebugGUI::Render()
 
 void DebugGUI::FirstFrame()
 {
-	objManager->SetNamesVector();
+	for (int i = 0; i < 500; i++)
+	{
+		lines[i] = 0;
+
+	};
 
 	staticBool = new bool();
 	shadowCastBool = new bool();
@@ -59,11 +74,46 @@ void DebugGUI::FirstFrame()
 
 	materialList = matManager->GetNames();
 	currentMaterial = materialList[0].c_str();
+
+	objectList = objManager->GetNameVector();
+	currentObject = 0;
+}
+
+void DebugGUI::MainMenuBar()
+{
+	ImGui::BeginMainMenuBar();
+
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::MenuItem("New Scene", "CTRL+N")) {}
+		if (ImGui::MenuItem("Open Scene", "CTRL+O")) {}
+		if (ImGui::MenuItem("Save Scene", "CTRL+S")) {}
+
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("View"))
+	{
+		if (ImGui::MenuItem("Profiler", "", profilerVisable))
+			profilerVisable = (profilerVisable ? false : true);
+
+		if (ImGui::MenuItem("Hierarchy", "", hierarchyWindowVisable))
+			hierarchyWindowVisable = (hierarchyWindowVisable ? false : true);
+
+		if (ImGui::MenuItem("Create GameObject","", objectWindowVisable))
+			objectWindowVisable = (objectWindowVisable ? false : true);
+
+		if (ImGui::MenuItem("Create Material","", materialWindowVisable))
+			materialWindowVisable = (materialWindowVisable ? false : true);
+		
+		ImGui::EndMenu();
+	}
+
+	ImGui::EndMainMenuBar();
 }
 
 void DebugGUI::MaterialGUI()
 {
-	ImGui::Begin("Create Material");
+	ImGui::Begin("Create Material", &materialWindowVisable);
 	ImGui::InputText("Name", matNameCharP, sizeof(char) * 32);
 
 	//Diffuse
@@ -85,12 +135,15 @@ void DebugGUI::MaterialGUI()
 		ImGui::EndCombo();
 	}
 
+	int i;
 	// Specular
 	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, ImVec2(150, 150));
 	ImGui::SameLine(160.0f);
 	ImGui::Text("Specular: ");
 	ImGui::SameLine(240.0f);
 	ImGui::PushItemWidth(150.0f);
+	ImGui::SliderInt("Strength",&i,0,255);
+	ImGui::SameLine(240.0f);
 	if (ImGui::BeginCombo("##SpecularTexture", currentSpecular))
 	{
 		for (int n = 0; n < specularList.size(); n++)
@@ -186,7 +239,7 @@ void DebugGUI::MaterialGUI()
 
 void DebugGUI::ObjectGUI()
 {
-	ImGui::Begin("Create Object");
+	ImGui::Begin("Create Object", &objectWindowVisable);
 
 	ImGui::InputText("Name", objNameCharP, sizeof(char) * 32);
 	ImGui::Checkbox("Static", staticBool);
@@ -254,4 +307,109 @@ void DebugGUI::ObjectGUI()
 	}
 	ImGui::End();
 
+}
+
+void DebugGUI::ProfilerGUI()
+{
+	ImGui::Begin("Profiler window", &profilerVisable);
+	ImGui::Text("FrameRate: %.3f ms/frame (%.1f FPS)",
+		1000.0f / ImGui::GetIO().Framerate,
+		ImGui::GetIO().Framerate);
+
+	lines[499] = ImGui::GetIO().Framerate;
+	for (int n = 0; n < 499; n++)
+		lines[n] = lines[n + 1];
+	ImGui::PlotLines("FrameRate", lines, 500);
+
+	ImGui::End();
+}
+
+void DebugGUI::HierarchyGUI()
+{
+	ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
+	if (ImGui::Begin("Hierarchy"))
+	{
+		// left
+		ImGui::BeginChild("left pane", ImVec2(150, 0), true);
+		
+		if (ImGui::IsMouseHoveringWindow())
+		{
+			if (ImGui::IsMouseClicked(1))
+			{
+				ImGui::OpenPopup("HierarchyOptions");
+			}
+		}
+		if (ImGui::BeginPopup("HierarchyOptions"))
+		{
+			if (ImGui::MenuItem("Duplicate")){}
+
+			if (ImGui::MenuItem("Delete")){}
+
+			ImGui::Separator();
+			
+			if (ImGui::MenuItem("Create Prefab")){}
+
+			ImGui::Separator();
+			if (ImGui::MenuItem("Create Empty")){}
+
+			if (ImGui::BeginMenu("3D Object"))
+			{
+				if (ImGui::MenuItem("Cube")){};
+
+				if (ImGui::MenuItem("Plane")){};
+
+				if (ImGui::MenuItem("Cylinder")){};
+
+				if (ImGui::BeginMenu("Light"))
+				{
+					if (ImGui::MenuItem("Directional Light")){}
+					if (ImGui::MenuItem("Point Light")) {}
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndPopup();
+		}
+		
+		for (int i = 0; i < objectList.size(); i++)
+		{
+			if (ImGui::Selectable(objectList[i].c_str(), currentObject == i))
+				currentObject = i;
+		}
+		ImGui::EndChild();
+		ImGui::SameLine();
+
+		// right
+		ImGui::BeginGroup();
+		ImGui::BeginChild("Object view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));
+		ImGui::Text(std::string(objectList[currentObject]).c_str());
+		ImGui::Separator();
+		if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+		{
+			if (ImGui::BeginTabItem("Description"))
+			{
+				ImGui::Text("THIS IS A WORK IN PROGESS...");
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem("Details"))
+			{
+				ImGui::Text(objectList[currentObject].c_str());
+
+				glm::vec3 cPos = objManager->Get(currentObject)->GetPos();
+				std::string pos[3] = { std::to_string(cPos.x),std::to_string(cPos.y),std::to_string(cPos.z) };
+				std::string finalPos = ("x: " + pos[0] + " y: " + pos[1] + " z: " + pos[2]);
+				ImGui::Text(finalPos.c_str());
+
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
+		}
+		ImGui::EndChild();
+		if (ImGui::Button("Revert")) {}
+		ImGui::SameLine();
+		if (ImGui::Button("Save")) {}
+		ImGui::EndGroup();
+	}
+	ImGui::End();
 }

@@ -155,8 +155,9 @@ void ObjectManager::SetNamesVector()
 	textureManager->SetNameList();
 }
 
-std::vector<const char*> ObjectManager::GetNameVector()
+std::vector<std::string> ObjectManager::GetNameVector()
 {
+	SetNamesVector();
 	return names;
 }
 

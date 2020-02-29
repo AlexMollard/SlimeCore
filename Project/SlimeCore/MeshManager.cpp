@@ -14,7 +14,6 @@ MeshManager::~MeshManager()
 			meshList[i] = nullptr;
 		}
 	}
-	printf("\n");
 }
 
 Mesh* MeshManager::Get(const char* name, bool creation)

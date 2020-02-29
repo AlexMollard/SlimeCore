@@ -28,7 +28,7 @@ public:
 	std::vector<GameObject*> GetVector(int start, int end);
 
 	void SetNamesVector();
-	std::vector<const char*> GetNameVector();
+	std::vector<std::string> GetNameVector();
 
 	bool DebugManager();
 	bool DebugAll();
@@ -51,6 +51,6 @@ public:
 	Texture* currentRough = nullptr;
 	
 	glm::mat4* projectionView;
-	std::vector<const char*> names;
+	std::vector<std::string> names;
 	glm::vec3* camPos;
 };

@@ -29,25 +29,13 @@ int main()
 	shaderManager->Create("pbrShader", "..\\Shaders\\PbrVertex.shader", "..\\Shaders\\PbrFragment.shader");
 	shaderManager->Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
 	
-	//Skybox
-	std::vector<std::string> faces
-	{
-		"..\\Images\\SkyBox\\right.png",
-		"..\\Images\\SkyBox\\left.png",
-		"..\\Images\\SkyBox\\top.png",
-		"..\\Images\\SkyBox\\bottom.png",
-		"..\\Images\\SkyBox\\front.png",
-		"..\\Images\\SkyBox\\back.png"
-	};
-	textureManager->CreateSkyBox(faces);
-	
+	// Textures
+	textureManager->CreateSkyBox("..\\Images\\SkyBox\\");
 	textureManager->ImportAllTextures();
 
 	// Materials
 	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Diffuse));
-	materialManager->Create("grassMat", textureManager->Get(0, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient), textureManager->Get(0, TEXTURETYPE::Rough));
 	materialManager->Create("waterMat", textureManager->Get(1, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient), textureManager->Get(0, TEXTURETYPE::Rough));
-	materialManager->Create("dirtMat", textureManager->Get(2, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient), textureManager->Get(0, TEXTURETYPE::Rough));
 	materialManager->Create("lightMat", textureManager->Get(3, TEXTURETYPE::Diffuse));
 
 	// Meshes
@@ -56,14 +44,12 @@ int main()
 
 	// Objects
 	objectManager->Create("SkyBox", 0, 0, 0);
-	objectManager->Create("Block", 1, 2, 2);
+	objectManager->Create("Block", 1, 1, 2);
 
 	GameObject* lights[4];
 
-	lights[0] = objectManager->Create("Light1", 1, 4, 3, glm::vec3(3));
-	lights[1] = objectManager->Create("Light2", 1, 4, 3, glm::vec3(3));
-	lights[2] = objectManager->Create("Light3", 1, 4, 3, glm::vec3(3));
-	lights[3] = objectManager->Create("Light4", 1, 4, 3, glm::vec3(3));
+	for (int i = 0; i < 4; i++)
+		lights[i] = objectManager->Create(std::string("Light") + std::to_string(i), 1, 2, 3, glm::vec3(3));
 
 	for (int i = 0; i < 4; i++)
 	{

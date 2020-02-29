@@ -14,7 +14,6 @@ ShaderManager::~ShaderManager()
 			shaderList[i] = nullptr;
 		}
 	}
-	printf("\n");
 }
 
 Shader* ShaderManager::Get(const char* name, bool creation)

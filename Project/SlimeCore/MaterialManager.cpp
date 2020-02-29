@@ -16,7 +16,6 @@ MaterialManager::~MaterialManager()
 			materialList[i] = nullptr;
 		}
 	}
-	printf("\n");
 }
 
 Material* MaterialManager::Get(const char* name, bool creation)

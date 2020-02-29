@@ -55,7 +55,6 @@ TextureManager::~TextureManager()
 	}
 
 	delete skyBox;
-	printf("\n");
 }
 
 Texture* TextureManager::Get(std::string name, TEXTURETYPE type, bool creation)
@@ -190,8 +189,16 @@ int TextureManager::GetTextureIndex(std::string name, TEXTURETYPE type)
 	return 0;
 }
 
-unsigned int TextureManager::CreateSkyBox(std::vector<std::string> faces)
+unsigned int TextureManager::CreateSkyBox(std::string facesDIR)
 {
+	std::vector<std::string> dirs = GetAllFiles(facesDIR);
+	std::vector<std::string> faces;
+
+	for (int i = 0; i < dirs.size(); i+=2)
+	{
+		faces.push_back(dirs[i + 1]);
+	}
+
 		glGenTextures(1, &skyboxID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 
@@ -288,7 +295,6 @@ std::vector<std::string> TextureManager::GetAllFiles(std::string dirType)
 		closedir(dir);
 	}
 	else {
-		/* could not open directory */
 		perror("");
 	}
 

@@ -11,18 +11,28 @@ public:
 	void Render();
 	void FirstFrame();
 
+	void MainMenuBar();
 	void MaterialGUI();
 	void ObjectGUI();
+	void ProfilerGUI();
+	void HierarchyGUI();
 
 protected:
 	ObjectManager* objManager = nullptr;
 	MeshManager* meshManager = nullptr;
 	MaterialManager* matManager = nullptr;
 
+	bool objectWindowVisable = false;
+	bool materialWindowVisable = false;
+	bool hierarchyWindowVisable = false;
+	bool profilerVisable = false;
+
+
 	//Debug Vars
 	float pos[3] = { 0,0,0 };
 	float rot[4] = { 0,0,0,0 };
 	float scale[3] = { 1,1,1 };
+	float lines[500];
 
 	std::string objName = "Testing";
 	char* objNameCharP = nullptr;
@@ -35,6 +45,10 @@ protected:
 
 	std::vector<std::string> materialList;
 	const char* currentMaterial;
+
+	std::vector<std::string> objectList;
+	int currentObject = 1;
+
 
 
 	// Material tab

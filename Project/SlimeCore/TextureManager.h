@@ -27,7 +27,7 @@ public:
 	std::vector<std::string> GetNameList(TEXTURETYPE type);
 	int GetTextureIndex(std::string name, TEXTURETYPE type);
 
-	unsigned int CreateSkyBox(std::vector<std::string> faces);
+	unsigned int CreateSkyBox(std::string facesDIR);
 	Texture* GetSkyBox();
 
 	bool DebugManager();
