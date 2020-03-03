@@ -99,6 +99,9 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 	case TEXTURETYPE::SkyBox:
 		printf("There is no skybox vector");
 		break;
+	case TEXTURETYPE::Rough:
+		return mat->GetRoughMap();
+		break;
 	default:
 		break;
 	}

@@ -14,7 +14,7 @@ DebugGUI::~DebugGUI()
 	delete shininess;
 }
 
-void DebugGUI::Render()
+void DebugGUI::Render(float deltaTime)
 {
 	// feed inputs to dear imgui, start new frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -30,7 +30,7 @@ void DebugGUI::Render()
 		MaterialGUI();
 
 	if (profilerVisable)
-		ProfilerGUI();
+		ProfilerGUI(deltaTime);
 
 	if (hierarchyWindowVisable)
 		HierarchyGUI();
@@ -42,7 +42,7 @@ void DebugGUI::Render()
 
 void DebugGUI::FirstFrame()
 {
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		lines[i] = 0;
 
@@ -115,14 +115,15 @@ void DebugGUI::MaterialGUI()
 {
 	ImGui::Begin("Create Material", &materialWindowVisable);
 	ImGui::InputText("Name", matNameCharP, sizeof(char) * 32);
+	int i = 0;
 
 	//Diffuse
 	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->textureID, ImVec2(150, 150));
 	ImGui::SameLine(160.0f);
+	ImGui::BeginGroup();
 	ImGui::Text("Diffuse: ");
-	ImGui::SameLine(240.0f);
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("##DiffuseTexture", currentDiffuse))
+	if (ImGui::BeginCombo("Texture", currentDiffuse))
 	{
 		for (int n = 0; n < diffuseList.size(); n++)
 		{
@@ -134,17 +135,16 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
+	ImGui::SliderInt("Strength", &i, 0, 255);
+	ImGui::EndGroup();
 
-	int i;
 	// Specular
 	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, ImVec2(150, 150));
 	ImGui::SameLine(160.0f);
+	ImGui::BeginGroup();
 	ImGui::Text("Specular: ");
-	ImGui::SameLine(240.0f);
 	ImGui::PushItemWidth(150.0f);
-	ImGui::SliderInt("Strength",&i,0,255);
-	ImGui::SameLine(240.0f);
-	if (ImGui::BeginCombo("##SpecularTexture", currentSpecular))
+	if (ImGui::BeginCombo("Texture", currentSpecular))
 	{
 		for (int n = 0; n < specularList.size(); n++)
 		{
@@ -156,14 +156,16 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
+	ImGui::SliderInt("Strength",&i,0,255);
+	ImGui::EndGroup();
 
 	// Normal
 	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->textureID, ImVec2(150, 150));
 	ImGui::SameLine(160.0f);
+	ImGui::BeginGroup();
 	ImGui::Text("Normal: ");
-	ImGui::SameLine(240.0f);
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("##NormalTexture", currentNormal))
+	if (ImGui::BeginCombo("Texture", currentNormal))
 	{
 		for (int n = 0; n < normalList.size(); n++)
 		{
@@ -175,14 +177,17 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
+	ImGui::SliderInt("Strength", &i, 0, 255);
+
+	ImGui::EndGroup();
 
 	// Ambient
 	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->textureID, ImVec2(150, 150));
 	ImGui::SameLine(160.0f);
+	ImGui::BeginGroup();
 	ImGui::Text("Ambient: ");
-	ImGui::SameLine(240.0f);
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("##AmbientTexture", currentAmbient))
+	if (ImGui::BeginCombo("Texture", currentAmbient))
 	{
 		for (int n = 0; n < ambientList.size(); n++)
 		{
@@ -194,14 +199,17 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
+	ImGui::SliderInt("Strength", &i, 0, 255);
+
+	ImGui::EndGroup();
 
 	// Rough
 	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, ImVec2(150, 150));
 	ImGui::SameLine(160.0f);
+	ImGui::BeginGroup();
 	ImGui::Text("Rough: ");
-	ImGui::SameLine(240.0f);
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("##RoughTexture", currentRough))
+	if (ImGui::BeginCombo("Texture", currentRough))
 	{
 		for (int n = 0; n < roughList.size(); n++)
 		{
@@ -213,7 +221,9 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
+	ImGui::SliderInt("Strength", &i, 0, 255);
 
+	ImGui::EndGroup();
 
 
 	ImGui::NewLine();
@@ -295,7 +305,7 @@ void DebugGUI::ObjectGUI()
 	if (ImGui::Button("CREATE", ImVec2(200, 50)))
 	{
 		objManager->Create(
-			objName,
+			objNameCharP,
 			staticBool,
 			glm::vec3(pos[0], pos[1], pos[2]),
 			glm::vec4(rot[0], rot[1], rot[2], rot[3]),
@@ -304,22 +314,47 @@ void DebugGUI::ObjectGUI()
 			currentMaterial
 		);
 
+		objectList = objManager->GetNameVector();
+
 	}
 	ImGui::End();
 
 }
 
-void DebugGUI::ProfilerGUI()
+void DebugGUI::ProfilerGUI(float deltaTime)
 {
 	ImGui::Begin("Profiler window", &profilerVisable);
+
 	ImGui::Text("FrameRate: %.3f ms/frame (%.1f FPS)",
 		1000.0f / ImGui::GetIO().Framerate,
 		ImGui::GetIO().Framerate);
 
-	lines[499] = ImGui::GetIO().Framerate;
-	for (int n = 0; n < 499; n++)
-		lines[n] = lines[n + 1];
-	ImGui::PlotLines("FrameRate", lines, 500);
+	timerDelay += deltaTime;
+	if (timerDelay > 1.0f)
+	{
+		lines[59] = ImGui::GetIO().Framerate;
+			smallest = 10000.0f;
+			largest = 0.0f;
+
+		for (int n = 0; n < 59; n++)
+		{
+			lines[n] = lines[n + 1];
+
+			if (lines[n] < smallest)
+			{
+				smallest = lines[n];
+			}
+			
+			if (lines[n] > largest)
+			{
+				largest = lines[n];
+			}
+
+		}
+		timerDelay = 0.0f;
+	}
+
+	ImGui::PlotLines("FrameRate", lines, 60, 0, (const char*)0, smallest, largest, ImVec2(ImGui::GetWindowWidth(), 100));
 
 	ImGui::End();
 }
@@ -327,7 +362,7 @@ void DebugGUI::ProfilerGUI()
 void DebugGUI::HierarchyGUI()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
-	if (ImGui::Begin("Hierarchy"))
+	if (ImGui::Begin("Hierarchy",&hierarchyWindowVisable))
 	{
 		// left
 		ImGui::BeginChild("left pane", ImVec2(150, 0), true);
@@ -390,6 +425,22 @@ void DebugGUI::HierarchyGUI()
 			if (ImGui::BeginTabItem("Description"))
 			{
 				ImGui::Text("THIS IS A WORK IN PROGESS...");
+				ImVec2 imageSize = ImVec2(75,75);
+				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Diffuse) != nullptr)
+					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Diffuse)->textureID, imageSize);
+				ImGui::SameLine();
+				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Specular) != nullptr)
+					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Specular)->textureID, imageSize);
+				ImGui::SameLine();
+				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Normal) != nullptr)
+					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Normal)->textureID, imageSize);
+				ImGui::SameLine();
+				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Ambient) != nullptr)
+					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Ambient)->textureID, imageSize);
+				ImGui::SameLine();
+				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Rough) != nullptr)
+					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Rough)->textureID, imageSize);
+
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem("Details"))
@@ -406,9 +457,7 @@ void DebugGUI::HierarchyGUI()
 			ImGui::EndTabBar();
 		}
 		ImGui::EndChild();
-		if (ImGui::Button("Revert")) {}
-		ImGui::SameLine();
-		if (ImGui::Button("Save")) {}
+
 		ImGui::EndGroup();
 	}
 	ImGui::End();

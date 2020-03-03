@@ -8,13 +8,13 @@ class DebugGUI
 public:
 	DebugGUI(ObjectManager* objManager, MeshManager* meshManager);
 	~DebugGUI();
-	void Render();
+	void Render(float deltaTime);
 	void FirstFrame();
 
 	void MainMenuBar();
 	void MaterialGUI();
 	void ObjectGUI();
-	void ProfilerGUI();
+	void ProfilerGUI(float deltaTime);
 	void HierarchyGUI();
 
 protected:
@@ -27,12 +27,14 @@ protected:
 	bool hierarchyWindowVisable = false;
 	bool profilerVisable = false;
 
-
+	float timerDelay = 0.0f;
+	float smallest = 1000.0f;
+	float largest = 0.0f;
 	//Debug Vars
 	float pos[3] = { 0,0,0 };
 	float rot[4] = { 0,0,0,0 };
 	float scale[3] = { 1,1,1 };
-	float lines[500];
+	float lines[60];
 
 	std::string objName = "Testing";
 	char* objNameCharP = nullptr;

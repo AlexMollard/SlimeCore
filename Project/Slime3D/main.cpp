@@ -41,11 +41,11 @@ int main()
 	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
 	meshManager->Create("Cube", Primitives::Cube);
+	meshManager->Create("Model", "..\\models\\stan.obj");
 
 	// Objects
 	objectManager->Create("SkyBox", 0, 0, 0);
 	objectManager->Create("Block", 1, 1, 2);
-
 	GameObject* lights[4];
 
 	for (int i = 0; i < 4; i++)
@@ -76,7 +76,7 @@ int main()
 		objectManager->Draw();
 
 		// Draw Gui
-		debugGui->Render();
+		debugGui->Render(deltaTime);
 
 		// Update callbacks ect.
 		app->Update();
