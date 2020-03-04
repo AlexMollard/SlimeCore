@@ -53,5 +53,7 @@ Texture::Texture(std::string name)
 
 Texture::~Texture()
 {
-
+	if (textureID != 0)
+		glDeleteTextures(1, &textureID);
+	textureID = 0;
 }
