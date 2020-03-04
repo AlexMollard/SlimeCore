@@ -13,6 +13,7 @@ public:
 	Shader* NotFound(bool creation, const char* name = "---", int index = 404);
 	bool Add(Shader* newShader);
 	bool Create(const char* name, const char* vertex, const char* fragment);
+	bool Create(const char* name);
 
 	void SetNames();
 	std::vector<std::string> GetNames();

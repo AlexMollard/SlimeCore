@@ -46,6 +46,11 @@ Texture::Texture(std::string name, unsigned int* id)
 	this->textureID = *id;
 }
 
+Texture::Texture(std::string name)
+{
+	this->name = name;
+}
+
 Texture::~Texture()
 {
 

@@ -13,10 +13,9 @@ public:
 
 	void MainMenuBar();
 	void MaterialGUI();
-	void ObjectGUI();
 	void ProfilerGUI(float deltaTime);
 	void HierarchyGUI();
-	void ShowDummyObject(const char* prefix, int uid);
+	void ShowChildObject(const char* prefix, int uid);
 
 protected:
 	ObjectManager* objManager = nullptr;
@@ -24,7 +23,6 @@ protected:
 	MaterialManager* matManager = nullptr;
 	ShaderManager* shaderManager = nullptr;
 
-	bool objectWindowVisable = false;
 	bool materialWindowVisable = false;
 	bool hierarchyWindowVisable = false;
 	bool profilerVisable = false;
@@ -69,17 +67,22 @@ protected:
 
 	std::vector<std::string> diffuseList;
 	const char* currentDiffuse;
+	float diffuseStrength = 1;
 
 	std::vector<std::string> specularList;
 	const char* currentSpecular;
+	float specularStrength = 1;
 
 	std::vector<std::string> normalList;
 	const char* currentNormal;
+	float normalStrength = 1;
 
 	std::vector<std::string> ambientList;
 	const char* currentAmbient;
+	float ambientStrength = 1;
 
 	std::vector<std::string> roughList;
 	const char* currentRough;
+	float roughStrength = 1;
 };
 

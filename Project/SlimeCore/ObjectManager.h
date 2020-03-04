@@ -14,7 +14,7 @@ public:
 	GameObject* Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos = glm::vec3(0));
 
 	//ImGUI
-	void Create(std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName);
+	void Create(GameObject* parent);
 	void SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName);
 	
 	void Swap(int objIndex, int vectorPos);

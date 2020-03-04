@@ -5,13 +5,14 @@
 #include <iostream>
 TextureManager::TextureManager()
 {
+	Create("None");
 }
 
 TextureManager::~TextureManager()
 {
 	for (int i = 0; i < diffuseList.size(); i++)
 	{
-		if (diffuseList[i] != nullptr)
+		if (diffuseList[i] != nullptr && diffuseList[i]->name != "None")
 		{
 			delete diffuseList[i];
 			diffuseList[i] = nullptr;
@@ -20,7 +21,7 @@ TextureManager::~TextureManager()
 
 	for (int i = 0; i < specularList.size(); i++)
 	{
-		if (specularList[i] != nullptr)
+		if (specularList[i] != nullptr && specularList[i]->name != "None")
 		{
 			delete specularList[i];
 			specularList[i] = nullptr;
@@ -29,7 +30,7 @@ TextureManager::~TextureManager()
 
 	for (int i = 0; i < normalList.size(); i++)
 	{
-		if (normalList[i] != nullptr)
+		if (normalList[i] != nullptr && normalList[i]->name != "None")
 		{
 			delete normalList[i];
 			normalList[i] = nullptr;
@@ -38,7 +39,7 @@ TextureManager::~TextureManager()
 
 	for (int i = 0; i < ambientList.size(); i++)
 	{
-		if (ambientList[i] != nullptr)
+		if (ambientList[i] != nullptr && ambientList[i]->name != "None")
 		{
 			delete ambientList[i];
 			ambientList[i] = nullptr;
@@ -47,7 +48,7 @@ TextureManager::~TextureManager()
 
 	for (int i = 0; i < roughList.size(); i++)
 	{
-		if (roughList[i] != nullptr)
+		if (roughList[i] != nullptr && roughList[i]->name != "None")
 		{
 			delete roughList[i];
 			roughList[i] = nullptr;
@@ -99,6 +100,16 @@ void TextureManager::Create(std::vector<std::string> dirs, TEXTURETYPE type)
 	{
 		Create(dirs[i], dirs[i + 1], type);
 	}
+}
+
+void TextureManager::Create(std::string name)
+{
+	Texture* tex = new Texture("None");
+	diffuseList.push_back(tex);
+	specularList.push_back(tex);
+	normalList.push_back(tex);
+	ambientList.push_back(tex);
+	roughList.push_back(tex);
 }
 
 void TextureManager::SetNameList()

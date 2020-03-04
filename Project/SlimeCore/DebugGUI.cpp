@@ -23,9 +23,6 @@ void DebugGUI::Render(float deltaTime)
 	ImGui::NewFrame();
 
 	MainMenuBar();
-
-	if (objectWindowVisable)
-		ObjectGUI();
 	
 	if (materialWindowVisable)
 		MaterialGUI();
@@ -46,7 +43,6 @@ void DebugGUI::FirstFrame()
 	for (int i = 0; i < 30; i++)
 	{
 		lines[i] = 0;
-
 	};
 
 	staticBool = new bool();
@@ -103,9 +99,6 @@ void DebugGUI::MainMenuBar()
 		if (ImGui::MenuItem("Hierarchy", "", hierarchyWindowVisable))
 			hierarchyWindowVisable = (hierarchyWindowVisable ? false : true);
 
-		if (ImGui::MenuItem("Create GameObject","", objectWindowVisable))
-			objectWindowVisable = (objectWindowVisable ? false : true);
-
 		if (ImGui::MenuItem("Create Material","", materialWindowVisable))
 			materialWindowVisable = (materialWindowVisable ? false : true);
 		
@@ -119,15 +112,17 @@ void DebugGUI::MaterialGUI()
 {
 	ImGui::Begin("Create Material", &materialWindowVisable);
 	ImGui::InputText("Name", matNameCharP, sizeof(char) * 32);
-	int i = 0;
+	
+	ImVec2 materialImageSize = ImVec2(100,100);
+	float optionsOffSet = 120.0f;
 
 	//Diffuse
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->textureID, ImVec2(150, 150));
-	ImGui::SameLine(160.0f);
+	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->textureID, materialImageSize);
+	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Diffuse: ");
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("Texture", currentDiffuse))
+	if (ImGui::BeginCombo("DiffuseTexture", currentDiffuse))
 	{
 		for (int n = 0; n < diffuseList.size(); n++)
 		{
@@ -139,16 +134,16 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::SliderInt("Strength", &i, 0, 255);
+	ImGui::SliderFloat("DiffuseStrength", &diffuseStrength, 0, 1);
 	ImGui::EndGroup();
 
 	// Specular
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, ImVec2(150, 150));
-	ImGui::SameLine(160.0f);
+	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, materialImageSize);
+	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Specular: ");
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("Texture", currentSpecular))
+	if (ImGui::BeginCombo("SpecularTexture", currentSpecular))
 	{
 		for (int n = 0; n < specularList.size(); n++)
 		{
@@ -160,16 +155,16 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::SliderInt("Strength",&i,0,255);
+	ImGui::SliderFloat("SpecularStrength",&specularStrength,0,1);
 	ImGui::EndGroup();
 
 	// Normal
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->textureID, ImVec2(150, 150));
-	ImGui::SameLine(160.0f);
+	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->textureID, materialImageSize);
+	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Normal: ");
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("Texture", currentNormal))
+	if (ImGui::BeginCombo("NormalTexture", currentNormal))
 	{
 		for (int n = 0; n < normalList.size(); n++)
 		{
@@ -181,17 +176,17 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::SliderInt("Strength", &i, 0, 255);
-
+	ImGui::SliderFloat("NormalStrength", &normalStrength, 0, 1);
 	ImGui::EndGroup();
 
+
 	// Ambient
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->textureID, ImVec2(150, 150));
-	ImGui::SameLine(160.0f);
+	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->textureID, materialImageSize);
+	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Ambient: ");
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("Texture", currentAmbient))
+	if (ImGui::BeginCombo("AmbientTexture", currentAmbient))
 	{
 		for (int n = 0; n < ambientList.size(); n++)
 		{
@@ -203,17 +198,17 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::SliderInt("Strength", &i, 0, 255);
-
+	ImGui::SliderFloat("AmbientStrength", &ambientStrength, 0, 1);
 	ImGui::EndGroup();
 
+
 	// Rough
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, ImVec2(150, 150));
-	ImGui::SameLine(160.0f);
+	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, materialImageSize);
+	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Rough: ");
 	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("Texture", currentRough))
+	if (ImGui::BeginCombo("RoughTexture", currentRough))
 	{
 		for (int n = 0; n < roughList.size(); n++)
 		{
@@ -225,8 +220,7 @@ void DebugGUI::MaterialGUI()
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::SliderInt("Strength", &i, 0, 255);
-
+	ImGui::SliderFloat("RoughStrength", &roughStrength, 0, 1);
 	ImGui::EndGroup();
 
 
@@ -235,91 +229,18 @@ void DebugGUI::MaterialGUI()
 	ImGui::SameLine(100.0f);
 	if (ImGui::Button("CREATE", ImVec2(200, 50)))
 	{
+		// Need to create new material
 		matManager->Create(
 			matName,
-			std::string(currentDiffuse),
-			std::string(currentSpecular),
-			std::string(currentNormal),
-			std::string(currentAmbient),
-			std::string(currentRough)
+			std::string(currentDiffuse), diffuseStrength,
+			std::string(currentSpecular), specularStrength,
+			std::string(currentNormal), normalStrength,
+			std::string(currentAmbient), ambientStrength,
+			std::string(currentRough), roughStrength
 		);
 		materialList = matManager->GetNames();
 
 		currentMaterial = materialList.back().c_str();
-	}
-	ImGui::End();
-
-}
-
-void DebugGUI::ObjectGUI()
-{
-	ImGui::Begin("Create Object", &objectWindowVisable);
-
-	ImGui::InputText("Name", objNameCharP, sizeof(char) * 32);
-	ImGui::Checkbox("Static", staticBool);
-	ImGui::SameLine(100.0f);
-	ImGui::Checkbox("Cast-Shadow", shadowCastBool);
-
-	//Transform
-	ImGui::Text("Transform");
-	ImGui::Separator();
-	ImGui::InputFloat3("Position", pos, 2);
-	ImGui::InputFloat4("Rotation", rot, 2);
-	ImGui::InputFloat3("Scale", scale, 2);
-
-	//Mesh
-	ImGui::Separator();
-	ImGui::Text("Mesh");
-	ImGui::SameLine(125.0f);
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("##Mesh", currentMesh))
-	{
-		for (int n = 0; n < meshList.size(); n++)
-		{
-			bool is_selected = (currentMesh == meshList[n].c_str());
-			if (ImGui::Selectable(meshList[n].c_str(), is_selected))
-				currentMesh = meshList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-
-	//Material
-	ImGui::Separator();
-	ImGui::Text("Material");
-	ImGui::SameLine(125.0f);
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("##Material", currentMaterial))
-	{
-		for (int n = 0; n < materialList.size(); n++)
-		{
-			bool is_selected = (currentMaterial == materialList[n].c_str());
-			if (ImGui::Selectable(materialList[n].c_str(), is_selected))
-				currentMaterial = materialList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-
-	ImGui::NewLine();
-	ImGui::NewLine();
-	ImGui::SameLine(100.0f);
-	if (ImGui::Button("CREATE", ImVec2(200, 50)))
-	{
-		objManager->Create(
-			objNameCharP,
-			staticBool,
-			glm::vec3(pos[0], pos[1], pos[2]),
-			glm::vec4(rot[0], rot[1], rot[2], rot[3]),
-			glm::vec3(scale[0], scale[1], scale[2]),
-			std::string(currentMesh),
-			currentMaterial
-		);
-
-		objectList = objManager->GetNameVector();
-
 	}
 	ImGui::End();
 
@@ -389,7 +310,12 @@ void DebugGUI::HierarchyGUI()
 			if (ImGui::MenuItem("Create Prefab")) {}
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Create Empty")) {}
+			if (ImGui::MenuItem("Create Empty")) 
+			{
+				objManager->Create(objManager->Get(currentObject));
+				objectList = objManager->GetNameVector();
+				currentObject = objManager->objects.size() - 1;
+			}
 
 			if (ImGui::BeginMenu("3D Object"))
 			{
@@ -414,7 +340,7 @@ void DebugGUI::HierarchyGUI()
 		for (int i = 0; i < objectList.size(); i++)
 		{
 			if (objManager->Get(i)->GetParent() == nullptr && objManager->Get(i)->GetChildCount() > 0)
-				ShowDummyObject(objectList[i].c_str(), i);
+				ShowChildObject(objectList[i].c_str(), i);
 			else if (objManager->Get(i)->GetParent() == nullptr)
 			{
 				ImGui::AlignTextToFramePadding();
@@ -433,13 +359,27 @@ void DebugGUI::HierarchyGUI()
 
 		//Setting vars
 		objNameCharP = &objectList[currentObject][0];
+
 		glm::vec3 tempPos = objManager->Get(currentObject)->GetPos();
 		pos[0] = tempPos.x;
 		pos[1] = tempPos.y;
 		pos[2] = tempPos.z;
-		currentMaterial = objManager->Get(currentObject)->GetMaterial()->name.c_str();
-		currentMesh = objManager->Get(currentObject)->GetMesh()->name;
-		currentShaderName = objManager->Get(currentObject)->GetShader()->name.c_str();
+		
+		glm::vec3 tempScale = objManager->Get(currentObject)->GetScale();
+		scale[0] = tempScale.x;
+		scale[1] = tempScale.y;
+		scale[2] = tempScale.z;
+
+		if (objManager->Get(currentObject)->GetMaterial() != nullptr)
+			currentMaterial = objManager->Get(currentObject)->GetMaterial()->name.c_str();
+		
+		if (objManager->Get(currentObject)->GetMesh() != nullptr)
+			currentMesh = objManager->Get(currentObject)->GetMesh()->name;
+		
+		if (objManager->Get(currentObject)->GetShader() != nullptr)
+			currentShaderName = objManager->Get(currentObject)->GetShader()->name.c_str();
+
+
 
 		if (objectList[currentObject] == "SkyBox")
 		{
@@ -535,7 +475,7 @@ void DebugGUI::HierarchyGUI()
 	ImGui::End();
 }
 
-void DebugGUI::ShowDummyObject(const char* prefix, int uid)
+void DebugGUI::ShowChildObject(const char* prefix, int uid)
 {
 	ImGui::PushID(uid);
 	ImGui::AlignTextToFramePadding();
@@ -546,7 +486,9 @@ void DebugGUI::ShowDummyObject(const char* prefix, int uid)
 		if (objManager->Get(uid)->GetChildCount() <= 0)
 			return;
 		
-		if (ImGui::Selectable("This", currentObject == objManager->FindIndex(objManager->Get(uid))))
+		std::string name = "This (" + objectList[uid] + ")";
+
+		if (ImGui::Selectable(name.c_str(), currentObject == objManager->FindIndex(objManager->Get(uid))))
 			currentObject = objManager->FindIndex(objManager->Get(uid));
 
 		for (int i = 0; i < objManager->Get(uid)->GetChildCount(); i++)
@@ -554,7 +496,7 @@ void DebugGUI::ShowDummyObject(const char* prefix, int uid)
 			if (objManager->Get(uid)->GetChildren()[i]->GetChildCount() > 0)
 			{
 				ImGui::PushID(i);
-				ShowDummyObject(objManager->Get(uid)->GetChild(i)->GetName().c_str(), objManager->FindIndex(objManager->Get(uid)->GetChild(i)));
+				ShowChildObject(objManager->Get(uid)->GetChild(i)->GetName().c_str(), objManager->FindIndex(objManager->Get(uid)->GetChild(i)));
 				ImGui::PopID();
 			}
 			else

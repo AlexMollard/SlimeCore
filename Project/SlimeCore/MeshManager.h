@@ -13,6 +13,7 @@ public:
 	bool Add(Mesh* newMesh);
 	bool Create(const char* name, const char* dir);
 	bool Create(const char* name, Primitives::TYPE type);
+	bool Create(const char* name);
 
 	int GetIndex(std::string name);
 

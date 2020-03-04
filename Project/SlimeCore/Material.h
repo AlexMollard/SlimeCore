@@ -6,6 +6,7 @@ class Material
 {
 public:
 	Material(const char* name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap);
+	Material(const char* name, Texture* diffuse, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength);
 	Material(const char* name, Texture* diffuse);
 	virtual ~Material();
 
@@ -74,7 +75,13 @@ public:
 	bool hasSpecColorMap = false;
 	bool hasRoughMap = false;
 
+	float diffuseStrength = 1.0f;
+	float specularStrength = 1.0f;
+	float normalStrength = 1.0f;
+	float ambientStrength = 1.0f;
+	float roughStrength = 1.0f;
 protected:
+
 	Texture* diffuse = nullptr;
 	Texture* specMap = nullptr;
 	Texture* normalMap = nullptr;

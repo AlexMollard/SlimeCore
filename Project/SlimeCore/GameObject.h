@@ -21,6 +21,7 @@ public:
 	glm::vec3 GetPos();
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);
 	void SetScale(glm::vec3 newScale);
+	glm::vec3 GetScale();
 
 	Mesh* GetMesh() { return mesh; };
 	void SetMesh(Mesh* newMesh);

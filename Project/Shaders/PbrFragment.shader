@@ -13,6 +13,12 @@ uniform sampler2D normalTexture;
 uniform sampler2D ambientTexture;
 uniform sampler2D roughTexture;
 
+uniform diffuseStrength;
+uniform specularStrength;
+uniform normalStrength;
+uniform ambientStrength;
+uniform roughStrength;
+
 uniform vec3 viewPos;
 
 const float PI = 3.14159265359;
@@ -94,13 +100,45 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+vec3 CalcDirectionLight(DirectionalLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, float ao)
+{
+    vec3 dirResult = vec3(0.0);
+    vec3 lightDir = normalize(-light.direction);
+    float diff = max(dot(normal, lightDir), 0.0);
+    vec3 radiance = light.diffuse;
+
+    vec3 F0 = vec3(0.04);
+    F0 = mix(F0, albedo, metallic);
+
+    // calculate per-light radiance
+    vec3 N = getNormalFromMap();
+    vec3 L = normalize(light.direction);
+    vec3 H = normalize(viewDir + L);
+
+    // Cook-Torrance BRDF
+    float NDF = DistributionGGX(N, H, roughness);
+    float G = GeometrySmith(N, viewDir, L, roughness);
+    vec3 F = fresnelSchlick(max(dot(H, viewDir), 0.0), F0);
+
+    vec3 nominator = NDF * G * F;
+    float denominator = 4 * max(dot(N, viewDir), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+    vec3 specular = nominator / denominator;
+
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;
+    float NdotL = max(dot(N, L), 0.0);
+    dirResult += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+
+    return dirResult;
+}
+
 void main()
 {
     vec3 albedo = pow(texture(diffuseTexture, TexCoord).rgb, vec3(2.2));
-    float metallic = texture(specularTexture, TexCoord).r;
+    float metallic = texture(specularTexture, TexCoord).r * specularStrength;
     float ao = texture(ambientTexture, TexCoord).r;
     float roughness = texture(roughTexture, TexCoord).r;
-
 
     vec3 N = getNormalFromMap();
     vec3 V = normalize(viewPos - WorldPos);
@@ -112,6 +150,9 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
+    
+    //Lo += CalcDirectionLight(dirLight, N, V, albedo, roughness, metallic, ao);
+
     for (int i = 0; i < 4; ++i)
     {
         // calculate per-light radiance
@@ -160,5 +201,5 @@ void main()
     color = pow(color, vec3(1.0 / 2.2));
 
 
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(color , 1.0);
 }

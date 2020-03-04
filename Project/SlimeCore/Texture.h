@@ -8,6 +8,7 @@ public:
 	Texture(std::string name, std::string dir);
 	Texture(std::string name, unsigned int id);
 	Texture(std::string name, unsigned int *id);
+	Texture(std::string name);
 	~Texture();
 
 	std::string name = "Default Name";

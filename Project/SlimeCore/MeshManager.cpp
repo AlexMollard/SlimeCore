@@ -2,6 +2,7 @@
 
 MeshManager::MeshManager()
 {
+	Create("None");
 }
 
 MeshManager::~MeshManager()
@@ -68,6 +69,18 @@ bool MeshManager::Create(const char* name, Primitives::TYPE type)
 	{
 		Add(new Mesh(name));
 		meshList.back()->create(type);
+		return true;
+	}
+
+	printf("Mesh already exist with name: %s.\n", name);
+	return false;
+}
+
+bool MeshManager::Create(const char* name)
+{
+	if (Get(name, true) == nullptr)
+	{
+		Add(new Mesh(name));
 		return true;
 	}
 

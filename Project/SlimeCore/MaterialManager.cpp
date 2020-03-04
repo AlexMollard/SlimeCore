@@ -4,6 +4,7 @@
 MaterialManager::MaterialManager(TextureManager* textureManager)
 {
 	this->textureManager = textureManager;
+	Create("None",nullptr);
 }
 
 MaterialManager::~MaterialManager()

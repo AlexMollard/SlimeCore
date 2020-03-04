@@ -15,6 +15,7 @@ public:
 	std::string name = "DefaultName";
 
 	Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+	Shader(const char* name);
 	~Shader();
 
 	unsigned int CompileShader(unsigned int type, const std::string& source);

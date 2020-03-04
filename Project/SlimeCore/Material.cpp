@@ -27,6 +27,39 @@ Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture
 	SetDirectionalLightAttributes();
 }
 
+Material::Material(const char* name, Texture* diffuse, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength)
+{
+	this->name = name;
+
+	this->diffuse = diffuse;
+
+	if (specMap)
+		hasSpecMap = true;
+	this->specMap = specMap;
+
+	if (normalMap)
+		hasNormalMap = true;
+	this->normalMap = normalMap;
+
+	if (ambientMap)
+		hasSpecColorMap = true;
+	this->ambientMap = ambientMap;
+
+	if (ambientMap)
+		hasRoughMap = true;
+	this->roughMap = roughMap;
+
+	this->diffuseStrength = diffuseStrength;
+	this->specularStrength = specularStrength;
+	this->normalStrength = normalStrength;
+	this->ambientStrength = ambientStrength;
+	this->roughStrength = roughStrength;
+
+	setMatAtrributes();
+	pointLights->SetLightAttributes();
+	SetDirectionalLightAttributes();
+}
+
 Material::Material(const char* name, Texture* diffuse)
 {
 	this->name = name;

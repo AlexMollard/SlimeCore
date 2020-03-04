@@ -26,10 +26,14 @@ void GameObject::Update(float deltaTime)
 }
 
 void GameObject::Draw(glm::mat4* ProjectionView)
-{	
-	shader->setMat4("ProjectionView", *ProjectionView);
-	shader->setMat4("Model", model);
-	mesh->draw(); 
+{
+	if (shader->name != "None")
+	{
+		shader->setMat4("ProjectionView", *ProjectionView);
+		shader->setMat4("Model", model);
+	}
+	if (mesh->name != "None")
+		mesh->draw(); 
 }
 
 void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
@@ -81,7 +85,18 @@ void GameObject::AddRotate(float rotSpeed, glm::vec3 rotDIR)
 void GameObject::SetScale(glm::vec3 newScale)
 {
 	scale = newScale;
-	model = glm::scale(model, newScale);
+	glm::mat4 mat = glm::mat4(1);
+	model[0] = mat[0] * newScale[0];
+	model[1] = mat[1] * newScale[1];
+	model[2] = mat[2] * newScale[2];
+	model[3] = model[3];
+
+	//model = glm::scale(model, newScale);
+}
+
+glm::vec3 GameObject::GetScale()
+{
+	return scale;
 }
 
 void GameObject::SetMesh(Mesh* newMesh)

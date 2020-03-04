@@ -35,22 +35,23 @@ int main()
 
 	// Materials
 	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Diffuse));
-	materialManager->Create("waterMat", textureManager->Get(1, TEXTURETYPE::Diffuse), textureManager->Get(0, TEXTURETYPE::Specular), textureManager->Get(0, TEXTURETYPE::Normal), textureManager->Get(0, TEXTURETYPE::Ambient), textureManager->Get(0, TEXTURETYPE::Rough));
+	materialManager->Create("waterMat", textureManager->Get(1, TEXTURETYPE::Diffuse), textureManager->Get(1, TEXTURETYPE::Specular), textureManager->Get(1, TEXTURETYPE::Normal), textureManager->Get(1, TEXTURETYPE::Ambient), textureManager->Get(1, TEXTURETYPE::Rough));
 	materialManager->Create("lightMat", textureManager->Get(3, TEXTURETYPE::Diffuse));
 
 	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
 	meshManager->Create("Cube", Primitives::Cube);
+	
 
 	// Objects
-	objectManager->Create("SkyBox", 0, 0, 0);
-	objectManager->Create("Block", 1, 1, 2);
+	objectManager->Create("SkyBox", 1, 1, 1);
+	objectManager->Create("Block", 2, 2, 3);
 	objectManager->Get("Block")->SetDescription("This object is the default cube on startup.");
 
 	GameObject* lights[4];
 
 	for (int i = 0; i < 4; i++)
-		lights[i] = objectManager->Create(std::string("Light") + std::to_string(i), 1, 2, 3, 1, glm::vec3(3));
+		lights[i] = objectManager->Create(std::string("Light") + std::to_string(i), 2, 3, 4, 1, glm::vec3(3));
 
 	for (int i = 0; i < 4; i++)
 		lights[i]->SetScale(glm::vec3(0.10f));

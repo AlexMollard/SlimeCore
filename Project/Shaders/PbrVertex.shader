@@ -23,6 +23,9 @@ void main()
     WorldPos = vec3(Model * vec4(aPos, 1.0));
     Normal = mat3(Model) * aNormal;
 
+    Tangent = normalize(mat3(Model) * Tangent);
+    BiTangent = normalize(mat3(Model) * BiTangent);
+
     Tangent = aTangent;
     BiTangent = aBiTangent;
 

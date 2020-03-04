@@ -3760,7 +3760,7 @@ static void ShowExampleAppPropertyEditor(bool* p_open)
 
     struct funcs
     {
-        static void ShowDummyObject(const char* prefix, int uid)
+        static void ShowChildObject(const char* prefix, int uid)
         {
             ImGui::PushID(uid);                      // Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
             ImGui::AlignTextToFramePadding();  // Text and Tree nodes are less high than regular widgets, here we add vertical spacing to make the tree lines equal high.
@@ -3777,7 +3777,7 @@ static void ShowExampleAppPropertyEditor(bool* p_open)
                     ImGui::PushID(i); // Use field index as identifier.
                     if (i < 2)
                     {
-                        ShowDummyObject("Child", 424242);
+                        ShowChildObject("Child", 424242);
                     }
                     else
                     {
@@ -3803,7 +3803,7 @@ static void ShowExampleAppPropertyEditor(bool* p_open)
 
     // Iterate dummy objects with dummy members (all the same data)
     for (int obj_i = 0; obj_i < 3; obj_i++)
-        funcs::ShowDummyObject("Object", obj_i);
+        funcs::ShowChildObject("Object", obj_i);
 
     ImGui::Columns(1);
     ImGui::Separator();

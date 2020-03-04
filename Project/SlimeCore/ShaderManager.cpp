@@ -2,6 +2,7 @@
 
 ShaderManager::ShaderManager()
 {
+	Create("None");
 }
 
 ShaderManager::~ShaderManager()
@@ -39,6 +40,17 @@ bool ShaderManager::Create(const char* name, const char* vertex, const char* fra
 	if (Get(name,true) == nullptr)
 	{
 		Add(new Shader(name, vertex, fragment));
+		return true;
+	}
+	printf("Shader already exist with name: %s.\n", name);
+	return false;
+}
+
+bool ShaderManager::Create(const char* name)
+{
+	if (Get(name, true) == nullptr)
+	{
+		Add(new Shader(name));
 		return true;
 	}
 	printf("Shader already exist with name: %s.\n", name);
