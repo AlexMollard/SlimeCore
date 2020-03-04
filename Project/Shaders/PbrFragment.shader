@@ -13,11 +13,11 @@ uniform sampler2D normalTexture;
 uniform sampler2D ambientTexture;
 uniform sampler2D roughTexture;
 
-uniform diffuseStrength;
-uniform specularStrength;
-uniform normalStrength;
-uniform ambientStrength;
-uniform roughStrength;
+uniform float diffuseStrength;
+uniform float specularStrength;
+uniform float normalStrength;
+uniform float ambientStrength;
+uniform float roughStrength;
 
 uniform vec3 viewPos;
 
@@ -52,7 +52,7 @@ uniform DirectionalLight dirLight;
 
 vec3 getNormalFromMap()
 {
-	vec3 tangentNormal = texture(normalTexture, TexCoord).xyz * 2.0 - 1.0;
+	vec3 tangentNormal = (texture(normalTexture, TexCoord).xyz * normalStrength) * 2.0 - 1.0;
 
 	vec3 N = normalize(Normal);
 	mat3 TBN = mat3(Tangent, BiTangent, N);
@@ -135,10 +135,10 @@ vec3 CalcDirectionLight(DirectionalLight light, vec3 normal, vec3 viewDir, vec3 
 
 void main()
 {
-    vec3 albedo = pow(texture(diffuseTexture, TexCoord).rgb, vec3(2.2));
+    vec3 albedo = pow(texture(diffuseTexture, TexCoord).rgb, vec3(2.2)) * diffuseStrength;
     float metallic = texture(specularTexture, TexCoord).r * specularStrength;
-    float ao = texture(ambientTexture, TexCoord).r;
-    float roughness = texture(roughTexture, TexCoord).r;
+    float ao = texture(ambientTexture, TexCoord).r * ambientStrength;
+    float roughness = texture(roughTexture, TexCoord).r * roughStrength;
 
     vec3 N = getNormalFromMap();
     vec3 V = normalize(viewPos - WorldPos);
@@ -199,7 +199,6 @@ void main()
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0 / 2.2));
-
 
     FragColor = vec4(color , 1.0);
 }

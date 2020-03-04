@@ -1,6 +1,6 @@
 #include "Material.h"
 
-Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap)
+Material::Material(std::string name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap)
 {
 	this->name = name;
 
@@ -27,7 +27,7 @@ Material::Material(const char* name, Texture* diffuse, Texture* specMap, Texture
 	SetDirectionalLightAttributes();
 }
 
-Material::Material(const char* name, Texture* diffuse, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength)
+Material::Material(std::string name, Texture* diffuse, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength)
 {
 	this->name = name;
 
@@ -60,7 +60,7 @@ Material::Material(const char* name, Texture* diffuse, float diffuseStrength, Te
 	SetDirectionalLightAttributes();
 }
 
-Material::Material(const char* name, Texture* diffuse)
+Material::Material(std::string name, Texture* diffuse)
 {
 	this->name = name;
 

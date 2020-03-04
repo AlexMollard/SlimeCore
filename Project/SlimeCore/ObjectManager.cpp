@@ -179,6 +179,51 @@ std::vector<std::string> ObjectManager::GetNameVector()
 	return names;
 }
 
+void ObjectManager::BindTexture(int objectIndex, TEXTURETYPE texType, Texture* texture)
+{
+	if (texture != nullptr)
+	{
+		if (texture != currentTexture[(int)texType])
+		{
+			SetIntTexture(objectIndex, texType);
+			currentTexture[(int)texType] = texture;
+			glActiveTexture(GL_TEXTURE0 + (int)texType); // Texture unit 1
+			glBindTexture(GL_TEXTURE_2D, texture->textureID);
+		}
+	}
+	else
+	{
+		SetIntTexture(objectIndex, texType);
+		currentTexture[(int)texType] = texture;
+		glActiveTexture(GL_TEXTURE0 + (int)texType); // Texture unit 1
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
+void ObjectManager::SetIntTexture(int objectIndex, TEXTURETYPE texType)
+{
+	switch (texType)
+	{
+	case TEXTURETYPE::Diffuse:
+		objects[objectIndex]->GetShader()->setInt("diffuseTexture", (int)texType);
+		break;
+	case TEXTURETYPE::Specular:
+		objects[objectIndex]->GetShader()->setInt("specularTexture", (int)texType);
+		break;
+	case TEXTURETYPE::Normal:
+		objects[objectIndex]->GetShader()->setInt("normalTexture", (int)texType);
+		break;
+	case TEXTURETYPE::Ambient:
+		objects[objectIndex]->GetShader()->setInt("ambientTexture", (int)texType);
+		break;
+	case TEXTURETYPE::Rough:
+		objects[objectIndex]->GetShader()->setInt("roughTexture", (int)texType);
+		break;
+	default:
+		break;
+	}
+}
+
 bool ObjectManager::DebugManager()
 {
 	printf("GameObjects: \n");
@@ -203,117 +248,54 @@ bool ObjectManager::DebugAll()
 
 bool ObjectManager::Draw()
 {
-	matManager->SetDirLightDirection(glm::vec3(0, -1, -0.3));
+	//matManager->SetDirLightDirection(glm::vec3(0, -1, -0.3));
 	
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->GetShader()->name != "None")
+		Shader* objShader = objects[i]->GetShader();
+		Material* objMaterial = objects[i]->GetMaterial();
+
+		if (currentShader != objects[i]->GetShader())
 		{
-			if (currentShader != objects[i]->GetShader())
-			{
-				objects[i]->GetShader()->Use();
-				currentShader = objects[i]->GetShader();
-				objects[i]->UpdateUniforms(projectionView, *camPos);
-			}
+			objects[i]->GetShader()->Use();
+			currentShader = objects[i]->GetShader();
+			objects[i]->UpdateUniforms(projectionView, *camPos);
 		}
 
-		if (objects[i]->GetMaterial()->name != "None")
+		if (currentMaterial != objMaterial)
 		{
-			if (currentMaterial != objects[i]->GetMaterial())
-			{
-				currentMaterial = objects[i]->GetMaterial();
-				currentDiffuse = nullptr;
-				currentSpecular = nullptr;
-				currentNormal = nullptr;
-				currentAmbient = nullptr;
-			}
+			currentMaterial = objMaterial;
 
-			if (objects[i]->GetTexture(TEXTURETYPE::Diffuse)->name != "None")
-			{
-				if (objects[i]->GetTexture(TEXTURETYPE::Diffuse) != currentDiffuse)
-				{
-					objects[i]->GetShader()->setInt("diffuseTexture", 0);
-					currentDiffuse = objects[i]->GetTexture(TEXTURETYPE::Diffuse);
-					glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
-					glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Diffuse)->textureID);
-					objects[i]->GetShader()->setFloat("diffuseStrength", objects[i]->GetMaterial()->diffuseStrength);
-				}
-			}
+			for (int n = 0; n < 5; n++)
+				currentTexture[n] = nullptr;
 
-			if (objects[i]->GetName() == "SkyBox")
-			{
-				glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
-				glDepthMask(GL_FALSE);
-				objects[i]->Draw(projectionView);
-				glDepthMask(GL_TRUE);
-
-				continue;
-			}
-
-			if (objects[i]->GetTexture(TEXTURETYPE::Specular) != nullptr)
-			{
-				if (objects[i]->GetTexture(TEXTURETYPE::Specular)->name != "None")
-				{
-					if (objects[i]->GetTexture(TEXTURETYPE::Specular) != currentSpecular)
-					{
-						objects[i]->GetShader()->setInt("specularTexture", 1);
-						currentSpecular = objects[i]->GetTexture(TEXTURETYPE::Specular);
-						glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
-						glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Specular)->textureID);
-						objects[i]->GetShader()->setFloat("specularStrength", objects[i]->GetMaterial()->specularStrength);
-					}
-				}
-			}
-
-			if (objects[i]->GetTexture(TEXTURETYPE::Normal) != nullptr)
-			{
-				if (objects[i]->GetTexture(TEXTURETYPE::Normal)->name != "None")
-				{
-					if (objects[i]->GetTexture(TEXTURETYPE::Normal) != currentNormal)
-					{
-						objects[i]->GetShader()->setInt("normalTexture", 2);
-						currentNormal = objects[i]->GetTexture(TEXTURETYPE::Normal);
-						glActiveTexture(GL_TEXTURE0 + 2); // Texture unit 2
-						glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Normal)->textureID);
-						objects[i]->GetShader()->setFloat("normalStrength", objects[i]->GetMaterial()->normalStrength);
-					}
-				}
-			}
-
-			if (objects[i]->GetTexture(TEXTURETYPE::Ambient) != nullptr)
-			{
-				if (objects[i]->GetTexture(TEXTURETYPE::Ambient)->name != "None")
-				{
-					if (objects[i]->GetTexture(TEXTURETYPE::Ambient) != currentAmbient)
-					{
-						objects[i]->GetShader()->setInt("ambientTexture", 3);
-						currentAmbient = objects[i]->GetTexture(TEXTURETYPE::Ambient);
-						glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
-						glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Ambient)->textureID);
-						objects[i]->GetShader()->setFloat("ambientStrength", objects[i]->GetMaterial()->ambientStrength);
-					}
-				}
-			}
-
-			if (objects[i]->GetTexture(TEXTURETYPE::Rough) != nullptr)
-			{
-				if (objects[i]->GetTexture(TEXTURETYPE::Rough)->name != "None")
-				{
-					if (objects[i]->GetTexture(TEXTURETYPE::Rough) != currentRough)
-					{
-						objects[i]->GetShader()->setInt("roughTexture", 3);
-						currentRough = objects[i]->GetTexture(TEXTURETYPE::Rough);
-						glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
-						glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Rough)->textureID);
-						objects[i]->GetShader()->setFloat("roughStrength", objects[i]->GetMaterial()->roughStrength);
-					}
-				}
-			}
+			objShader->setFloat("diffuseStrength", objMaterial->diffuseStrength);
+			objShader->setFloat("specularStrength", objMaterial->specularStrength);
+			objShader->setFloat("normalStrength", objMaterial->normalStrength);
+			objShader->setFloat("ambientStrength", objMaterial->ambientStrength);
+			objShader->setFloat("roughStrength", objMaterial->roughStrength);
 		}
+
+		BindTexture(i, TEXTURETYPE::Diffuse, objects[i]->GetTexture(TEXTURETYPE::Diffuse));
+
+		if (objects[i]->GetName() == "SkyBox")
+		{
+			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
+			glDepthMask(GL_FALSE);
+			objects[i]->Draw(projectionView);
+			glDepthMask(GL_TRUE);
+
+			continue;
+		}
+
+		BindTexture(i, TEXTURETYPE::Specular, objects[i]->GetTexture(TEXTURETYPE::Specular));
+		BindTexture(i, TEXTURETYPE::Normal, objects[i]->GetTexture(TEXTURETYPE::Normal));
+		BindTexture(i, TEXTURETYPE::Ambient, objects[i]->GetTexture(TEXTURETYPE::Ambient));
+		BindTexture(i, TEXTURETYPE::Rough, objects[i]->GetTexture(TEXTURETYPE::Rough));
 
 		objects[i]->Draw(projectionView);
-
 	}
+
 	return true;
 }
 

@@ -30,6 +30,9 @@ public:
 	void SetNamesVector();
 	std::vector<std::string> GetNameVector();
 
+	void BindTexture(int objectIndex, TEXTURETYPE type, Texture* texture);
+	void SetIntTexture(int objectIndex, TEXTURETYPE type);
+
 	bool DebugManager();
 	bool DebugAll();
 
@@ -44,11 +47,7 @@ public:
 	Shader* currentShader = nullptr;
 	Material* currentMaterial = nullptr;
 
-	Texture* currentDiffuse = nullptr;
-	Texture* currentSpecular = nullptr;
-	Texture* currentNormal = nullptr;
-	Texture* currentAmbient = nullptr;
-	Texture* currentRough = nullptr;
+	Texture* currentTexture[5] = { nullptr,nullptr,nullptr,nullptr,nullptr };
 	
 	glm::mat4* projectionView;
 	std::vector<std::string> names;

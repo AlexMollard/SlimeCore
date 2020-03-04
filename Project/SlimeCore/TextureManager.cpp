@@ -5,55 +5,60 @@
 #include <iostream>
 TextureManager::TextureManager()
 {
-	Create("None");
+	CreateBlanks("../Images/None.png");
 }
 
 TextureManager::~TextureManager()
 {
-	for (int i = 0; i < diffuseList.size(); i++)
+	Texture* none = Get("None", TEXTURETYPE::Diffuse);
+	delete none;
+	none = nullptr;
+
+	for (int i = 1; i < diffuseList.size(); i++)
 	{
-		if (diffuseList[i] != nullptr && diffuseList[i]->name != "None")
+		if (diffuseList[i])
 		{
 			delete diffuseList[i];
 			diffuseList[i] = nullptr;
 		}
 	}
 
-	for (int i = 0; i < specularList.size(); i++)
+	for (int i = 1; i < specularList.size(); i++)
 	{
-		if (specularList[i] != nullptr && specularList[i]->name != "None")
+		if (specularList[i] != nullptr)
 		{
 			delete specularList[i];
 			specularList[i] = nullptr;
 		}
 	}
 
-	for (int i = 0; i < normalList.size(); i++)
+	for (int i = 1; i < normalList.size(); i++)
 	{
-		if (normalList[i] != nullptr && normalList[i]->name != "None")
+		if (normalList[i] != nullptr)
 		{
 			delete normalList[i];
 			normalList[i] = nullptr;
 		}
 	}
 
-	for (int i = 0; i < ambientList.size(); i++)
+	for (int i = 1; i < ambientList.size(); i++)
 	{
-		if (ambientList[i] != nullptr && ambientList[i]->name != "None")
+		if (ambientList[i] != nullptr)
 		{
 			delete ambientList[i];
 			ambientList[i] = nullptr;
 		}
 	}
 
-	for (int i = 0; i < roughList.size(); i++)
+	for (int i = 1; i < roughList.size(); i++)
 	{
-		if (roughList[i] != nullptr && roughList[i]->name != "None")
+		if (roughList[i] != nullptr	)
 		{
 			delete roughList[i];
 			roughList[i] = nullptr;
 		}
 	}
+
 
 	delete skyBox;
 }
@@ -102,9 +107,9 @@ void TextureManager::Create(std::vector<std::string> dirs, TEXTURETYPE type)
 	}
 }
 
-void TextureManager::Create(std::string name)
+void TextureManager::CreateBlanks(std::string dir)
 {
-	Texture* tex = new Texture("None");
+	Texture* tex = new Texture("None",dir);
 	diffuseList.push_back(tex);
 	specularList.push_back(tex);
 	normalList.push_back(tex);

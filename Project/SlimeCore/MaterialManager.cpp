@@ -37,9 +37,9 @@ Material* MaterialManager::Get(int index)
 	return materialList[index] ? materialList[index] : NotFound(false, "---",index);
 }
 
-bool MaterialManager::Create(const char* name, Texture* texture)
+bool MaterialManager::Create(std::string name, Texture* texture)
 {
-	if (Get(name,true) == nullptr)
+	if (Get(name.c_str(),true) == nullptr)
 	{
 		//printf("Creating Material with name: %s.\n", name);
 		Add(new Material(name, texture));
@@ -50,9 +50,9 @@ bool MaterialManager::Create(const char* name, Texture* texture)
 	return false;
 }
 
-bool MaterialManager::Create(const char* name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough)
+bool MaterialManager::Create(std::string name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough)
 {
-	if (Get(name, true) == nullptr)
+	if (Get(name.c_str(), true) == nullptr)
 	{
 		//printf("Creating Material with name: %s.\n", name);
 		Add(new Material(name, diffuse, specular, normal, ambient, rough));
@@ -68,6 +68,15 @@ void MaterialManager::Create(std::string name, std::string diffuseName, std::str
 	if (Get(name.c_str(), true) == nullptr)
 	{
 		Add(new Material(name.c_str(), textureManager->Get(diffuseName.c_str(), TEXTURETYPE::Diffuse), textureManager->Get(specularName.c_str(), TEXTURETYPE::Specular), textureManager->Get(normalName.c_str(), TEXTURETYPE::Normal), textureManager->Get(ambientName.c_str(), TEXTURETYPE::Ambient), textureManager->Get(roughName.c_str(), TEXTURETYPE::Rough)));
+		std::cout << "IMGUI just made a material: " << name << std::endl;
+	}
+}
+
+void MaterialManager::Create(std::string name, std::string diffuseName, float diffuseStrength, std::string specularName, float specularStrength, std::string normalName, float normalStrength, std::string ambientName, float ambientStrength, std::string roughName, float roughStrength)
+{
+	if (Get(name.c_str(), true) == nullptr)
+	{
+		Add(new Material(name.c_str(), textureManager->Get(diffuseName, TEXTURETYPE::Diffuse), diffuseStrength, textureManager->Get(specularName, TEXTURETYPE::Specular),specularStrength, textureManager->Get(normalName, TEXTURETYPE::Normal), normalStrength, textureManager->Get(ambientName, TEXTURETYPE::Ambient), ambientStrength, textureManager->Get(roughName, TEXTURETYPE::Rough), roughStrength));
 		std::cout << "IMGUI just made a material: " << name << std::endl;
 	}
 }

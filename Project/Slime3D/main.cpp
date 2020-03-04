@@ -55,7 +55,10 @@ int main()
 
 	for (int i = 0; i < 4; i++)
 		lights[i]->SetScale(glm::vec3(0.10f));
-
+		
+	for (int i = 0; i < 4; i++)
+		lights[i]->SetPos(glm::vec3(glm::cos(i *10) * (i * 2), 2, glm::sin(i * 10) * (i * 2)));
+	
 	debugGui->FirstFrame();
 
 	// Main engine loop
@@ -66,10 +69,6 @@ int main()
 		// Set SkyBox on camera
 		objectManager->objects[0]->SetPos(app->GetCamera()->Position);
 
-		for (int i = 0; i < 4; i++)
-		{
-			lights[i]->SetPos(glm::vec3(glm::cos(timer) * (i * 2), 2, glm::sin(timer) * (i * 2)));
-		}
 		materialManager->SetSpotLightPos(lights[0]->GetPos(), lights[1]->GetPos(), lights[2]->GetPos(), lights[3]->GetPos());
 
 		// Draw Objects

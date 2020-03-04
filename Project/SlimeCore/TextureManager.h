@@ -22,7 +22,7 @@ public:
 	bool Add(Texture* newTexture, TEXTURETYPE type);
 	bool Create(std::string, std::string dir, TEXTURETYPE type);
 	void Create(std::vector<std::string> dirs, TEXTURETYPE type);
-	void Create(std::string name);
+	void CreateBlanks(std::string dir);
 
 	void SetNameList();
 	std::vector<std::string> GetNameList(TEXTURETYPE type);
