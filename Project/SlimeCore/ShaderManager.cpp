@@ -45,6 +45,21 @@ bool ShaderManager::Create(const char* name, const char* vertex, const char* fra
 	return false;
 }
 
+void ShaderManager::SetNames()
+{
+	names.clear();
+	for (int i = 0; i < shaderList.size(); i++)
+	{
+		names.push_back(shaderList[i]->name);
+	}
+}
+
+std::vector<std::string> ShaderManager::GetNames()
+{
+	SetNames();
+	return names;
+}
+
 Shader* ShaderManager::NotFound(bool creation, const char* name, int index)
 {
 	if (!creation)

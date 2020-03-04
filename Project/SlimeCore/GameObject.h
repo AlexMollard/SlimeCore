@@ -8,7 +8,7 @@
 class GameObject
 {
 public:
-	GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader);
+	GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader, GameObject* parent = nullptr);
 
 	virtual ~GameObject();
 
@@ -23,12 +23,29 @@ public:
 	void SetScale(glm::vec3 newScale);
 
 	Mesh* GetMesh() { return mesh; };
+	void SetMesh(Mesh* newMesh);
 	Material* GetMaterial() { return mat; };
+	void SetMaterial(Material* newMaterial);
 	Texture* GetTexture(TEXTURETYPE type);
-	std::string name = "Default GameObject";
-	bool isSkyBox = false;
-	Shader* shader = nullptr;
+	Shader* GetShader();
+	void SetShader(Shader* newShader);
+	std::string GetName();
+	void SetName(std::string newName);
+	std::string GetDescription();
+	void SetDescription(std::string newDesc);
+
+	GameObject* GetChild(int index);
+	GameObject* GetChild(std::string name);
+	std::vector<GameObject*> GetChildren();
+	int GetChildCount();
+
+	void SetParent(GameObject* newParent);
+	GameObject* GetParent();
 protected:
+	Shader* shader = nullptr;
+	std::string name = "Default GameObject";
+
+
 	glm::vec3 position = glm::vec3(1);
 	glm::vec3 rotation = glm::vec3(1);
 	glm::vec3 scale = glm::vec3(1);
@@ -36,5 +53,8 @@ protected:
 	glm::mat4 model = glm::mat4(1);
 	Material* mat = nullptr;
 	Mesh* mesh = nullptr;
+	std::string description = "Default Description";
+	std::vector<GameObject*> child;
+	GameObject* parent = nullptr;
 };
 

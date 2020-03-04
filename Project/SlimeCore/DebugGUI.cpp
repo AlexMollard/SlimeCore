@@ -5,6 +5,7 @@ DebugGUI::DebugGUI(ObjectManager* objManager, MeshManager* meshManager)
 	this->objManager = objManager;
 	this->meshManager = meshManager;
 	this->matManager = objManager->matManager;
+	this->shaderManager = objManager->shaderManager;
 }
 
 DebugGUI::~DebugGUI()
@@ -42,7 +43,7 @@ void DebugGUI::Render(float deltaTime)
 
 void DebugGUI::FirstFrame()
 {
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		lines[i] = 0;
 
@@ -77,6 +78,9 @@ void DebugGUI::FirstFrame()
 
 	objectList = objManager->GetNameVector();
 	currentObject = 0;
+
+	shaderList = shaderManager->GetNames();
+	currentShaderName = shaderList[0].c_str();
 }
 
 void DebugGUI::MainMenuBar()
@@ -332,11 +336,11 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 	timerDelay += deltaTime;
 	if (timerDelay > 1.0f)
 	{
-		lines[59] = ImGui::GetIO().Framerate;
+		lines[29] = ImGui::GetIO().Framerate;
 			smallest = 10000.0f;
 			largest = 0.0f;
 
-		for (int n = 0; n < 59; n++)
+		for (int n = 0; n < 29; n++)
 		{
 			lines[n] = lines[n + 1];
 
@@ -354,7 +358,7 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 		timerDelay = 0.0f;
 	}
 
-	ImGui::PlotLines("FrameRate", lines, 60, 0, (const char*)0, smallest, largest, ImVec2(ImGui::GetWindowWidth(), 100));
+	ImGui::PlotLines("FrameRate", lines, 30, 0, (const char*)0, smallest, largest, ImVec2(ImGui::GetWindowWidth() - 1, 100));
 
 	ImGui::End();
 }
@@ -362,11 +366,11 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 void DebugGUI::HierarchyGUI()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
-	if (ImGui::Begin("Hierarchy",&hierarchyWindowVisable))
+	if (ImGui::Begin("Hierarchy", &hierarchyWindowVisable))
 	{
 		// left
-		ImGui::BeginChild("left pane", ImVec2(150, 0), true);
-		
+		ImGui::BeginChild("left pane", ImVec2(300, 0), true);
+
 		if (ImGui::IsMouseHoveringWindow())
 		{
 			if (ImGui::IsMouseClicked(1))
@@ -376,28 +380,28 @@ void DebugGUI::HierarchyGUI()
 		}
 		if (ImGui::BeginPopup("HierarchyOptions"))
 		{
-			if (ImGui::MenuItem("Duplicate")){}
+			if (ImGui::MenuItem("Duplicate")) {}
 
-			if (ImGui::MenuItem("Delete")){}
-
-			ImGui::Separator();
-			
-			if (ImGui::MenuItem("Create Prefab")){}
+			if (ImGui::MenuItem("Delete")) {}
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Create Empty")){}
+
+			if (ImGui::MenuItem("Create Prefab")) {}
+
+			ImGui::Separator();
+			if (ImGui::MenuItem("Create Empty")) {}
 
 			if (ImGui::BeginMenu("3D Object"))
 			{
-				if (ImGui::MenuItem("Cube")){};
+				if (ImGui::MenuItem("Cube")) {};
 
-				if (ImGui::MenuItem("Plane")){};
+				if (ImGui::MenuItem("Plane")) {};
 
-				if (ImGui::MenuItem("Cylinder")){};
+				if (ImGui::MenuItem("Cylinder")) {};
 
 				if (ImGui::BeginMenu("Light"))
 				{
-					if (ImGui::MenuItem("Directional Light")){}
+					if (ImGui::MenuItem("Directional Light")) {}
 					if (ImGui::MenuItem("Point Light")) {}
 					ImGui::EndMenu();
 				}
@@ -406,11 +410,17 @@ void DebugGUI::HierarchyGUI()
 
 			ImGui::EndPopup();
 		}
-		
+
 		for (int i = 0; i < objectList.size(); i++)
 		{
-			if (ImGui::Selectable(objectList[i].c_str(), currentObject == i))
-				currentObject = i;
+			if (objManager->Get(i)->GetParent() == nullptr && objManager->Get(i)->GetChildCount() > 0)
+				ShowDummyObject(objectList[i].c_str(), i);
+			else if (objManager->Get(i)->GetParent() == nullptr)
+			{
+				ImGui::AlignTextToFramePadding();
+				if (ImGui::Selectable(objManager->Get(i)->GetName().c_str(), currentObject == i))
+					currentObject = i;
+			}
 		}
 		ImGui::EndChild();
 		ImGui::SameLine();
@@ -420,45 +430,142 @@ void DebugGUI::HierarchyGUI()
 		ImGui::BeginChild("Object view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));
 		ImGui::Text(std::string(objectList[currentObject]).c_str());
 		ImGui::Separator();
-		if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+
+		//Setting vars
+		objNameCharP = &objectList[currentObject][0];
+		glm::vec3 tempPos = objManager->Get(currentObject)->GetPos();
+		pos[0] = tempPos.x;
+		pos[1] = tempPos.y;
+		pos[2] = tempPos.z;
+		currentMaterial = objManager->Get(currentObject)->GetMaterial()->name.c_str();
+		currentMesh = objManager->Get(currentObject)->GetMesh()->name;
+		currentShaderName = objManager->Get(currentObject)->GetShader()->name.c_str();
+
+		if (objectList[currentObject] == "SkyBox")
 		{
-			if (ImGui::BeginTabItem("Description"))
-			{
-				ImGui::Text("THIS IS A WORK IN PROGESS...");
-				ImVec2 imageSize = ImVec2(75,75);
-				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Diffuse) != nullptr)
-					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Diffuse)->textureID, imageSize);
-				ImGui::SameLine();
-				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Specular) != nullptr)
-					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Specular)->textureID, imageSize);
-				ImGui::SameLine();
-				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Normal) != nullptr)
-					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Normal)->textureID, imageSize);
-				ImGui::SameLine();
-				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Ambient) != nullptr)
-					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Ambient)->textureID, imageSize);
-				ImGui::SameLine();
-				if (objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Rough) != nullptr)
-					ImGui::Image((void*)(intptr_t)objManager->Get(currentObject)->GetTexture(TEXTURETYPE::Rough)->textureID, imageSize);
-
-				ImGui::EndTabItem();
-			}
-			if (ImGui::BeginTabItem("Details"))
-			{
-				ImGui::Text(objectList[currentObject].c_str());
-
-				glm::vec3 cPos = objManager->Get(currentObject)->GetPos();
-				std::string pos[3] = { std::to_string(cPos.x),std::to_string(cPos.y),std::to_string(cPos.z) };
-				std::string finalPos = ("x: " + pos[0] + " y: " + pos[1] + " z: " + pos[2]);
-				ImGui::Text(finalPos.c_str());
-
-				ImGui::EndTabItem();
-			}
-			ImGui::EndTabBar();
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "You're not allowed to edit this object!");
+			ImGui::EndChild();
+			ImGui::EndGroup();
+			ImGui::End();
+			return;
 		}
+
+		ImGui::InputText("Name", objNameCharP, sizeof(char) * 32);
+		ImGui::Checkbox("Static", staticBool);
+		ImGui::SameLine(100.0f);
+		ImGui::Checkbox("Cast-Shadow", shadowCastBool);
+
+		//Transform
+		ImGui::Text("Transform");
+		ImGui::Separator();
+		ImGui::InputFloat3("Position", pos, 2);
+		ImGui::InputFloat4("Rotation", rot, 2);
+		ImGui::InputFloat3("Scale", scale, 2);
+
+		//Mesh
+		ImGui::Separator();
+		ImGui::Text("Mesh");
+		ImGui::SameLine(125.0f);
+		ImGui::PushItemWidth(150.0f);
+		if (ImGui::BeginCombo("##Mesh", currentMesh))
+		{
+			for (int n = 0; n < meshList.size(); n++)
+			{
+				bool is_selected = (currentMesh == meshList[n].c_str());
+				if (ImGui::Selectable(meshList[n].c_str(), is_selected))
+					currentMesh = meshList[n].c_str();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		//Material
+		ImGui::Separator();
+		ImGui::Text("Material");
+		ImGui::SameLine(125.0f);
+		ImGui::PushItemWidth(150.0f);
+		if (ImGui::BeginCombo("##Material", currentMaterial))
+		{
+			for (int n = 0; n < materialList.size(); n++)
+			{
+				bool is_selected = (currentMaterial == materialList[n].c_str());
+				if (ImGui::Selectable(materialList[n].c_str(), is_selected))
+					currentMaterial = materialList[n].c_str();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		//Material
+		ImGui::Separator();
+		ImGui::Text("Shader");
+		ImGui::SameLine(125.0f);
+		ImGui::PushItemWidth(150.0f);
+		if (ImGui::BeginCombo("##Shader", currentShaderName))
+		{
+			for (int n = 0; n < shaderList.size(); n++)
+			{
+				bool is_selected = (currentShaderName == shaderList[n].c_str());
+				if (ImGui::Selectable(shaderList[n].c_str(), is_selected))
+					currentShaderName = shaderList[n].c_str();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+			objManager->SetVars(
+				currentObject,
+				objNameCharP,
+				staticBool,
+				glm::vec3(pos[0], pos[1], pos[2]),
+				glm::vec4(rot[0], rot[1], rot[2], rot[3]),
+				glm::vec3(scale[0], scale[1], scale[2]),
+				std::string(currentMesh),
+				currentMaterial,
+				currentShaderName
+			);
+
 		ImGui::EndChild();
 
 		ImGui::EndGroup();
 	}
 	ImGui::End();
+}
+
+void DebugGUI::ShowDummyObject(const char* prefix, int uid)
+{
+	ImGui::PushID(uid);
+	ImGui::AlignTextToFramePadding();
+	bool node_open = ImGui::TreeNode(objectList[uid].c_str());
+	ImGui::NextColumn();
+	if (node_open)
+	{
+		if (objManager->Get(uid)->GetChildCount() <= 0)
+			return;
+		
+		if (ImGui::Selectable("This", currentObject == objManager->FindIndex(objManager->Get(uid))))
+			currentObject = objManager->FindIndex(objManager->Get(uid));
+
+		for (int i = 0; i < objManager->Get(uid)->GetChildCount(); i++)
+		{
+			if (objManager->Get(uid)->GetChildren()[i]->GetChildCount() > 0)
+			{
+				ImGui::PushID(i);
+				ShowDummyObject(objManager->Get(uid)->GetChild(i)->GetName().c_str(), objManager->FindIndex(objManager->Get(uid)->GetChild(i)));
+				ImGui::PopID();
+			}
+			else
+			{
+				ImGui::PushID(i);
+				if (ImGui::Selectable(objManager->Get(uid)->GetChild(i)->GetName().c_str(), currentObject == objManager->FindIndex(objManager->Get(uid)->GetChild(i))))
+					currentObject = objManager->FindIndex(objManager->Get(uid)->GetChild(i));
+				ImGui::PopID();
+			}
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
 }

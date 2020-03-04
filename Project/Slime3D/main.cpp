@@ -41,20 +41,19 @@ int main()
 	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
 	meshManager->Create("Cube", Primitives::Cube);
-	meshManager->Create("Model", "..\\models\\stan.obj");
 
 	// Objects
 	objectManager->Create("SkyBox", 0, 0, 0);
 	objectManager->Create("Block", 1, 1, 2);
+	objectManager->Get("Block")->SetDescription("This object is the default cube on startup.");
+
 	GameObject* lights[4];
 
 	for (int i = 0; i < 4; i++)
-		lights[i] = objectManager->Create(std::string("Light") + std::to_string(i), 1, 2, 3, glm::vec3(3));
+		lights[i] = objectManager->Create(std::string("Light") + std::to_string(i), 1, 2, 3, 1, glm::vec3(3));
 
 	for (int i = 0; i < 4; i++)
-	{
 		lights[i]->SetScale(glm::vec3(0.10f));
-	}
 
 	debugGui->FirstFrame();
 

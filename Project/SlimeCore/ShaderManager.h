@@ -14,9 +14,13 @@ public:
 	bool Add(Shader* newShader);
 	bool Create(const char* name, const char* vertex, const char* fragment);
 
+	void SetNames();
+	std::vector<std::string> GetNames();
+
 	bool DebugManager();
 
 protected:
+	std::vector<std::string> names;
 	std::vector<Shader*> shaderList;
 };
 

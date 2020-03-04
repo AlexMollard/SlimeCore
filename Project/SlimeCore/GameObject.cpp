@@ -1,7 +1,11 @@
 #include "GameObject.h"
 
-GameObject::GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader)
+GameObject::GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader, GameObject* parent)
 {
+	this->parent = parent;
+	if (parent)
+		parent->child.push_back(this);
+
 	this->name = name;
 	this->mesh = mesh;
 	this->mat = mat;
@@ -80,6 +84,16 @@ void GameObject::SetScale(glm::vec3 newScale)
 	model = glm::scale(model, newScale);
 }
 
+void GameObject::SetMesh(Mesh* newMesh)
+{
+	mesh = newMesh;
+}
+
+void GameObject::SetMaterial(Material* newMaterial)
+{
+	mat = newMaterial;
+}
+
 Texture* GameObject::GetTexture(TEXTURETYPE type)
 {
 	switch (type)
@@ -105,5 +119,100 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 	default:
 		break;
 	}
+	return nullptr;
+}
+
+Shader* GameObject::GetShader()
+{
+	return shader;
+}
+
+void GameObject::SetShader(Shader* newShader)
+{
+	shader = newShader;
+}
+
+std::string GameObject::GetName()
+{
+	return name;
+}
+
+void GameObject::SetName(std::string newName)
+{
+	name = newName;
+}
+
+std::string GameObject::GetDescription()
+{
+	return description;
+}
+
+void GameObject::SetDescription(std::string newDesc)
+{
+	description = newDesc;
+}
+
+GameObject* GameObject::GetChild(int index)
+{
+	if (child.size() < 1)
+	{
+		std::cout << name << " Has no children" << std::endl;
+		return nullptr;
+	}
+
+	if (child[index] != nullptr)
+		return child[index];
+
+	std::cout << "Tried to grab a child from " << name << " that doesent exist." << std::endl;
+	return nullptr;
+}
+
+GameObject* GameObject::GetChild(std::string name)
+{
+	if (child.size() < 1)
+	{
+		std::cout << name << " Has no children" << std::endl;
+		return nullptr;
+	}
+
+	for (int i = 0; i < child.size(); i++)
+		if (child[i]->name == name)
+			return child[i];
+
+	std::cout << "Tried to grab a child from " << name << " that doesent exist." << std::endl;
+	return nullptr;
+}
+
+std::vector<GameObject*> GameObject::GetChildren()
+{
+	if (child.size() < 1)
+	{
+		std::cout << name << "Has no children" << std::endl;
+		return std::vector<GameObject*>();
+	}
+
+	return child;
+}
+
+int GameObject::GetChildCount()
+{
+	return child.size();
+}
+
+void GameObject::SetParent(GameObject* newParent)
+{
+	if (parent != nullptr)
+	{
+		std::cout << "OverWritten the parent for object " << name << "." << std::endl;
+	}
+
+	parent = newParent;
+}
+
+GameObject* GameObject::GetParent()
+{
+	if (parent != nullptr)
+		return parent;
+
 	return nullptr;
 }

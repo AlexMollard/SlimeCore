@@ -10,11 +10,12 @@ public:
 	ObjectManager(MeshManager* meshManager, MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView, glm::vec3* cameraPos);
 	~ObjectManager();
 
-	GameObject* Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos = glm::vec3(0));
-	void Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, glm::vec3 pos = glm::vec3(0));
+	GameObject* Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, int parent = 0, glm::vec3 pos = glm::vec3(0));
+	GameObject* Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos = glm::vec3(0));
 
 	//ImGUI
 	void Create(std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName);
+	void SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName);
 	
 	void Swap(int objIndex, int vectorPos);
 	void Add(GameObject* gameObject);
@@ -26,7 +27,6 @@ public:
 	GameObject* Get(int index);
 	GameObject* Get(std::string name);
 	std::vector<GameObject*> GetVector(int start, int end);
-
 	void SetNamesVector();
 	std::vector<std::string> GetNameVector();
 

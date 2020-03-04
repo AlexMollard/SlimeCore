@@ -16,11 +16,13 @@ public:
 	void ObjectGUI();
 	void ProfilerGUI(float deltaTime);
 	void HierarchyGUI();
+	void ShowDummyObject(const char* prefix, int uid);
 
 protected:
 	ObjectManager* objManager = nullptr;
 	MeshManager* meshManager = nullptr;
 	MaterialManager* matManager = nullptr;
+	ShaderManager* shaderManager = nullptr;
 
 	bool objectWindowVisable = false;
 	bool materialWindowVisable = false;
@@ -34,7 +36,7 @@ protected:
 	float pos[3] = { 0,0,0 };
 	float rot[4] = { 0,0,0,0 };
 	float scale[3] = { 1,1,1 };
-	float lines[60];
+	float lines[30];
 
 	std::string objName = "Testing";
 	char* objNameCharP = nullptr;
@@ -50,6 +52,9 @@ protected:
 
 	std::vector<std::string> objectList;
 	int currentObject = 1;
+
+	std::vector<std::string> shaderList;
+	const char* currentShaderName;
 
 
 

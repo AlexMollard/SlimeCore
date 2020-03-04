@@ -22,17 +22,26 @@ ObjectManager::~ObjectManager()
 	}
 }
 
-GameObject* ObjectManager::Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, glm::vec3 pos)
+GameObject* ObjectManager::Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, int parent, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(name, meshManager->Get(meshIndex), matManager->Get(materialIndex), shaderManager->Get(shaderIndex)));
+	if (parent > 0)
+		objects.push_back(new GameObject(name, meshManager->Get(meshIndex), matManager->Get(materialIndex), shaderManager->Get(shaderIndex), Get(parent)));
+	else
+		objects.push_back(new GameObject(name, meshManager->Get(meshIndex), matManager->Get(materialIndex), shaderManager->Get(shaderIndex)));
+
 	objects.back()->SetPos(pos);
 	return objects.back();
 }
 
-void ObjectManager::Create(std::string name, std::string  meshName, std::string materialName, std::string shaderName, glm::vec3 pos)
+GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos)
 {
-	objects.push_back(new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get(shaderName.c_str())));
+	if (parent.size() > 0)
+		objects.push_back(new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get(shaderName.c_str()), Get(parent)));
+	else
+		objects.push_back(new GameObject(name, meshManager->Get(meshName.c_str()), matManager->Get(materialName.c_str()), shaderManager->Get(shaderName.c_str())));
+
 	objects.back()->SetPos(pos);
+	return objects.back();
 }
 
 void ObjectManager::Create(std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName)
@@ -92,7 +101,7 @@ int ObjectManager::FindIndex(std::string name)
 {
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->name == name)
+		if (objects[i]->GetName() == name)
 		{
 			return i;
 		}
@@ -117,7 +126,7 @@ GameObject* ObjectManager::Get(std::string name)
 {
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->name == name)
+		if (objects[i]->GetName() == name)
 		{
 			return objects[i];
 		}
@@ -145,12 +154,23 @@ std::vector<GameObject*> ObjectManager::GetVector(int start, int end)
 	return gameObjects;
 }
 
+void ObjectManager::SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName)
+{
+	GameObject* go = Get(index);
+	go->SetName(name);
+	go->SetPos(pos);
+	go->SetScale(scale);
+	go->SetMesh(meshManager->Get(meshName.c_str()));
+	go->SetMaterial(matManager->Get(materialName.c_str()));
+	go->SetShader(shaderManager->Get(shaderName.c_str()));
+}
+
 void ObjectManager::SetNamesVector()
 {
 	names.clear();
 	for (int i = 0; i < objects.size(); i++)
 	{
-		names.push_back(objects[i]->name.c_str());
+		names.push_back(objects[i]->GetName().c_str());
 	}
 	textureManager->SetNameList();
 }
@@ -166,7 +186,7 @@ bool ObjectManager::DebugManager()
 	printf("GameObjects: \n");
 	for (int i = 0; i < objects.size(); i++)
 	{
-		std::cout << " - " << objects[i]->name << std::endl;
+		std::cout << " - " << objects[i]->GetName() << std::endl;
 	}
 	printf("\n");
 
@@ -189,10 +209,10 @@ bool ObjectManager::Draw()
 	//std::cout << glfwGetTime() << std::endl;
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if (currentShader != objects[i]->shader)
+		if (currentShader != objects[i]->GetShader())
 		{
-			objects[i]->shader->Use();
-			currentShader = objects[i]->shader;
+			objects[i]->GetShader()->Use();
+			currentShader = objects[i]->GetShader();
 			objects[i]->UpdateUniforms(projectionView, *camPos);
 		}
 
@@ -207,7 +227,7 @@ bool ObjectManager::Draw()
 
 		if (objects[i]->GetTexture(TEXTURETYPE::Diffuse) != currentDiffuse)
 		{
-			objects[i]->shader->setInt("diffuseTexture", 0);
+			objects[i]->GetShader()->setInt("diffuseTexture", 0);
 			currentDiffuse = objects[i]->GetTexture(TEXTURETYPE::Diffuse);
 			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
 			glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Diffuse)->textureID);
@@ -218,7 +238,7 @@ bool ObjectManager::Draw()
 
 			if (objects[i]->GetTexture(TEXTURETYPE::Specular) != currentSpecular)
 			{
-				objects[i]->shader->setInt("specularTexture", 1);
+				objects[i]->GetShader()->setInt("specularTexture", 1);
 				currentSpecular = objects[i]->GetTexture(TEXTURETYPE::Specular);
 				glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
 				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Specular)->textureID);
@@ -226,7 +246,7 @@ bool ObjectManager::Draw()
 
 			if (objects[i]->GetTexture(TEXTURETYPE::Normal) != currentNormal)
 			{
-				objects[i]->shader->setInt("normalTexture", 2);
+				objects[i]->GetShader()->setInt("normalTexture", 2);
 				currentNormal = objects[i]->GetTexture(TEXTURETYPE::Normal);
 				glActiveTexture(GL_TEXTURE0 + 2); // Texture unit 2
 				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Normal)->textureID);
@@ -234,7 +254,7 @@ bool ObjectManager::Draw()
 
 			if (objects[i]->GetTexture(TEXTURETYPE::Ambient) != currentAmbient)
 			{
-				objects[i]->shader->setInt("ambientTexture", 3);
+				objects[i]->GetShader()->setInt("ambientTexture", 3);
 				currentAmbient = objects[i]->GetTexture(TEXTURETYPE::Ambient);
 				glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
 				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Ambient)->textureID);
@@ -242,14 +262,14 @@ bool ObjectManager::Draw()
 
 			if (objects[i]->GetTexture(TEXTURETYPE::Rough) != currentRough)
 			{
-				objects[i]->shader->setInt("roughTexture", 3);
+				objects[i]->GetShader()->setInt("roughTexture", 3);
 				currentRough = objects[i]->GetTexture(TEXTURETYPE::Rough);
 				glActiveTexture(GL_TEXTURE0 + 3); // Texture unit 3
 				glBindTexture(GL_TEXTURE_2D, objects[i]->GetTexture(TEXTURETYPE::Rough)->textureID);
 			}
 		}
 
-		if (objects[i]->name == "SkyBox")
+		if (objects[i]->GetName() == "SkyBox")
 		{
 			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
 			glDepthMask(GL_FALSE);
