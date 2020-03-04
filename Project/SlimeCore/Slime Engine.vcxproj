@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

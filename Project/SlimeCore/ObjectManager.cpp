@@ -47,6 +47,7 @@ GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::
 void ObjectManager::Create(GameObject* parent)
 {
 	GameObject* go = new GameObject("New GameObject", nullptr, nullptr, nullptr, parent);
+	go->SetPos(glm::vec3(0));
 	Add(go);
 	std::cout << "IMGUI just made a object" << std::endl;
 }

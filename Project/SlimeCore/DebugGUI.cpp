@@ -250,14 +250,12 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 {
 	ImGui::Begin("Profiler window", &profilerVisable);
 
-	ImGui::Text("FrameRate: %.3f ms/frame (%.1f FPS)",
-		1000.0f / ImGui::GetIO().Framerate,
-		ImGui::GetIO().Framerate);
+	ImGui::Text("FrameRate: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, currentFPS);
 
 	timerDelay += deltaTime;
 	if (timerDelay > 1.0f)
 	{
-		lines[29] = ImGui::GetIO().Framerate;
+		lines[29] = currentFPS;
 			smallest = 10000.0f;
 			largest = 0.0f;
 
@@ -276,9 +274,18 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 			}
 
 		}
-		timerDelay = 0.0f;
-	}
+		largest *= 1.1f;
+		currentFPS = fpsTotal / fpsCount;
 
+		timerDelay = 0.0f;
+		fpsCount = 0;
+		fpsTotal = 0.0f;
+	}
+	else
+	{
+		fpsCount++;
+		fpsTotal += ImGui::GetIO().Framerate;
+	}
 	ImGui::PlotLines("FrameRate", lines, 30, 0, (const char*)0, smallest, largest, ImVec2(ImGui::GetWindowWidth() - 1, 100));
 
 	ImGui::End();

@@ -35,6 +35,9 @@ protected:
 	float rot[4] = { 0,0,0,0 };
 	float scale[3] = { 1,1,1 };
 	float lines[30];
+	float fpsTotal = 0.0f;
+	int fpsCount = 0;
+	float currentFPS = 0.0f;
 
 	std::string objName = "Testing";
 	char* objNameCharP = nullptr;
