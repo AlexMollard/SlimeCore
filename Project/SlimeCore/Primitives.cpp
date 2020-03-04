@@ -329,15 +329,19 @@ std::vector<glm::vec3> Primitives::CalculateVertNormals(std::vector<glm::vec3>& 
 
 void Primitives::CalculateTangents()
 {
-	for (int i = 0; i < vertices.size(); i+=3)
+	for (int i = 0; i < indices.size(); i+=3)
 	{
-		glm::vec3& v0 = vertices[i + 0];
-		glm::vec3& v1 = vertices[i + 1];
-		glm::vec3& v2 = vertices[i + 2];
+		int i0 = indices[i];
+		int i1 = indices[i + 1];
+		int i2 = indices[i + 2];
 
-		glm::vec2& uv0 = uvs[i + 0];
-		glm::vec2& uv1 = uvs[i + 1];
-		glm::vec2& uv2 = uvs[i + 2];
+		glm::vec3& v0 = vertices[i0];
+		glm::vec3& v1 = vertices[i1];
+		glm::vec3& v2 = vertices[i2];
+
+		glm::vec2& uv0 = uvs[i0];
+		glm::vec2& uv1 = uvs[i1];
+		glm::vec2& uv2 = uvs[i2];
 
 		glm::vec3 deltaPos1 = v1 - v0;
 		glm::vec3 deltaPos2 = v2 - v0;
