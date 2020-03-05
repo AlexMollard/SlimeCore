@@ -1,4 +1,5 @@
 #include "DebugGUI.h"
+#include <random>
 
 DebugGUI::DebugGUI(ObjectManager* objManager, MeshManager* meshManager)
 {
@@ -6,6 +7,7 @@ DebugGUI::DebugGUI(ObjectManager* objManager, MeshManager* meshManager)
 	this->meshManager = meshManager;
 	this->matManager = objManager->matManager;
 	this->shaderManager = objManager->shaderManager;
+	srand(time(NULL));
 }
 
 DebugGUI::~DebugGUI()
@@ -111,8 +113,18 @@ void DebugGUI::MainMenuBar()
 void DebugGUI::MaterialGUI()
 {
 	ImGui::Begin("Create Material", &materialWindowVisable);
-	ImGui::InputText("Name", matNameCharP, sizeof(char) * 32);
-	
+	ImGui::PushItemWidth(250.0f);
+	ImGui::InputText("Name", matNameCharP, sizeof(char) * 64);
+	ImGui::SameLine(300.0f);
+	if (ImGui::Button("Random"))
+	{
+		currentDiffuse = diffuseList[rand() % diffuseList.size()].c_str();
+		currentSpecular = specularList[rand() % specularList.size()].c_str();
+		currentNormal = normalList[rand() % normalList.size()].c_str();
+		currentAmbient = ambientList[rand() % ambientList.size()].c_str();
+		currentRough = roughList[rand() % roughList.size()].c_str();
+	}
+
 	ImVec2 materialImageSize = ImVec2(100,100);
 	float optionsOffSet = 120.0f;
 
@@ -229,7 +241,6 @@ void DebugGUI::MaterialGUI()
 	ImGui::SameLine(100.0f);
 	if (ImGui::Button("CREATE", ImVec2(200, 50)))
 	{
-		// Need to create new material
 		matManager->Create(
 			matName,
 			std::string(currentDiffuse), diffuseStrength,
@@ -308,41 +319,113 @@ void DebugGUI::HierarchyGUI()
 		}
 		if (ImGui::BeginPopup("HierarchyOptions"))
 		{
-			if (ImGui::MenuItem("Duplicate")) {}
-
-			if (ImGui::MenuItem("Delete")) {}
+			if (ImGui::MenuItem("Delete")) 
+			{
+				if (currentObject != -1)
+				{
+					objManager->DeleteObject(objManager->Get(currentObject));
+					objectList = objManager->GetNameVector();
+					currentObject = -1;
+				}
+			}
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Create Prefab")) {}
-
-			ImGui::Separator();
 			if (ImGui::MenuItem("Create Empty")) 
 			{
-				objManager->Create(objManager->Get(currentObject));
+				currentMaterial = materialList[0].c_str();
+				currentShaderName = shaderList[0].c_str();
+				currentMesh = meshList[0].c_str();
+
+				if (currentObject != -1)
+					objManager->Create(objManager->Get(currentObject),"New Object");
+				else
+					objManager->Create(nullptr, "New Object");
+
+
 				objectList = objManager->GetNameVector();
 				currentObject = objManager->objects.size() - 1;
 			}
 
-			if (ImGui::BeginMenu("3D Object"))
+			if (ImGui::BeginMenu("Create Object"))
 			{
-				if (ImGui::MenuItem("Cube")) {};
-
-				if (ImGui::MenuItem("Plane")) {};
-
-				if (ImGui::MenuItem("Cylinder")) {};
-
-				if (ImGui::BeginMenu("Light"))
+				if (ImGui::MenuItem("Cube"))
 				{
-					if (ImGui::MenuItem("Directional Light")) {}
-					if (ImGui::MenuItem("Point Light")) {}
-					ImGui::EndMenu();
+					currentMaterial = "defaultMaterial";
+					currentShaderName = "pbrShader";
+					currentMesh = "Cube";
+
+					if (currentObject != -1)
+						objManager->Create(objManager->Get(currentObject), "New Cube");
+					else
+						objManager->Create(nullptr, "New Cube");
+
+
+					objectList = objManager->GetNameVector();
+					currentObject = objManager->objects.size() - 1;
+				}
+
+				if (ImGui::MenuItem("Plane"))
+				{
+					currentMaterial = "defaultMaterial";
+					currentShaderName = "pbrShader";
+					currentMesh = "Plane";
+
+					if (currentObject != -1)
+						objManager->Create(objManager->Get(currentObject), "New Plane");
+					else
+						objManager->Create(nullptr, "New Plane");
+
+
+					objectList = objManager->GetNameVector();
+					currentObject = objManager->objects.size() - 1;
+				}
+
+				if (ImGui::MenuItem("Cylinder"))
+				{
+					currentMaterial = "defaultMaterial";
+					currentShaderName = "pbrShader";
+					currentMesh = "Cylinder";
+
+					if (currentObject != -1)
+						objManager->Create(objManager->Get(currentObject), "New Cylinder");
+					else
+						objManager->Create(nullptr, "New Cylinder");
+
+
+					objectList = objManager->GetNameVector();
+					currentObject = objManager->objects.size() - 1;
+
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Create Light"))
+			{
+				if (ImGui::MenuItem("Directional Light")) {}
+
+				if (ImGui::MenuItem("Point Light"))
+				{
+					currentMaterial = materialList[0].c_str();
+					currentShaderName = shaderList[0].c_str();
+					currentMesh = meshList[0].c_str();
+
+					if (currentObject != -1)
+						objManager->CreatePointLight("New Point Light", glm::vec3(0), objManager->Get(currentObject));
+					else
+						objManager->CreatePointLight("New Point Light", glm::vec3(0), nullptr);
+
+					objectList = objManager->GetNameVector();
+					currentObject = objManager->objects.size() - 1;
+
 				}
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndPopup();
 		}
+
+		if (ImGui::IsMouseReleased(0) && ImGui::IsMouseHoveringWindow())
+			currentObject = -1;
 
 		for (int i = 0; i < objectList.size(); i++)
 		{
@@ -351,7 +434,7 @@ void DebugGUI::HierarchyGUI()
 			else if (objManager->Get(i)->GetParent() == nullptr)
 			{
 				ImGui::AlignTextToFramePadding();
-				if (ImGui::Selectable(objManager->Get(i)->GetName().c_str(), currentObject == i))
+				if (ImGui::Selectable(objManager->GetObjectName(i).c_str(), currentObject == i))
 					currentObject = i;
 			}
 		}
@@ -361,30 +444,42 @@ void DebugGUI::HierarchyGUI()
 		// right
 		ImGui::BeginGroup();
 		ImGui::BeginChild("Object view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));
+
+		if (currentObject == -1)
+		{
+			ImGui::TextColored(ImVec4(1, 0, 0, 1), "No Item Selected");
+			ImGui::EndChild();
+			ImGui::EndGroup();
+			ImGui::End();
+			return;
+		}
+
 		ImGui::Text(std::string(objectList[currentObject]).c_str());
 		ImGui::Separator();
+
+		GameObject* currentOBJ = objManager->Get(currentObject);
 
 		//Setting vars
 		objNameCharP = &objectList[currentObject][0];
 
-		glm::vec3 tempPos = objManager->Get(currentObject)->GetPos();
+		glm::vec3 tempPos = currentOBJ->GetPos();
 		pos[0] = tempPos.x;
 		pos[1] = tempPos.y;
 		pos[2] = tempPos.z;
 		
-		glm::vec3 tempScale = objManager->Get(currentObject)->GetScale();
+		glm::vec3 tempScale = currentOBJ->GetScale();
 		scale[0] = tempScale.x;
 		scale[1] = tempScale.y;
 		scale[2] = tempScale.z;
 
-		if (objManager->Get(currentObject)->GetMaterial() != nullptr)
-			currentMaterial = objManager->Get(currentObject)->GetMaterial()->name.c_str();
+		if (currentOBJ->GetMaterial() != nullptr)
+			currentMaterial = currentOBJ->GetMaterial()->name.c_str();
 		
-		if (objManager->Get(currentObject)->GetMesh() != nullptr)
-			currentMesh = objManager->Get(currentObject)->GetMesh()->name;
+		if (currentOBJ->GetMesh() != nullptr)
+			currentMesh = currentOBJ->GetMesh()->name;
 		
-		if (objManager->Get(currentObject)->GetShader() != nullptr)
-			currentShaderName = objManager->Get(currentObject)->GetShader()->name.c_str();
+		if (currentOBJ->GetShader() != nullptr)
+			currentShaderName = currentOBJ->GetShader()->name.c_str();
 
 
 
@@ -401,6 +496,13 @@ void DebugGUI::HierarchyGUI()
 		ImGui::Checkbox("Static", staticBool);
 		ImGui::SameLine(100.0f);
 		ImGui::Checkbox("Cast-Shadow", shadowCastBool);
+
+		bool isLight = currentOBJ->GetIsLight();
+
+		if (isLight)
+			ImGui::TextColored(ImVec4(1, 1, 0, 1), "This Object is a Light");
+		else
+			ImGui::TextColored(ImVec4(0.5f, 0.25f, 0, 1), "This Object is not a Light");
 
 		//Transform
 		ImGui::Text("Transform");
@@ -463,6 +565,17 @@ void DebugGUI::HierarchyGUI()
 			ImGui::EndCombo();
 		}
 
+		if (isLight)
+		{
+			ImGui::Separator();
+			ImGui::TextColored(ImVec4(1,1,0,1), "Light Properties");
+			PointLight* currentLight = (PointLight*)currentOBJ;
+			glm::vec3 difColorvec = currentLight->lightDiffuse;
+			float difColor[3] = { difColorvec.x,difColorvec.y,difColorvec.z };
+			ImGui::InputFloat3("DiffuseColor",difColor);
+			currentLight->SetLightDiffuse(glm::vec3(difColor[0], difColor[1], difColor[2]));
+		}
+
 			objManager->SetVars(
 				currentObject,
 				objNameCharP,
@@ -476,7 +589,6 @@ void DebugGUI::HierarchyGUI()
 			);
 
 		ImGui::EndChild();
-
 		ImGui::EndGroup();
 	}
 	ImGui::End();
@@ -490,27 +602,30 @@ void DebugGUI::ShowChildObject(const char* prefix, int uid)
 	ImGui::NextColumn();
 	if (node_open)
 	{
-		if (objManager->Get(uid)->GetChildCount() <= 0)
+		GameObject* currentOBJ = objManager->Get(uid);
+		if (currentOBJ->GetChildCount() >! 0)
 			return;
 		
 		std::string name = "This (" + objectList[uid] + ")";
 
-		if (ImGui::Selectable(name.c_str(), currentObject == objManager->FindIndex(objManager->Get(uid))))
-			currentObject = objManager->FindIndex(objManager->Get(uid));
+		if (ImGui::Selectable(name.c_str(), currentObject == objManager->FindIndex(currentOBJ)))
+			currentObject = objManager->FindIndex(currentOBJ);
 
-		for (int i = 0; i < objManager->Get(uid)->GetChildCount(); i++)
+		for (int i = 0; i < currentOBJ->GetChildCount(); i++)
 		{
-			if (objManager->Get(uid)->GetChildren()[i]->GetChildCount() > 0)
+			GameObject* currentChild = currentOBJ->GetChild(i);
+
+			if (currentOBJ->GetChildren()[i]->GetChildCount() > 0)
 			{
 				ImGui::PushID(i);
-				ShowChildObject(objManager->Get(uid)->GetChild(i)->GetName().c_str(), objManager->FindIndex(objManager->Get(uid)->GetChild(i)));
+				ShowChildObject(currentChild->GetName().c_str(), objManager->FindIndex(currentChild));
 				ImGui::PopID();
 			}
 			else
 			{
 				ImGui::PushID(i);
-				if (ImGui::Selectable(objManager->Get(uid)->GetChild(i)->GetName().c_str(), currentObject == objManager->FindIndex(objManager->Get(uid)->GetChild(i))))
-					currentObject = objManager->FindIndex(objManager->Get(uid)->GetChild(i));
+				if (ImGui::Selectable(currentChild->GetName().c_str(), currentObject == objManager->FindIndex(currentChild)))
+					currentObject = objManager->FindIndex(currentChild);
 				ImGui::PopID();
 			}
 		}

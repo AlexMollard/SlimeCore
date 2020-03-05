@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "PointLight.h"
 #include "ShaderManager.h"
 #include "MaterialManager.h"
 #include "MeshManager.h"
@@ -14,7 +14,7 @@ public:
 	GameObject* Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos = glm::vec3(0));
 
 	//ImGUI
-	void Create(GameObject* parent);
+	void Create(GameObject* parent, std::string name);
 	void SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName);
 	
 	void Swap(int objIndex, int vectorPos);
@@ -29,7 +29,11 @@ public:
 	std::vector<GameObject*> GetVector(int start, int end);
 	void SetNamesVector();
 	std::vector<std::string> GetNameVector();
+	int FindPointLight(GameObject* lightObject);
+	void CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
+	void AddPointLight(PointLight* light);
 
+	void UpdateLights(Shader* shader);
 	void BindTexture(int objectIndex, TEXTURETYPE type, Texture* texture);
 	void SetIntTexture(int objectIndex, TEXTURETYPE type);
 
@@ -38,8 +42,10 @@ public:
 
 	bool Draw();
 	bool Update(float deltaTime);
-
+	void DeleteObject(GameObject* object);
+	std::string GetObjectName(int index);
 	std::vector<GameObject*> objects;
+	std::vector<PointLight*> pointLights;
 	MaterialManager* matManager = nullptr;
 	ShaderManager* shaderManager = nullptr;
 	TextureManager* textureManager = nullptr;

@@ -1,5 +1,9 @@
 #include "GameObject.h"
 
+GameObject::GameObject()
+{
+}
+
 GameObject::GameObject(std::string name, Mesh* mesh, Material* mat, Shader* shader, GameObject* parent)
 {
 	this->parent = parent;
@@ -27,12 +31,12 @@ void GameObject::Update(float deltaTime)
 
 void GameObject::Draw(glm::mat4* ProjectionView)
 {
-	if (shader->name != "None")
+	if (shader != nullptr)
 	{
 		shader->setMat4("ProjectionView", *ProjectionView);
 		shader->setMat4("Model", model);
 	}
-	if (mesh->name != "None")
+	if (mesh != nullptr)
 		mesh->draw(); 
 }
 
@@ -45,18 +49,6 @@ void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
 	shader->setFloat("material.shininess", mat->shininess);
 	shader->setVec3("viewPos", cameraPos);
 
-	// Spot Lights
-	for (int i = 0; i < 4; i++)
-	{
-		shader->setVec3("pointLights[" + std::to_string(i) + "].position", mat->pointLights[i].lightPosition);
-		shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", mat->pointLights[i].lightAmbient);
-		shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", mat->pointLights[i].lightDiffuse);
-		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", mat->pointLights[i].lightSpecular);
-		
-		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", mat->pointLights[i].lightConstant);
-		shader->setFloat("pointLights[" + std::to_string(i) + "].linear", mat->pointLights[i].lightLinear);
-		shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", mat->pointLights[i].lightQuadratic);
-	}
 
 	// Directional Light
 	shader->setVec3("dirLight.direction", mat->dirLightDirection);
@@ -97,6 +89,16 @@ void GameObject::SetScale(glm::vec3 newScale)
 glm::vec3 GameObject::GetScale()
 {
 	return scale;
+}
+
+bool GameObject::GetIsLight()
+{
+	return isPointLight;
+}
+
+void GameObject::SetIsLight(bool value)
+{
+	isPointLight = value;
 }
 
 void GameObject::SetMesh(Mesh* newMesh)
@@ -214,12 +216,47 @@ int GameObject::GetChildCount()
 	return child.size();
 }
 
+void GameObject::AddChild(GameObject* newChild)
+{
+	child.push_back(newChild);
+}
+
+void GameObject::RemoveChild(GameObject* oldChild)
+{
+	int oldChildIndex = FindChild(oldChild);
+	std::vector<GameObject*> newChildrenVector;
+	for (int i = 0; i < child.size(); i++)
+	{
+		if (i == oldChildIndex)
+			continue;
+
+		newChildrenVector.push_back(child[i]);
+	}
+
+	child.clear();
+	child = newChildrenVector;
+}
+
+int GameObject::FindChild(GameObject* childToFind)
+{
+	for (int i = 0; i < child.size(); i++)
+	{
+		if (child[i] == childToFind)
+			return i;
+	}
+	std::cout << "Cant find child!" << std::endl;
+	return 404;
+}
+
 void GameObject::SetParent(GameObject* newParent)
 {
 	if (parent != nullptr)
 	{
 		std::cout << "OverWritten the parent for object " << name << "." << std::endl;
 	}
+
+	if (newParent != nullptr)
+		newParent->AddChild(this);
 
 	parent = newParent;
 }

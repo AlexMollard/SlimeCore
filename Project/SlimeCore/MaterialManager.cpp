@@ -135,17 +135,6 @@ bool MaterialManager::DebugManager()
 	return true;
 }
 
-void MaterialManager::SetSpotLightPos(glm::vec3 lightOne, glm::vec3 lightTwo, glm::vec3 lightThree, glm::vec3 lightFour)
-{
-	for (int i = 0; i < materialList.size(); i++)
-	{
-		materialList[i]->pointLights[0].SetLightPosition(lightOne);
-		materialList[i]->pointLights[1].SetLightPosition(lightTwo);
-		materialList[i]->pointLights[2].SetLightPosition(lightThree);
-		materialList[i]->pointLights[3].SetLightPosition(lightFour);
-	}
-}
-
 void MaterialManager::SetDirLightDirection(glm::vec3 direction)
 {
 	for (int i = 0; i < materialList.size(); i++)

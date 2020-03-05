@@ -44,9 +44,9 @@ GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::
 	return objects.back();
 }
 
-void ObjectManager::Create(GameObject* parent)
+void ObjectManager::Create(GameObject* parent, std::string name)
 {
-	GameObject* go = new GameObject("New GameObject", nullptr, nullptr, nullptr, parent);
+	GameObject* go = new GameObject(name, nullptr, nullptr, nullptr, parent);
 	go->SetPos(glm::vec3(0));
 	Add(go);
 	std::cout << "IMGUI just made a object" << std::endl;
@@ -180,6 +180,57 @@ std::vector<std::string> ObjectManager::GetNameVector()
 	return names;
 }
 
+int ObjectManager::FindPointLight(GameObject* lightObject)
+{
+	for (int i = 0; i < pointLights.size(); i++)
+	{
+		if (pointLights[i] == lightObject)
+			return i;
+	}
+
+	std::cout << "Cannot find a light." << std::endl;
+	return 404;
+}
+
+void ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent)
+{
+	PointLight* pLight = new PointLight(name, pos);
+	pLight->SetShader(shaderManager->Get("lightShader"));
+	pLight->SetMaterial(matManager->Get("None"));
+	pLight->SetMesh(meshManager->Get("Cube"));
+	pLight->SetScale(glm::vec3(0.1f));
+	pLight->SetIsLight(true);
+
+	if (parent != nullptr)
+		pLight->SetParent(parent);
+
+	AddPointLight(pLight);
+}
+
+void ObjectManager::AddPointLight(PointLight* light)
+{
+	pointLights.push_back(light);
+	Add(light);
+}
+
+void ObjectManager::UpdateLights(Shader* shader)
+{
+	// Spot Lights
+
+	shader->setInt("pointLightTotal", pointLights.size());
+	for (int i = 0; i < pointLights.size(); i++)
+	{
+		shader->setVec3("pointLights[" + std::to_string(i) + "].position", pointLights[i]->GetPos());
+		shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", pointLights[i]->lightAmbient);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", pointLights[i]->lightDiffuse);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", pointLights[i]->lightSpecular);
+
+		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", pointLights[i]->lightConstant);
+		shader->setFloat("pointLights[" + std::to_string(i) + "].linear", pointLights[i]->lightLinear);
+		shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", pointLights[i]->lightQuadratic);
+	}
+}
+
 void ObjectManager::BindTexture(int objectIndex, TEXTURETYPE texType, Texture* texture)
 {
 	if (texture != nullptr)
@@ -247,21 +298,36 @@ bool ObjectManager::DebugAll()
 	return true;
 }
 
+/*
+
+*/
+
 bool ObjectManager::Draw()
 {
-	//matManager->SetDirLightDirection(glm::vec3(0, -1, -0.3));
+	matManager->SetDirLightDirection(glm::vec3(glm::sin(glfwGetTime()), 0, glm::cos(glfwGetTime())));
 	
 	for (int i = 0; i < objects.size(); i++)
 	{
 		Shader* objShader = objects[i]->GetShader();
 		Material* objMaterial = objects[i]->GetMaterial();
 
+
+		if (objMaterial == nullptr)
+		{
+			objects[i]->Draw(projectionView);
+			continue;
+		}
+
 		if (currentShader != objects[i]->GetShader())
 		{
 			objects[i]->GetShader()->Use();
 			currentShader = objects[i]->GetShader();
 			objects[i]->UpdateUniforms(projectionView, *camPos);
+			UpdateLights(objShader);
 		}
+
+		if (objShader->name == "lightShader")
+			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->lightDiffuse);
 
 		if (currentMaterial != objMaterial)
 		{
@@ -307,4 +373,51 @@ bool ObjectManager::Update(float deltaTime)
 		objects[i]->Update(deltaTime);
 	}
 	return true;
+}
+
+void ObjectManager::DeleteObject(GameObject* object)
+{
+	// Grab all children from object.
+	// Set all child objects parent to nullptr or deleted objects parent.
+	// Delete object from vector.
+	// Create new vector with out the deleted object.
+
+	GameObject* newParent = nullptr;
+
+	if (object->GetParent() != nullptr)
+	{
+		newParent = object->GetParent();
+		newParent->RemoveChild(object);
+	}
+
+	if (object->GetChildCount() > 0)
+	{
+		std::vector<GameObject*> children = object->GetChildren();
+
+		for (int i = 0; i < children.size(); i++)
+			children[i]->SetParent(newParent);
+	}
+
+	int objectsIndex = FindIndex(object);
+	std::vector<GameObject*> newObjectsVector;
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (i == objectsIndex)
+			continue;
+
+		newObjectsVector.push_back(objects[i]);
+	}
+
+	objects.clear();
+	objects = newObjectsVector;
+
+	delete object;
+	object = nullptr;
+
+	SetNamesVector();
+}
+
+std::string ObjectManager::GetObjectName(int index)
+{
+	return Get(index)->GetName();
 }

@@ -23,7 +23,6 @@ Material::Material(std::string name, Texture* diffuse, Texture* specMap, Texture
 	this->roughMap = roughMap;
 
 	setMatAtrributes();
-	pointLights->SetLightAttributes();
 	SetDirectionalLightAttributes();
 }
 
@@ -56,7 +55,6 @@ Material::Material(std::string name, Texture* diffuse, float diffuseStrength, Te
 	this->roughStrength = roughStrength;
 
 	setMatAtrributes();
-	pointLights->SetLightAttributes();
 	SetDirectionalLightAttributes();
 }
 
@@ -71,7 +69,6 @@ Material::Material(std::string name, Texture* diffuse)
 	this->roughMap = nullptr;
 
 	setMatAtrributes();
-	pointLights->SetLightAttributes();
 	SetDirectionalLightAttributes();
 }
 
@@ -85,17 +82,6 @@ void Material::setMatAtrributes(glm::vec3 newAmbient, glm::vec3 newDiffuseColor,
 	setDiffuseColor(newDiffuseColor);
 	setSpecular(newSpecular);
 	setShininess(newShininess);
-}
-
-void Material::PointLight::SetLightAttributes(glm::vec3 newAmbient, glm::vec3 newDiffuse, glm::vec3 newSpecular, float newConstant, float newLinear, float newQuadratic)
-{
-	SetLightAmbient(newAmbient);
-	SetLightDiffuse(newDiffuse);
-	SetLightSpecular(newSpecular);
-
-	SetLightConstant(newConstant);
-	SetLightLinear(newLinear);
-	SetLightQuadratic(newQuadratic);
 }
 
 void Material::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 newAmbient, glm::vec3 newDiffuse, glm::vec3 newSpecular)

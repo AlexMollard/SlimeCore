@@ -21,7 +21,6 @@ public:
 	void SetNames();
 	std::vector<std::string> GetNames();
 
-	void SetSpotLightPos(glm::vec3 lightOne, glm::vec3 lightTwo, glm::vec3 lightThree, glm::vec3 lightFour);
 	void SetDirLightDirection(glm::vec3 direction);
 
 	bool DebugManager();

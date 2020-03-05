@@ -38,9 +38,9 @@ uniform vec3 viewPos;
 uniform Material material;
 
 uniform sampler2D diffuseTexture;
-
-#define NR_POINT_LIGHTS 4  
-uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform int pointLightTotal;
+#define MAX_LIGHTS 32
+uniform PointLight pointLights[MAX_LIGHTS];
 uniform DirectionalLight dirLight;
 
 vec3 CalcDirectionLight(DirectionalLight light, vec3 normal, vec3 viewDir)
@@ -92,7 +92,7 @@ void main()
 	vec3 result = CalcDirectionLight(dirLight, norm, viewDir);
 
 	// Point Lights
-	for (int i = 0; i < NR_POINT_LIGHTS; i++)
+	for (int i = 0; i < pointLightTotal; i++)
 		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
 	FragColour = vec4(result, 1.0);
