@@ -19,11 +19,11 @@ MaterialManager::~MaterialManager()
 	}
 }
 
-Material* MaterialManager::Get(const char* name, bool creation)
+Material* MaterialManager::Get(std::string name, bool creation)
 {
 	for (int i = 0; i < materialList.size(); i++)
 	{
-		if (std::string(materialList[i]->name) == std::string(name))
+		if (std::string(materialList[i]->GetName()) == std::string(name))
 		{
 			return materialList[i];
 		}
@@ -39,14 +39,14 @@ Material* MaterialManager::Get(int index)
 
 bool MaterialManager::Create(std::string name, Texture* texture)
 {
-	if (Get(name.c_str(),true) == nullptr)
+	if (Get(name,true) == nullptr)
 	{
 		//printf("Creating Material with name: %s.\n", name);
 		Add(new Material(name, texture));
 		return true;
 	}
 
-	printf("Material already exist with name: %s.\n", name);
+	printf("Material already exist with name: %s.\n", name.c_str());
 	return false;
 }
 
@@ -59,7 +59,7 @@ bool MaterialManager::Create(std::string name, Texture* diffuse, Texture* specul
 		return true;
 	}
 
-	printf("Material already exist with name: %s.\n", name);
+	printf("Material already exist with name: %s.\n", name.c_str());
 	return false;
 }
 
@@ -99,7 +99,7 @@ void MaterialManager::SetNames()
 	materialNames.clear();
 	for (int i = 0; i < materialList.size(); i++)
 	{
-		materialNames.push_back(materialList[i]->name);
+		materialNames.push_back(materialList[i]->GetName());
 	}
 }
 
@@ -109,10 +109,10 @@ std::vector<std::string> MaterialManager::GetNames()
 	return materialNames;
 }
 
-Material* MaterialManager::NotFound(bool creation, const char* name, int index)
+Material* MaterialManager::NotFound(bool creation, std::string name, int index)
 {
 	if (!creation)
-		printf("Material Not Found with name: %s, index: %d.\n", name, index);
+		printf("Material Not Found with name: %s, index: %d.\n", name.c_str(), index);
 	
 	return nullptr;
 }
@@ -128,7 +128,7 @@ bool MaterialManager::DebugManager()
 	printf("Materials: \n");
 	for (int i = 0; i < materialList.size(); i++)
 	{
-		std::cout << " - " << materialList[i]->name << std::endl;
+		std::cout << " - " << materialList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 

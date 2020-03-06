@@ -44,12 +44,13 @@ GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::
 	return objects.back();
 }
 
-void ObjectManager::Create(GameObject* parent, std::string name)
+GameObject* ObjectManager::Create(GameObject* parent, std::string name)
 {
 	GameObject* go = new GameObject(name, nullptr, nullptr, nullptr, parent);
 	go->SetPos(glm::vec3(0));
 	Add(go);
 	std::cout << "IMGUI just made a object" << std::endl;
+	return go;
 }
 
 void ObjectManager::Swap(int objIndex, int vectorPos)
@@ -66,20 +67,15 @@ void ObjectManager::Add(GameObject* gameObject)
 	objects.push_back(gameObject);
 }
 
-void ObjectManager::AddArray(GameObject** gameObject, int amount)
+void ObjectManager::Add(GameObject** gameObject, int amount)
 {
 	for (int i = 0; i < amount; i++)
 		objects.push_back(gameObject[i]);
 }
 
-void ObjectManager::AddArray(std::vector<GameObject*> gameObjects)
+void ObjectManager::Add(std::vector<GameObject*> gameObjects)
 {
-	AddArray(gameObjects.data(), gameObjects.size());
-}
-
-void ObjectManager::MoveObject(GameObject* obj, int newPos)
-{
-	int currentPos = FindIndex(obj);
+	Add(gameObjects.data(), gameObjects.size());
 }
 
 int ObjectManager::FindIndex(GameObject* object)
@@ -110,6 +106,11 @@ int ObjectManager::FindIndex(std::string name)
 	return 404;
 }
 
+int ObjectManager::GetObjectSize()
+{
+	return objects.size();
+}
+
 GameObject* ObjectManager::Get(int index)
 {
 	if (objects[index] == nullptr)
@@ -135,7 +136,7 @@ GameObject* ObjectManager::Get(std::string name)
 	return nullptr;
 }
 
-std::vector<GameObject*> ObjectManager::GetVector(int start, int end)
+std::vector<GameObject*> ObjectManager::Get(int start, int end)
 {
 	if (start < 0 || end > objects.size())
 	{
@@ -159,9 +160,15 @@ void ObjectManager::SetVars(int index, std::string name, bool isStatic, glm::vec
 	go->SetName(name);
 	go->SetPos(pos);
 	go->SetScale(scale);
-	go->SetMesh(meshManager->Get(meshName.c_str()));
-	go->SetMaterial(matManager->Get(materialName.c_str()));
-	go->SetShader(shaderManager->Get(shaderName.c_str()));
+
+	if (meshName != "")
+		go->SetMesh(meshManager->Get(meshName.c_str()));
+
+	if (materialName != "")
+		go->SetMaterial(matManager->Get(materialName));
+
+	if (shaderName != "")
+		go->SetShader(shaderManager->Get(shaderName.c_str()));
 }
 
 void ObjectManager::SetNamesVector()
@@ -221,13 +228,13 @@ void ObjectManager::UpdateLights(Shader* shader)
 	for (int i = 0; i < pointLights.size(); i++)
 	{
 		shader->setVec3("pointLights[" + std::to_string(i) + "].position", pointLights[i]->GetPos());
-		shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", pointLights[i]->lightAmbient);
-		shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", pointLights[i]->lightDiffuse);
-		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", pointLights[i]->lightSpecular);
+		shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", pointLights[i]->GetAmbient());
+		shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", pointLights[i]->GetDiffuse());
+		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", pointLights[i]->GetSpecular());
 
-		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", pointLights[i]->lightConstant);
-		shader->setFloat("pointLights[" + std::to_string(i) + "].linear", pointLights[i]->lightLinear);
-		shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", pointLights[i]->lightQuadratic);
+		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", pointLights[i]->GetConstant());
+		shader->setFloat("pointLights[" + std::to_string(i) + "].linear", pointLights[i]->GetLinear());
+		shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", pointLights[i]->GetQuadratic());
 	}
 }
 
@@ -327,7 +334,7 @@ bool ObjectManager::Draw()
 		}
 
 		if (objShader->name == "lightShader")
-			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->lightDiffuse);
+			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->GetDiffuse());
 
 		if (currentMaterial != objMaterial)
 		{
@@ -336,11 +343,11 @@ bool ObjectManager::Draw()
 			for (int n = 0; n < 5; n++)
 				currentTexture[n] = nullptr;
 
-			objShader->setFloat("diffuseStrength", objMaterial->diffuseStrength);
-			objShader->setFloat("specularStrength", objMaterial->specularStrength);
-			objShader->setFloat("normalStrength", objMaterial->normalStrength);
-			objShader->setFloat("ambientStrength", objMaterial->ambientStrength);
-			objShader->setFloat("roughStrength", objMaterial->roughStrength);
+			objShader->setFloat("diffuseStrength", objMaterial->GetDiffuseStrength());
+			objShader->setFloat("specularStrength", objMaterial->GetSpecularStrength());
+			objShader->setFloat("normalStrength", objMaterial->GetNormalStrength());
+			objShader->setFloat("ambientStrength", objMaterial->GetAmbientStrength());
+			objShader->setFloat("roughStrength", objMaterial->GetRoughStrength());
 		}
 
 		BindTexture(i, TEXTURETYPE::Diffuse, objects[i]->GetTexture(TEXTURETYPE::Diffuse));

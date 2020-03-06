@@ -1,12 +1,13 @@
 #include "DebugGUI.h"
 #include <random>
-
-DebugGUI::DebugGUI(ObjectManager* objManager, MeshManager* meshManager)
+#include <Windows.h>
+DebugGUI::DebugGUI(ObjectManager* objManager, MeshManager* meshManager, MaterialManager* materialManager, TextureManager* textureManager, ShaderManager* shaderManager)
 {
 	this->objManager = objManager;
 	this->meshManager = meshManager;
-	this->matManager = objManager->matManager;
-	this->shaderManager = objManager->shaderManager;
+	this->matManager = materialManager;
+	this->shaderManager = shaderManager;
+	this->textureManager = textureManager;
 	srand(time(NULL));
 }
 
@@ -14,7 +15,6 @@ DebugGUI::~DebugGUI()
 {
 	delete staticBool;
 	delete shadowCastBool;
-	delete shininess;
 }
 
 void DebugGUI::Render(float deltaTime)
@@ -53,19 +53,19 @@ void DebugGUI::FirstFrame()
 	objNameCharP = &objName[0];
 	matNameCharP = &matName[0];
 
-	diffuseList = objManager->textureManager->GetNameList(TEXTURETYPE::Diffuse);
+	diffuseList = textureManager->GetNameList(TEXTURETYPE::Diffuse);
 	currentDiffuse = diffuseList[0].c_str();
 
-	specularList = objManager->textureManager->GetNameList(TEXTURETYPE::Specular);
+	specularList = textureManager->GetNameList(TEXTURETYPE::Specular);
 	currentSpecular = specularList[0].c_str();
 
-	normalList = objManager->textureManager->GetNameList(TEXTURETYPE::Normal);
+	normalList = textureManager->GetNameList(TEXTURETYPE::Normal);
 	currentNormal = normalList[0].c_str();
 
-	ambientList = objManager->textureManager->GetNameList(TEXTURETYPE::Ambient);
+	ambientList = textureManager->GetNameList(TEXTURETYPE::Ambient);
 	currentAmbient = ambientList[0].c_str();
 
-	roughList = objManager->textureManager->GetNameList(TEXTURETYPE::Rough);
+	roughList = textureManager->GetNameList(TEXTURETYPE::Rough);
 	currentRough = roughList[0].c_str();
 
 	meshList = meshManager->GetNames();
@@ -129,7 +129,7 @@ void DebugGUI::MaterialGUI()
 	float optionsOffSet = 120.0f;
 
 	//Diffuse
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->textureID, materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Diffuse: ");
@@ -150,7 +150,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::EndGroup();
 
 	// Specular
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Specular: ");
@@ -171,7 +171,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::EndGroup();
 
 	// Normal
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->textureID, materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Normal: ");
@@ -193,7 +193,7 @@ void DebugGUI::MaterialGUI()
 
 
 	// Ambient
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->textureID, materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Ambient: ");
@@ -215,7 +215,7 @@ void DebugGUI::MaterialGUI()
 
 
 	// Rough
-	ImGui::Image((void*)(intptr_t)objManager->textureManager->Get(objManager->textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Rough: ");
@@ -344,7 +344,7 @@ void DebugGUI::HierarchyGUI()
 
 
 				objectList = objManager->GetNameVector();
-				currentObject = objManager->objects.size() - 1;
+				currentObject = objManager->GetObjectSize() - 1;
 			}
 
 			if (ImGui::BeginMenu("Create Object"))
@@ -362,7 +362,7 @@ void DebugGUI::HierarchyGUI()
 
 
 					objectList = objManager->GetNameVector();
-					currentObject = objManager->objects.size() - 1;
+					currentObject = objManager->GetObjectSize() - 1;
 				}
 
 				if (ImGui::MenuItem("Plane"))
@@ -378,7 +378,7 @@ void DebugGUI::HierarchyGUI()
 
 
 					objectList = objManager->GetNameVector();
-					currentObject = objManager->objects.size() - 1;
+					currentObject = objManager->GetObjectSize() - 1;
 				}
 
 				if (ImGui::MenuItem("Cylinder"))
@@ -394,7 +394,7 @@ void DebugGUI::HierarchyGUI()
 
 
 					objectList = objManager->GetNameVector();
-					currentObject = objManager->objects.size() - 1;
+					currentObject = objManager->GetObjectSize() - 1;
 
 				}
 				ImGui::EndMenu();
@@ -415,7 +415,7 @@ void DebugGUI::HierarchyGUI()
 						objManager->CreatePointLight("New Point Light", glm::vec3(0), nullptr);
 
 					objectList = objManager->GetNameVector();
-					currentObject = objManager->objects.size() - 1;
+					currentObject = objManager->GetObjectSize() - 1;
 
 				}
 				ImGui::EndMenu();
@@ -429,7 +429,7 @@ void DebugGUI::HierarchyGUI()
 
 		for (int i = 0; i < objectList.size(); i++)
 		{
-			if (objManager->Get(i)->GetParent() == nullptr && objManager->Get(i)->GetChildCount() > 0)
+			if (objManager->Get(i)->GetChildCount() > 0)
 				ShowChildObject(objectList[i].c_str(), i);
 			else if (objManager->Get(i)->GetParent() == nullptr)
 			{
@@ -472,9 +472,13 @@ void DebugGUI::HierarchyGUI()
 		scale[1] = tempScale.y;
 		scale[2] = tempScale.z;
 
+
+		//CURRENT MATERIAL ISNT BEING SET AND IDK WHY!
 		if (currentOBJ->GetMaterial() != nullptr)
-			currentMaterial = currentOBJ->GetMaterial()->name.c_str();
-		
+			currentMaterial = currentOBJ->GetMaterial()->GetName().c_str();
+
+
+
 		if (currentOBJ->GetMesh() != nullptr)
 			currentMesh = currentOBJ->GetMesh()->name;
 		
@@ -570,10 +574,10 @@ void DebugGUI::HierarchyGUI()
 			ImGui::Separator();
 			ImGui::TextColored(ImVec4(1,1,0,1), "Light Properties");
 			PointLight* currentLight = (PointLight*)currentOBJ;
-			glm::vec3 difColorvec = currentLight->lightDiffuse;
+			glm::vec3 difColorvec = currentLight->GetDiffuse();
 			float difColor[3] = { difColorvec.x,difColorvec.y,difColorvec.z };
 			ImGui::InputFloat3("DiffuseColor",difColor);
-			currentLight->SetLightDiffuse(glm::vec3(difColor[0], difColor[1], difColor[2]));
+			currentLight->SetDiffuse(glm::vec3(difColor[0], difColor[1], difColor[2]));
 		}
 
 			objManager->SetVars(
@@ -603,7 +607,7 @@ void DebugGUI::ShowChildObject(const char* prefix, int uid)
 	if (node_open)
 	{
 		GameObject* currentOBJ = objManager->Get(uid);
-		if (currentOBJ->GetChildCount() >! 0)
+		if (currentOBJ->GetChildCount() <= 0)
 			return;
 		
 		std::string name = "This (" + objectList[uid] + ")";

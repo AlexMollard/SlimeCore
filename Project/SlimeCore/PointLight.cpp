@@ -4,7 +4,7 @@ PointLight::PointLight(std::string name, glm::vec3 pos)
 {
 	SetName(name);
 	SetPos(pos);
-	SetLightAttributes();
+	SetAttributes();
 }
 
 PointLight::~PointLight()
@@ -12,13 +12,13 @@ PointLight::~PointLight()
 
 }
 
-void PointLight::SetLightAttributes(glm::vec3 newAmbient, glm::vec3 newDiffuse, glm::vec3 newSpecular, float newConstant, float newLinear, float newQuadratic)
+void PointLight::SetAttributes(glm::vec3 newAmbient, glm::vec3 newDiffuse, glm::vec3 newSpecular, float newConstant, float newLinear, float newQuadratic)
 {
-	SetLightAmbient(newAmbient);
-	SetLightDiffuse(newDiffuse);
-	SetLightSpecular(newSpecular);
+	SetAmbient(newAmbient);
+	SetDiffuse(newDiffuse);
+	SetSpecular(newSpecular);
 
-	SetLightConstant(newConstant);
-	SetLightLinear(newLinear);
-	SetLightQuadratic(newQuadratic);
+	SetConstant(newConstant);
+	SetLinear(newLinear);
+	SetQuadratic(newQuadratic);
 }

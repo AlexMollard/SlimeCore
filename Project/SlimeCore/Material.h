@@ -5,34 +5,55 @@
 class Material
 {
 public:
+
+	// Constructors (Subject to change)
+	//-----------------
 	Material(std::string name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap);
 	Material(std::string name, Texture* diffuse, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength);
 	Material(std::string name, Texture* diffuse);
+	
 	virtual ~Material();
 
+	// Textures
+	//----------------
+	// Set
+	void SetDiffuse(Texture* newDiffuse);
+	void SetSpecMap(Texture* newSpecular);
+	void SetNormalMap(Texture* newNormal);
+	void SetAmbientMap(Texture* newAmbient);
+	void SetRoughMap(Texture* newRough);
+
+	// Get
 	Texture* GetDiffuse();
 	Texture* GetSpecMap();
 	Texture* GetNormalMap();
 	Texture* GetAmbientMap();
 	Texture* GetRoughMap();
 
-	std::string name = "DefaultName";
+	// Texture Strengths
+	//----------------
+	// Set
+	void SetDiffuseStrength(float value) { diffuseStrength = value; }
+	void SetSpecularStrength(float value) { specularStrength = value; }
+	void SetNormalStrength(float value) { normalStrength = value; }
+	void SetAmbientStrength(float value) { ambientStrength = value; }
+	void SetRoughStrength(float value) { roughStrength = value; }
 
-	// Materials
-	glm::vec3 ambient = glm::vec3(1);
-	glm::vec3 diffuseColor = glm::vec3(1);
-	glm::vec3 specular = glm::vec3(1);
-	float shininess = 1.0f;
+	// Get
+	float GetDiffuseStrength() { return diffuseStrength; }
+	float GetSpecularStrength() { return specularStrength; }
+	float GetNormalStrength() { return normalStrength; }
+	float GetAmbientStrength() { return ambientStrength; }
+	float GetRoughStrength() { return roughStrength; }
 
-	void setMatAtrributes(glm::vec3 newAmbient = glm::vec3(0.4f, 0.05f, 0.14f), glm::vec3 newDiffuseColor = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
-	void setAmbient(glm::vec3 newAmbient) { ambient = newAmbient; }
-	void setDiffuseColor(glm::vec3 newDiffuseColor) { diffuseColor = newDiffuseColor; }
-	void setSpecular(glm::vec3 newSpecular) { specular = newSpecular; }
+	// Material Attributes (Outdated mainly used in phong lighting)
+	// -------------------
 	void setShininess(float newShininess) { shininess = newShininess; }
+	float GetShininess() { return shininess; }
 
-	// DirectionalLight
+	// DirectionalLight (Needs to be made into own class)
+	//------------------
 	glm::vec3 dirLightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
-
 	glm::vec3 dirLightAmbient = glm::vec3(0.2f);
 	glm::vec3 dirLightDiffuse = glm::vec3(1.0, 0.75, 0.5);
 	glm::vec3 dirLightSpecular = glm::vec3(1.0f);
@@ -43,18 +64,32 @@ public:
 	void SetDirectionalLightDiffuse(glm::vec3 newDiffuse) { dirLightDiffuse = newDiffuse; }
 	void SetDirectionalLightSpecular(glm::vec3 newSpecular) { dirLightSpecular = newSpecular; }
 
+	// Misc Functions
+	//------------------
+	void SetName(std::string newName) { name = newName; }
+	std::string GetName() { return name; }
+
+protected:
+	// Misc
+	std::string name = "DefaultName";
+
+	// Phong Lighting variables
+	float shininess = 1.0f;
+
+	// Has Bools
 	bool hasSpecMap = false;
 	bool hasNormalMap = false;
 	bool hasSpecColorMap = false;
 	bool hasRoughMap = false;
 
+	// Texture Strengths
 	float diffuseStrength = 1.0f;
 	float specularStrength = 1.0f;
 	float normalStrength = 1.0f;
 	float ambientStrength = 1.0f;
 	float roughStrength = 1.0f;
-protected:
 
+	// TextureMaps
 	Texture* diffuse = nullptr;
 	Texture* specMap = nullptr;
 	Texture* normalMap = nullptr;

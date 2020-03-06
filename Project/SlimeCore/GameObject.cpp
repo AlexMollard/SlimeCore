@@ -43,10 +43,7 @@ void GameObject::Draw(glm::mat4* ProjectionView)
 void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
 {
 	// Material
-	shader->setVec3("material.ambient", mat->ambient);
-	shader->setVec3("material.diffuseColor", mat->diffuseColor);
-	shader->setVec3("material.specular", mat->specular);
-	shader->setFloat("material.shininess", mat->shininess);
+	shader->setFloat("material.shininess", mat->GetShininess());
 	shader->setVec3("viewPos", cameraPos);
 
 
@@ -63,6 +60,7 @@ void GameObject::SetPos(glm::vec3 newPos)
 	model[3] = glm::vec4(newPos,1);
 }
 
+
 glm::vec3 GameObject::GetPos()
 {
 	return position;
@@ -72,6 +70,13 @@ void GameObject::AddRotate(float rotSpeed, glm::vec3 rotDIR)
 {
 	rotation = rotDIR;
 	model = glm::rotate(model, rotSpeed, rotation);
+}
+
+void GameObject::SetSkyBoxPos(glm::vec3* newPos)
+{
+	model[3][0] = newPos[0][0];
+	model[3][1] = newPos[0][1];
+	model[3][2] = newPos[0][2];
 }
 
 void GameObject::SetScale(glm::vec3 newScale)

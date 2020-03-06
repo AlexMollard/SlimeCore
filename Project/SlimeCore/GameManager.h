@@ -4,6 +4,10 @@
 #include"TextureManager.h"
 #include"ObjectManager.h"
 
+//----------------------
+// WORK IN PROGRESS
+//----------------------
+
 class GameManager
 {
 public:

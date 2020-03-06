@@ -9,7 +9,6 @@ class Application
 public:
 	Application(int windowWidth, int windowHeight, std::string name) { Create(windowWidth,windowHeight,name); };
 	~Application();
-	int Create(int windowWidth, int windowHeight, std::string name);
 
 	GLFWwindow* window = nullptr;
 	using uint = unsigned int;
@@ -25,6 +24,7 @@ public:
 	float delta = 1.0f;
 
 	// Functions
+	int Create(int windowWidth, int windowHeight, std::string name);
 	void Update();
 	void processInput(GLFWwindow* window);
 	void Update_Window(GLFWwindow* window);

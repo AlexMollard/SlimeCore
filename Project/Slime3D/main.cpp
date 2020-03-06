@@ -17,7 +17,7 @@ int main()
 	ObjectManager* objectManager = new ObjectManager(meshManager, materialManager, shaderManager, textureManager, app->projectionViewMat, &app->GetCamera()->Position);
 	
 	// Creating debugging GUI
-	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager);
+	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager,materialManager,textureManager,shaderManager);
 
 	// Setting variables
 	float& deltaTime = *app->GetDeltaPointer();
@@ -54,13 +54,13 @@ int main()
 
 	debugGui->FirstFrame();
 
+	objectManager->DebugAll();
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{
 		timer += 0.5f * deltaTime;
 		
-		// Set SkyBox on camera
-		objectManager->objects[0]->SetPos(app->GetCamera()->Position);
+		objectManager->Get(0)->SetSkyBoxPos(&app->GetCamera()->Position);
 
 		// Draw Objects
 		objectManager->Draw();

@@ -17,7 +17,7 @@ MeshManager::~MeshManager()
 	}
 }
 
-Mesh* MeshManager::Get(const char* name, bool creation)
+Mesh* MeshManager::Get(std::string name, bool creation)
 {
 	SetNames();
 	for (int i = 0; i < meshList.size(); i++)
@@ -36,10 +36,10 @@ Mesh* MeshManager::Get(int index)
 	return meshList[index] ? meshList[index] : NotFound(false, "---", index);
 }
 
-Mesh* MeshManager::NotFound(bool creation, const char* name, int index)
+Mesh* MeshManager::NotFound(bool creation, std::string name, int index)
 {
 	if (!creation)
-		printf("Mesh Not Found with name: %s, index: %d.\n", name, index);
+		printf("Mesh Not Found with name: %s, index: %d.\n", name.c_str(), index);
 
 	return nullptr;
 }
