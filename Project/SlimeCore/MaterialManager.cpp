@@ -84,14 +84,17 @@ void MaterialManager::Create(std::string name, std::string diffuseName, float di
 int MaterialManager::GetIndex(std::string name)
 {
 	SetNames();
-
 	for (int i = 0; i < materialNames.size(); i++)
 	{
 		if (materialNames[i] == name)
 			return i;
-	
 	}
 	return 404;
+}
+
+int MaterialManager::GetIndex(Material* mat)
+{
+	return (GetIndex(mat->GetName()) != 404 ? GetIndex(mat->GetName()) : 404);
 }
 
 void MaterialManager::SetNames()

@@ -11,18 +11,15 @@
 class Shader
 {	
 public:
-	unsigned int shader_ID = 0;
-	std::string name = "DefaultName";
-
-	Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
-	Shader(const char* name);
+	Shader(std::string name, const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+	Shader(std::string name);
 	~Shader();
 
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 	void CheckCompileErrors(GLuint shader, std::string type);
 	unsigned int GetID();
 	void Use() { glUseProgram(shader_ID); }
-
+	std::string GetName() { return name; };
 #pragma region Uniform functions
 	// ------------------------------------------------------------------------
 	void setBool(const std::string& name, bool value) const
@@ -90,5 +87,9 @@ public:
 		glUniformMatrix4fv(glGetUniformLocation(shader_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
 #pragma endregion
+
+protected:
+	unsigned int shader_ID = 0;
+	std::string name = "DefaultName";
 };
 

@@ -247,7 +247,7 @@ void ObjectManager::BindTexture(int objectIndex, TEXTURETYPE texType, Texture* t
 			SetIntTexture(objectIndex, texType);
 			currentTexture[(int)texType] = texture;
 			glActiveTexture(GL_TEXTURE0 + (int)texType); // Texture unit 1
-			glBindTexture(GL_TEXTURE_2D, texture->textureID);
+			texture->Bind();
 		}
 	}
 	else
@@ -316,9 +316,10 @@ bool ObjectManager::Draw()
 	for (int i = 0; i < objects.size(); i++)
 	{
 		Shader* objShader = objects[i]->GetShader();
+		if (objShader == nullptr)
+			continue;
+		
 		Material* objMaterial = objects[i]->GetMaterial();
-
-
 		if (objMaterial == nullptr)
 		{
 			objects[i]->Draw(projectionView);
@@ -333,7 +334,7 @@ bool ObjectManager::Draw()
 			UpdateLights(objShader);
 		}
 
-		if (objShader->name == "lightShader")
+		if (objShader->GetName() == "lightShader")
 			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->GetDiffuse());
 
 		if (currentMaterial != objMaterial)

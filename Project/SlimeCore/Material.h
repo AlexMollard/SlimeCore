@@ -67,7 +67,7 @@ public:
 	// Misc Functions
 	//------------------
 	void SetName(std::string newName) { name = newName; }
-	std::string GetName() { return name; }
+	std::string GetName() { return name.c_str(); }
 
 protected:
 	// Misc

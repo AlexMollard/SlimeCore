@@ -19,6 +19,7 @@ public:
 	// Get Functions
 	//--------------------
 	int GetIndex(std::string name);
+	int GetIndex(Material* name);
 	Material* Get(std::string name, bool creation = false);
 	Material* Get(int index);
 
@@ -33,7 +34,7 @@ public:
 	std::vector<std::string> GetNames();
 	Material* NotFound(bool creation, std::string name = "---", int index = 404);
 
-protected:
+//protected:
 	// Get a refrence to all textures
 	TextureManager* textureManager = nullptr;
 	

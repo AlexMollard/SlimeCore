@@ -16,6 +16,7 @@ public:
 	// Get Functions
 	//--------------------
 	int GetIndex(std::string name);
+	int GetIndex(Mesh* name);
 	Mesh* Get(std::string name, bool creation = false);
 	Mesh* Get(int index);
 

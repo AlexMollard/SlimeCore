@@ -124,7 +124,7 @@ void TextureManager::SetNameList()
 		diffuseNames.clear();
 		for (int i = 0; i < diffuseList.size(); i++)
 		{
-			diffuseNames.push_back(diffuseList[i]->name);
+			diffuseNames.push_back(diffuseList[i]->GetName());
 		}
 	}
 	
@@ -133,7 +133,7 @@ void TextureManager::SetNameList()
 		specularNames.clear();
 		for (int i = 0; i < specularList.size(); i++)
 		{
-			specularNames.push_back(specularList[i]->name);
+			specularNames.push_back(specularList[i]->GetName());
 		}
 	}
 	
@@ -142,7 +142,7 @@ void TextureManager::SetNameList()
 		normalNames.clear();
 		for (int i = 0; i < normalList.size(); i++)
 		{
-			normalNames.push_back(normalList[i]->name);
+			normalNames.push_back(normalList[i]->GetName());
 		}
 	}
 
@@ -151,7 +151,7 @@ void TextureManager::SetNameList()
 		ambientNames.clear();
 		for (int i = 0; i < ambientList.size(); i++)
 		{
-			ambientNames.push_back(ambientList[i]->name);
+			ambientNames.push_back(ambientList[i]->GetName());
 		}
 	}
 
@@ -160,7 +160,7 @@ void TextureManager::SetNameList()
 		roughNames.clear();
 		for (int i = 0; i < roughList.size(); i++)
 		{
-			roughNames.push_back(roughList[i]->name);
+			roughNames.push_back(roughList[i]->GetName());
 		}
 	}
 }
@@ -199,7 +199,7 @@ int TextureManager::GetTextureIndex(std::string name, TEXTURETYPE type)
 
 	for (int i = 0; i < textureList.size(); i++)
 	{
-		if (textureList[i]->name == name)
+		if (textureList[i]->GetName() == name)
 			return i;
 	}
 	return 0;
@@ -352,35 +352,35 @@ bool TextureManager::DebugManager()
 	printf(" Diffuse: \n");
 	for (int i = 0; i < diffuseList.size(); i++)
 	{
-		std::cout << "  - " << diffuseList[i]->name << std::endl;
+		std::cout << "  - " << diffuseList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 	
 	printf(" Specular: \n");
 	for (int i = 0; i < specularList.size(); i++)
 	{
-		std::cout << "  - " << specularList[i]->name << std::endl;
+		std::cout << "  - " << specularList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 
 	printf(" Normal: \n");
 	for (int i = 0; i < normalList.size(); i++)
 	{
-		std::cout << "  - " << normalList[i]->name << std::endl;
+		std::cout << "  - " << normalList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 
 	printf(" Ambient: \n");
 	for (int i = 0; i < ambientList.size(); i++)
 	{
-		std::cout << "  - " << ambientList[i]->name << std::endl;
+		std::cout << "  - " << ambientList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 
 	printf(" Rough: \n");
 	for (int i = 0; i < ambientList.size(); i++)
 	{
-		std::cout << "  - " << roughList[i]->name << std::endl;
+		std::cout << "  - " << roughList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 	return true;

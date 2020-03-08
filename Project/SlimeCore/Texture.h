@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Types.h"
-
+#include <gl_core_4_5.h>
 class Texture
 {
 public:
@@ -11,6 +11,10 @@ public:
 	Texture(std::string name);
 	~Texture();
 
+	void Bind() { glBindTexture(GL_TEXTURE_2D, textureID); };
+	unsigned int GetID() { return textureID; };
+	std::string GetName() { return name; };
+protected:
 	std::string name = "Default Name";
 	unsigned int textureID = 0;
 };

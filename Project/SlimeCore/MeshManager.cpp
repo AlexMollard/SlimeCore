@@ -92,7 +92,19 @@ int MeshManager::GetIndex(std::string name)
 {
 	for (int i = 0; i < meshList.size(); i++)
 	{
-		if (meshList[i]->name == name)
+		if (meshList[i]->GetName() == name)
+			return i;
+	}
+
+	printf("Cant Find index for that mesh");
+	return 404;
+}
+
+int MeshManager::GetIndex(Mesh* name)
+{
+	for (int i = 0; i < meshList.size(); i++)
+	{
+		if (meshList[i] == name)
 			return i;
 	}
 
@@ -105,7 +117,7 @@ void MeshManager::SetNames()
 	meshNames.clear();
 	for (int i = 0; i < meshList.size(); i++)
 	{
-		meshNames.push_back(meshList[i]->name);
+		meshNames.push_back(meshList[i]->GetName());
 	}
 }
 
@@ -120,7 +132,7 @@ bool MeshManager::DebugManager()
 	printf("Meshes: \n");
 	for (int i = 0; i < meshList.size(); i++)
 	{
-		std::cout << " - " << meshList[i]->name << std::endl;
+		std::cout << " - " << meshList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 

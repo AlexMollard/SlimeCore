@@ -62,7 +62,7 @@ public:
 	void BindTexture(int objectIndex, TEXTURETYPE type, Texture* texture);
 	void SetIntTexture(int objectIndex, TEXTURETYPE type);
 
-protected:
+//protected:
 	// Objects
 	std::vector<GameObject*> objects;
 	std::vector<std::string> names;

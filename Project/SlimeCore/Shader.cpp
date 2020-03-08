@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath)
+Shader::Shader(std::string name, const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
 	this->name = name;
 	// 1. retrieve the vertex/fragment source code from filePath
@@ -82,7 +82,7 @@ Shader::Shader(const char* name, const char* vertexPath, const char* fragmentPat
 		glDeleteShader(geometry);
 }
 
-Shader::Shader(const char* name)
+Shader::Shader(std::string name)
 {
 	this->name = name;
 }

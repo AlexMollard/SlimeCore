@@ -26,7 +26,7 @@ public:
 	float GetConstant() { return constant ; }
 	float GetLinear() { return linear; }
 	float GetQuadratic() { return quadratic; }
-protected:
+//protected:
 	//glm::vec3 lightPosition = glm::vec3(0, 1, 0);
 	glm::vec3 diffuse = glm::vec3(1);
 	glm::vec3 ambient = glm::vec3(1);

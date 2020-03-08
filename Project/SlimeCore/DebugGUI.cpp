@@ -98,7 +98,7 @@ void DebugGUI::MainMenuBar()
 		if (ImGui::MenuItem("Profiler", "", profilerVisable))
 			profilerVisable = (profilerVisable ? false : true);
 
-		if (ImGui::MenuItem("Hierarchy", "", hierarchyWindowVisable))
+		if (ImGui::MenuItem("Hierarchy", "CTRL+H", hierarchyWindowVisable))
 			hierarchyWindowVisable = (hierarchyWindowVisable ? false : true);
 
 		if (ImGui::MenuItem("Create Material","", materialWindowVisable))
@@ -129,7 +129,7 @@ void DebugGUI::MaterialGUI()
 	float optionsOffSet = 120.0f;
 
 	//Diffuse
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->GetID(), materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Diffuse: ");
@@ -150,7 +150,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::EndGroup();
 
 	// Specular
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->GetID(), materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Specular: ");
@@ -171,7 +171,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::EndGroup();
 
 	// Normal
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->GetID(), materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Normal: ");
@@ -193,7 +193,7 @@ void DebugGUI::MaterialGUI()
 
 
 	// Ambient
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->GetID(), materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Ambient: ");
@@ -215,7 +215,7 @@ void DebugGUI::MaterialGUI()
 
 
 	// Rough
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->textureID, materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->GetID(), materialImageSize);
 	ImGui::SameLine(optionsOffSet);
 	ImGui::BeginGroup();
 	ImGui::Text("Rough: ");
@@ -473,17 +473,14 @@ void DebugGUI::HierarchyGUI()
 		scale[2] = tempScale.z;
 
 
-		//CURRENT MATERIAL ISNT BEING SET AND IDK WHY!
 		if (currentOBJ->GetMaterial() != nullptr)
-			currentMaterial = currentOBJ->GetMaterial()->GetName().c_str();
-
-
+			currentMaterial =  materialList[matManager->GetIndex(currentOBJ->GetMaterial())].c_str();
 
 		if (currentOBJ->GetMesh() != nullptr)
-			currentMesh = currentOBJ->GetMesh()->name;
+			currentMesh = meshList[meshManager->GetIndex(currentOBJ->GetMesh())].c_str();
 		
 		if (currentOBJ->GetShader() != nullptr)
-			currentShaderName = currentOBJ->GetShader()->name.c_str();
+			currentShaderName = shaderList[shaderManager->GetIndex(currentOBJ->GetShader())].c_str();
 
 
 
