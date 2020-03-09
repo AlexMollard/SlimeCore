@@ -112,10 +112,21 @@ void DebugGUI::MainMenuBar()
 
 void DebugGUI::MaterialGUI()
 {
-	ImGui::Begin("Create Material", &materialWindowVisable);
-	ImGui::PushItemWidth(250.0f);
-	ImGui::InputText("Name", matNameCharP, sizeof(char) * 64);
-	ImGui::SameLine(300.0f);
+
+	ImGui::Begin("Create Material", &materialWindowVisable, ImGuiWindowFlags_NoScrollbar);
+
+	ImVec2 windowSize = ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+	float imageOffset = windowSize.x * 0.33f;
+	ImVec2 materialImageSize = ImVec2(imageOffset / 2, imageOffset / 2);
+	float optionsOffSet = 120.0f;
+
+	float namePos = (windowSize.x * 0.5f) - imageOffset / 2;
+	float randomPos = namePos + (imageOffset + 10);
+
+	ImGui::PushItemWidth(imageOffset);
+	ImGui::SameLine(namePos);
+	ImGui::InputText("", matNameCharP, sizeof(char) * 64);
+	ImGui::SameLine(randomPos);
 	if (ImGui::Button("Random"))
 	{
 		currentDiffuse = diffuseList[rand() % diffuseList.size()].c_str();
@@ -125,115 +136,38 @@ void DebugGUI::MaterialGUI()
 		currentRough = roughList[rand() % roughList.size()].c_str();
 	}
 
-	ImVec2 materialImageSize = ImVec2(100,100);
-	float optionsOffSet = 120.0f;
+	ImGui::NewLine();
 
 	//Diffuse
+	ImGui::BeginChild("Diffuse", ImVec2(imageOffset * 0.95f, materialImageSize.x * 2), true);
+	ImGui::SameLine(imageOffset * 0.25f);
 	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->GetID(), materialImageSize);
-	ImGui::SameLine(optionsOffSet);
-	ImGui::BeginGroup();
-	ImGui::Text("Diffuse: ");
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("DiffuseTexture", currentDiffuse))
-	{
-		for (int n = 0; n < diffuseList.size(); n++)
-		{
-			bool is_selected = (currentDiffuse == diffuseList[n].c_str());
-			if (ImGui::Selectable(diffuseList[n].c_str(), is_selected))
-				currentDiffuse = diffuseList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::SliderFloat("DiffuseStrength", &diffuseStrength, 0, 1);
-	ImGui::EndGroup();
-
+	ImGui::EndChild();
+	ImGui::SameLine();
 	// Specular
+	ImGui::BeginChild("Specular", ImVec2(imageOffset * 0.95f, materialImageSize.x * 2), true);
+	ImGui::SameLine(imageOffset * 0.25f);
 	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentSpecular, TEXTURETYPE::Specular), TEXTURETYPE::Specular)->GetID(), materialImageSize);
-	ImGui::SameLine(optionsOffSet);
-	ImGui::BeginGroup();
-	ImGui::Text("Specular: ");
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("SpecularTexture", currentSpecular))
-	{
-		for (int n = 0; n < specularList.size(); n++)
-		{
-			bool is_selected = (currentSpecular == specularList[n].c_str());
-			if (ImGui::Selectable(specularList[n].c_str(), is_selected))
-				currentSpecular = specularList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::SliderFloat("SpecularStrength",&specularStrength,0,1);
-	ImGui::EndGroup();
-
+	ImGui::EndChild();
+	ImGui::SameLine();
 	// Normal
+	ImGui::BeginChild("Normal", ImVec2(imageOffset * 0.95f, materialImageSize.x * 2), true);
+	ImGui::SameLine(imageOffset * 0.25f);
 	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentNormal, TEXTURETYPE::Normal), TEXTURETYPE::Normal)->GetID(), materialImageSize);
-	ImGui::SameLine(optionsOffSet);
-	ImGui::BeginGroup();
-	ImGui::Text("Normal: ");
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("NormalTexture", currentNormal))
-	{
-		for (int n = 0; n < normalList.size(); n++)
-		{
-			bool is_selected = (currentNormal == normalList[n].c_str());
-			if (ImGui::Selectable(normalList[n].c_str(), is_selected))
-				currentNormal = normalList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::SliderFloat("NormalStrength", &normalStrength, 0, 1);
-	ImGui::EndGroup();
-
+	ImGui::EndChild();
 
 	// Ambient
+	ImGui::NewLine();
+	ImGui::BeginChild("Ambient", ImVec2(imageOffset * 0.95f, materialImageSize.x * 2), true);
+	ImGui::SameLine(imageOffset * 0.25f);
 	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentAmbient, TEXTURETYPE::Ambient), TEXTURETYPE::Ambient)->GetID(), materialImageSize);
-	ImGui::SameLine(optionsOffSet);
-	ImGui::BeginGroup();
-	ImGui::Text("Ambient: ");
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("AmbientTexture", currentAmbient))
-	{
-		for (int n = 0; n < ambientList.size(); n++)
-		{
-			bool is_selected = (currentAmbient == ambientList[n].c_str());
-			if (ImGui::Selectable(ambientList[n].c_str(), is_selected))
-				currentAmbient = ambientList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::SliderFloat("AmbientStrength", &ambientStrength, 0, 1);
-	ImGui::EndGroup();
-
+	ImGui::EndChild();
 
 	// Rough
+	ImGui::BeginChild("Rough", ImVec2(imageOffset * 0.95f, materialImageSize.x * 2), true);
+	ImGui::SameLine(imageOffset * 0.25f);
 	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->GetID(), materialImageSize);
-	ImGui::SameLine(optionsOffSet);
-	ImGui::BeginGroup();
-	ImGui::Text("Rough: ");
-	ImGui::PushItemWidth(150.0f);
-	if (ImGui::BeginCombo("RoughTexture", currentRough))
-	{
-		for (int n = 0; n < roughList.size(); n++)
-		{
-			bool is_selected = (currentRough == roughList[n].c_str());
-			if (ImGui::Selectable(roughList[n].c_str(), is_selected))
-				currentRough = roughList[n].c_str();
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-	ImGui::SliderFloat("RoughStrength", &roughStrength, 0, 1);
-	ImGui::EndGroup();
+	ImGui::EndChild();
 
 
 	ImGui::NewLine();
