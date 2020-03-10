@@ -121,6 +121,24 @@ Texture* Material::GetRoughMap()
 	return nullptr;
 }
 
+void Material::SetAll(Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr)
+{
+	SetDiffuse(diffuse);
+	SetDiffuseStrength(diffuseStr);
+
+	SetSpecMap(specular);
+	SetSpecularStrength(specularStr);
+
+	SetNormalMap(normal);
+	SetNormalStrength(normalStr);
+
+	SetAmbientMap(ambient);
+	SetAmbientStrength(ambientStr);
+
+	SetRoughMap(rough);
+	SetRoughStrength(roughStr);
+}
+
 void Material::SetDiffuse(Texture* newDiffuse)
 {
 	diffuse = newDiffuse;

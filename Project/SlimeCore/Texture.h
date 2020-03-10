@@ -14,6 +14,7 @@ public:
 	void Bind() { glBindTexture(GL_TEXTURE_2D, textureID); };
 	unsigned int GetID() { return textureID; };
 	std::string GetName() { return name; };
+	const char* GetNameC() { return name.c_str(); };
 protected:
 	std::string name = "Default Name";
 	unsigned int textureID = 0;

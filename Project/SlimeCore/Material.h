@@ -38,6 +38,7 @@ public:
 	void SetNormalStrength(float value) { normalStrength = value; }
 	void SetAmbientStrength(float value) { ambientStrength = value; }
 	void SetRoughStrength(float value) { roughStrength = value; }
+	void SetAll(Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr);
 
 	// Get
 	float GetDiffuseStrength() { return diffuseStrength; }

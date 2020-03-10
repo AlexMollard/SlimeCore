@@ -311,7 +311,7 @@ bool ObjectManager::DebugAll()
 
 bool ObjectManager::Draw()
 {
-	matManager->SetDirLightDirection(glm::vec3(glm::sin(glfwGetTime()), 0, glm::cos(glfwGetTime())));
+	//matManager->SetDirLightDirection(glm::vec3(glm::sin(glfwGetTime()), 0, glm::cos(glfwGetTime())));
 	
 	for (int i = 0; i < objects.size(); i++)
 	{

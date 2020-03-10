@@ -44,6 +44,9 @@ int main()
 	meshManager->Create("Plane", Primitives::Plane);
 	meshManager->Create("Cylinder", Primitives::Cylinder);
 	
+	// Load Stan
+	//meshManager->Create("stan", "..\\Models\\stan.obj");
+	
 
 	// Objects
 	objectManager->Create("SkyBox", 1, 1, 1);

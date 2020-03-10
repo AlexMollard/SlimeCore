@@ -78,6 +78,7 @@ private:
 	// Material List (Char*)
 	std::vector<std::string> materialList;
 	const char* currentMaterial;
+	const char* currentEditorMaterial;
 
 	// Shader List (Char*)
 	std::vector<std::string> shaderList;
