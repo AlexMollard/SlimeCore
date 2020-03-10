@@ -12,10 +12,10 @@ PointLight::~PointLight()
 
 }
 
-void PointLight::SetAttributes(glm::vec3 newAmbient, glm::vec3 newDiffuse, glm::vec3 newSpecular, float newConstant, float newLinear, float newQuadratic)
+void PointLight::SetAttributes(glm::vec3 newAmbient, glm::vec3 newAlbedo, glm::vec3 newSpecular, float newConstant, float newLinear, float newQuadratic)
 {
 	SetAmbient(newAmbient);
-	SetDiffuse(newDiffuse);
+	SetAlbedo(newAlbedo);
 	SetSpecular(newSpecular);
 
 	SetConstant(newConstant);

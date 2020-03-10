@@ -15,6 +15,20 @@ out vec3 BiTangent;
 uniform mat4 ProjectionView;
 uniform mat4 Model; 
 
+uniform sampler2D diffuseTexture;
+uniform sampler2D specularTexture;
+uniform sampler2D normalTexture;
+uniform sampler2D ambientTexture;
+uniform sampler2D roughTexture;
+uniform sampler2D displacementTexture;
+
+uniform float diffuseStrength;
+uniform float specularStrength;
+uniform float normalStrength;
+uniform float ambientStrength;
+uniform float roughStrength;
+uniform float displacementStrength;
+
 void main() 
 { 
 
@@ -29,5 +43,7 @@ void main()
     Tangent = aTangent;
     BiTangent = aBiTangent;
 
-    gl_Position = ProjectionView * vec4(WorldPos, 1.0);
+    float p = texture(displacementTexture, TexCoord).a * displacementStrength;
+    
+    gl_Position = ProjectionView * vec4(WorldPos + (aNormal * p), 1.0);
 }

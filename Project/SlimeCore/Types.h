@@ -1,10 +1,11 @@
 #pragma once
 enum class TEXTURETYPE
 {
-	Diffuse,
+	Albedo,
 	Specular,
 	Normal,
 	Ambient,
 	Rough,
+	Displacement,
 	SkyBox
 };

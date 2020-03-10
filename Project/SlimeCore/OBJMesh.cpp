@@ -42,7 +42,7 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 	//for (auto& m : materials) {
 	//
 	//	m_materials[index].ambient = glm::vec3(m.ambient[0], m.ambient[1], m.ambient[2]);
-	//	m_materials[index].diffuse = glm::vec3(m.diffuse[0], m.diffuse[1], m.diffuse[2]);
+	//	m_materials[index].albedo = glm::vec3(m.albedo[0], m.albedo[1], m.albedo[2]);
 	//	m_materials[index].specular = glm::vec3(m.specular[0], m.specular[1], m.specular[2]);
 	//	m_materials[index].emissive = glm::vec3(m.emission[0], m.emission[1], m.emission[2]);
 	//	m_materials[index].specularPower = m.shininess;

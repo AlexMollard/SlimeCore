@@ -50,7 +50,7 @@ void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
 	// Directional Light
 	shader->setVec3("dirLight.direction", mat->dirLightDirection);
 	shader->setVec3("dirLight.ambient", mat->dirLightAmbient);
-	shader->setVec3("dirLight.diffuse", mat->dirLightDiffuse);
+	shader->setVec3("dirLight.albedo", mat->dirLightAlbedo);
 	shader->setVec3("dirLight.specular", mat->dirLightSpecular);
 }
 
@@ -120,8 +120,8 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 {
 	switch (type)
 	{
-	case TEXTURETYPE::Diffuse:
-		return mat->GetDiffuse();
+	case TEXTURETYPE::Albedo:
+		return mat->GetAlbedo();
 		break;
 	case TEXTURETYPE::Specular:
 		return mat->GetSpecMap();

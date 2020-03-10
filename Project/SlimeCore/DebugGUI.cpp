@@ -53,8 +53,8 @@ void DebugGUI::FirstFrame()
 	objNameCharP = &objName[0];
 	matNameCharP = &matName[0];
 
-	diffuseList = textureManager->GetNameList(TEXTURETYPE::Diffuse);
-	currentDiffuse = diffuseList[0].c_str();
+	diffuseList = textureManager->GetNameList(TEXTURETYPE::Albedo);
+	currentAlbedo = diffuseList[0].c_str();
 
 	specularList = textureManager->GetNameList(TEXTURETYPE::Specular);
 	currentSpecular = specularList[0].c_str();
@@ -67,6 +67,9 @@ void DebugGUI::FirstFrame()
 
 	roughList = textureManager->GetNameList(TEXTURETYPE::Rough);
 	currentRough = roughList[0].c_str();
+
+	displacementList = textureManager->GetNameList(TEXTURETYPE::Displacement);
+	currentDisplacement = displacementList[0].c_str();
 
 	meshList = meshManager->GetNames();
 	currentMesh = meshList[1].c_str();
@@ -126,7 +129,7 @@ void DebugGUI::MaterialGUI()
 	float materialselectpos = namePos - imageOffset * 0.55f;
 	float childcenter = imageOffset * 0.25f;
 	ImVec2 childSize = ImVec2(imageOffset * 0.95f, materialImageSize.y + 100);
-	std::string currentValues[5] = { currentDiffuse,currentSpecular,currentNormal,currentAmbient,currentRough };
+	std::string currentValues[5] = { currentAlbedo,currentSpecular,currentNormal,currentAmbient,currentRough };
 	float currentStrengthValues[5] = { diffuseStrength,specularStrength,normalStrength,ambientStrength,roughStrength };
 
 
@@ -135,11 +138,12 @@ void DebugGUI::MaterialGUI()
 	{
 		matManager->Create(
 			matName,
-			std::string(currentDiffuse), diffuseStrength,
+			std::string(currentAlbedo), diffuseStrength,
 			std::string(currentSpecular), specularStrength,
 			std::string(currentNormal), normalStrength,
 			std::string(currentAmbient), ambientStrength,
-			std::string(currentRough), roughStrength
+			std::string(currentRough), roughStrength,
+			std::string(currentDisplacement), displacementStrength
 		);
 		materialList = matManager->GetNames();
 
@@ -165,7 +169,7 @@ void DebugGUI::MaterialGUI()
 
 		if (cMaterial != nullptr)
 		{
-			currentDiffuse = (cMaterial->GetDiffuse() != nullptr) ? cMaterial->GetDiffuse()->GetNameC() : diffuseList[0].c_str();
+			currentAlbedo = (cMaterial->GetAlbedo() != nullptr) ? cMaterial->GetAlbedo()->GetNameC() : diffuseList[0].c_str();
 
 			currentSpecular = (cMaterial->GetSpecMap() != nullptr) ? cMaterial->GetSpecMap()->GetNameC() : specularList[0].c_str();
 
@@ -174,6 +178,8 @@ void DebugGUI::MaterialGUI()
 			currentAmbient = (cMaterial->GetAmbientMap() != nullptr) ? cMaterial->GetAmbientMap()->GetNameC() : ambientList[0].c_str();
 
 			currentRough = (cMaterial->GetRoughMap() != nullptr) ? cMaterial->GetRoughMap()->GetNameC() : roughList[0].c_str();
+
+			currentDisplacement = (cMaterial->GetDisplacementMap() != nullptr) ? cMaterial->GetDisplacementMap()->GetNameC() : displacementList[0].c_str();
 		}
 	}
 
@@ -186,7 +192,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::SameLine(randomPos);
 	if (ImGui::Button("Random", ImVec2(materialImageSize.x, 20)) || glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_R) == GLFW_PRESS)
 	{
-		currentDiffuse = diffuseList[rand() % diffuseList.size()].c_str();
+		currentAlbedo = diffuseList[rand() % diffuseList.size()].c_str();
 		currentSpecular = specularList[rand() % specularList.size()].c_str();
 		currentNormal = normalList[rand() % normalList.size()].c_str();
 		currentAmbient = ambientList[rand() % ambientList.size()].c_str();
@@ -195,25 +201,25 @@ void DebugGUI::MaterialGUI()
 
 	ImGui::NewLine();
 
-#pragma region Diffuse
-	//Diffuse
-	ImGui::BeginChild("Diffuse", childSize, false);
+#pragma region Albedo
+	//Albedo
+	ImGui::BeginChild("Albedo", childSize, false);
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
-	ImGui::Checkbox("Diffuse", staticBool);
+	ImGui::Checkbox("Albedo", staticBool);
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentDiffuse, TEXTURETYPE::Diffuse), TEXTURETYPE::Diffuse)->GetID(), materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentAlbedo, TEXTURETYPE::Albedo), TEXTURETYPE::Albedo)->GetID(), materialImageSize);
 	ImGui::PushItemWidth(materialImageSize.x);
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
-	if (ImGui::BeginCombo("##diffuseSelect", currentDiffuse))
+	if (ImGui::BeginCombo("##diffuseSelect", currentAlbedo))
 	{
 		for (int n = 0; n < diffuseList.size(); n++)
 		{
-			bool is_selected = (currentDiffuse == diffuseList[n].c_str());
+			bool is_selected = (currentAlbedo == diffuseList[n].c_str());
 			if (ImGui::Selectable(diffuseList[n].c_str(), is_selected))
-				currentDiffuse = diffuseList[n].c_str();
+				currentAlbedo = diffuseList[n].c_str();
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
 		}
@@ -363,17 +369,17 @@ void DebugGUI::MaterialGUI()
 	ImGui::Checkbox("Displacement", staticBool);
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
-	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentRough, TEXTURETYPE::Rough), TEXTURETYPE::Rough)->GetID(), materialImageSize);
+	ImGui::Image((void*)(intptr_t)textureManager->Get(textureManager->GetTextureIndex(currentDisplacement, TEXTURETYPE::Displacement), TEXTURETYPE::Displacement)->GetID(), materialImageSize);
 	ImGui::PushItemWidth(materialImageSize.x);
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
-	if (ImGui::BeginCombo("##DisplacementSelect", currentRough))
+	if (ImGui::BeginCombo("##DisplacementSelect", currentDisplacement))
 	{
-		for (int n = 0; n < roughList.size(); n++)
+		for (int n = 0; n < displacementList.size(); n++)
 		{
-			bool is_selected = (currentRough == roughList[n].c_str());
-			if (ImGui::Selectable(roughList[n].c_str(), is_selected))
-				currentRough = roughList[n].c_str();
+			bool is_selected = (currentDisplacement == displacementList[n].c_str());
+			if (ImGui::Selectable(displacementList[n].c_str(), is_selected))
+				currentDisplacement = displacementList[n].c_str();
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
 		}
@@ -382,11 +388,11 @@ void DebugGUI::MaterialGUI()
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
 	ImGui::PushItemWidth(materialImageSize.x);
-	ImGui::SliderFloat("##DisplacementStrength", &diffuseStrength, 0, 1);
+	ImGui::SliderFloat("##DisplacementStrength", &displacementStrength, 0, 1);
 	ImGui::EndChild();
 #pragma endregion
 
-	if (currentValues[0] != std::string(currentDiffuse) ||
+	if (currentValues[0] != std::string(currentAlbedo) ||
 		currentValues[1] != std::string(currentSpecular) ||
 		currentValues[2] != std::string(currentNormal) ||
 		currentValues[3] != std::string(currentAmbient) ||
@@ -398,16 +404,18 @@ void DebugGUI::MaterialGUI()
 		currentStrengthValues[4] != roughStrength
 		)
 	matManager->Get(currentEditorMaterial)->SetAll(
-		textureManager->Get(currentDiffuse, TEXTURETYPE::Diffuse) != nullptr ? textureManager->Get(currentDiffuse, TEXTURETYPE::Diffuse) : nullptr,
+		textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) != nullptr ? textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) : nullptr,
 		textureManager->Get(currentSpecular, TEXTURETYPE::Specular) != nullptr ? textureManager->Get(currentSpecular, TEXTURETYPE::Specular) : nullptr,
 		textureManager->Get(currentNormal, TEXTURETYPE::Normal) != nullptr ? textureManager->Get(currentNormal, TEXTURETYPE::Normal) : nullptr,
 		textureManager->Get(currentAmbient, TEXTURETYPE::Ambient) != nullptr ? textureManager->Get(currentAmbient, TEXTURETYPE::Ambient) : nullptr,
 		textureManager->Get(currentRough, TEXTURETYPE::Rough) != nullptr ? textureManager->Get(currentRough, TEXTURETYPE::Rough) : nullptr,
+		textureManager->Get(currentDisplacement, TEXTURETYPE::Displacement) != nullptr ? textureManager->Get(currentDisplacement, TEXTURETYPE::Displacement) : nullptr,
 		diffuseStrength,
 		specularStrength,
 		normalStrength,
 		ambientStrength,
-		roughStrength
+		roughStrength,
+		displacementStrength
 	);
 
 	ImGui::End();
@@ -727,10 +735,10 @@ void DebugGUI::HierarchyGUI()
 			ImGui::Separator();
 			ImGui::TextColored(ImVec4(1,1,0,1), "Light Properties");
 			PointLight* currentLight = (PointLight*)currentOBJ;
-			glm::vec3 difColorvec = currentLight->GetDiffuse();
+			glm::vec3 difColorvec = currentLight->GetAlbedo();
 			float difColor[3] = { difColorvec.x,difColorvec.y,difColorvec.z };
-			ImGui::InputFloat3("DiffuseColor",difColor);
-			currentLight->SetDiffuse(glm::vec3(difColor[0], difColor[1], difColor[2]));
+			ImGui::InputFloat3("AlbedoColor",difColor);
+			currentLight->SetAlbedo(glm::vec3(difColor[0], difColor[1], difColor[2]));
 		}
 
 			objManager->SetVars(

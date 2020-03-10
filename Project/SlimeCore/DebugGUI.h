@@ -96,9 +96,9 @@ private:
 	std::string matName = "Testing";
 	char* matNameCharP = nullptr;
 
-	// Diffuse
+	// Albedo
 	std::vector<std::string> diffuseList;
-	const char* currentDiffuse;
+	const char* currentAlbedo;
 	float diffuseStrength = 1;
 
 	// Specular
@@ -120,5 +120,10 @@ private:
 	std::vector<std::string> roughList;
 	const char* currentRough;
 	float roughStrength = 1;
+
+	// Displacement
+	std::vector<std::string> displacementList;
+	const char* currentDisplacement;
+	float displacementStrength = 1;
 };
 

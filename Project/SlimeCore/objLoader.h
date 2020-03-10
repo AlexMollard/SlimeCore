@@ -50,7 +50,7 @@ typedef struct {
   std::string name;
 
   float ambient[3];
-  float diffuse[3];
+  float albedo[3];
   float specular[3];
   float transmittance[3];
   float emission[3];
@@ -499,7 +499,7 @@ static void InitMaterial(material_t &material) {
   material.alpha_texname = "";
   for (int i = 0; i < 3; i++) {
     material.ambient[i] = 0.f;
-    material.diffuse[i] = 0.f;
+    material.albedo[i] = 0.f;
     material.specular[i] = 0.f;
     material.transmittance[i] = 0.f;
     material.emission[i] = 0.f;
@@ -657,14 +657,14 @@ void LoadMtl(std::map<std::string, int> &material_map,
       continue;
     }
 
-    // diffuse
+    // albedo
     if (token[0] == 'K' && token[1] == 'd' && isSpace((token[2]))) {
       token += 2;
       float r, g, b;
       parseFloat3(r, g, b, token);
-      material.diffuse[0] = r;
-      material.diffuse[1] = g;
-      material.diffuse[2] = b;
+      material.albedo[0] = r;
+      material.albedo[1] = g;
+      material.albedo[2] = b;
       continue;
     }
 
@@ -742,7 +742,7 @@ void LoadMtl(std::map<std::string, int> &material_map,
       continue;
     }
 
-    // diffuse texture
+    // albedo texture
     if ((0 == strncmp(token, "map_Kd", 6)) && isSpace(token[6])) {
       token += 7;
       material.diffuse_texname = token;

@@ -229,7 +229,7 @@ void ObjectManager::UpdateLights(Shader* shader)
 	{
 		shader->setVec3("pointLights[" + std::to_string(i) + "].position", pointLights[i]->GetPos());
 		shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", pointLights[i]->GetAmbient());
-		shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", pointLights[i]->GetDiffuse());
+		shader->setVec3("pointLights[" + std::to_string(i) + "].albedo", pointLights[i]->GetAlbedo());
 		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", pointLights[i]->GetSpecular());
 
 		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", pointLights[i]->GetConstant());
@@ -263,7 +263,7 @@ void ObjectManager::SetIntTexture(int objectIndex, TEXTURETYPE texType)
 {
 	switch (texType)
 	{
-	case TEXTURETYPE::Diffuse:
+	case TEXTURETYPE::Albedo:
 		objects[objectIndex]->GetShader()->setInt("diffuseTexture", (int)texType);
 		break;
 	case TEXTURETYPE::Specular:
@@ -277,6 +277,9 @@ void ObjectManager::SetIntTexture(int objectIndex, TEXTURETYPE texType)
 		break;
 	case TEXTURETYPE::Rough:
 		objects[objectIndex]->GetShader()->setInt("roughTexture", (int)texType);
+		break;
+	case TEXTURETYPE::Displacement:
+		objects[objectIndex]->GetShader()->setInt("displacementTexture", (int)texType);
 		break;
 	default:
 		break;
@@ -335,7 +338,7 @@ bool ObjectManager::Draw()
 		}
 
 		if (objShader->GetName() == "lightShader")
-			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->GetDiffuse());
+			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->GetAlbedo());
 
 		if (currentMaterial != objMaterial)
 		{
@@ -344,14 +347,15 @@ bool ObjectManager::Draw()
 			for (int n = 0; n < 5; n++)
 				currentTexture[n] = nullptr;
 
-			objShader->setFloat("diffuseStrength", objMaterial->GetDiffuseStrength());
+			objShader->setFloat("diffuseStrength", objMaterial->GetAlbedoStrength());
 			objShader->setFloat("specularStrength", objMaterial->GetSpecularStrength());
 			objShader->setFloat("normalStrength", objMaterial->GetNormalStrength());
 			objShader->setFloat("ambientStrength", objMaterial->GetAmbientStrength());
 			objShader->setFloat("roughStrength", objMaterial->GetRoughStrength());
+			objShader->setFloat("displacementStrength", objMaterial->GetRoughStrength());
 		}
 
-		BindTexture(i, TEXTURETYPE::Diffuse, objects[i]->GetTexture(TEXTURETYPE::Diffuse));
+		BindTexture(i, TEXTURETYPE::Albedo, objects[i]->GetTexture(TEXTURETYPE::Albedo));
 
 		if (objects[i]->GetName() == "SkyBox")
 		{
@@ -367,6 +371,7 @@ bool ObjectManager::Draw()
 		BindTexture(i, TEXTURETYPE::Normal, objects[i]->GetTexture(TEXTURETYPE::Normal));
 		BindTexture(i, TEXTURETYPE::Ambient, objects[i]->GetTexture(TEXTURETYPE::Ambient));
 		BindTexture(i, TEXTURETYPE::Rough, objects[i]->GetTexture(TEXTURETYPE::Rough));
+		BindTexture(i, TEXTURETYPE::Displacement, objects[i]->GetTexture(TEXTURETYPE::Displacement));
 
 		objects[i]->Draw(projectionView);
 	}

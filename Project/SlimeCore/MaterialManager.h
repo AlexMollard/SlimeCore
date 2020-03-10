@@ -10,10 +10,10 @@ public:
 
 	// Create / Add Functions
 	//--------------------
-	bool Create(std::string name, Texture* diffuse);
-	bool Create(std::string name, Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough);
-	void Create(std::string name, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName, std::string roughName);
-	void Create(std::string name, std::string diffuseName, float diffuseStrength, std::string specularName, float specularStrength, std::string normalName, float normalStrength, std::string ambientName, float ambientStrength, std::string roughName, float roughStrength);
+	bool Create(std::string name, Texture* albedo);
+	bool Create(std::string name, Texture* albedo, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, Texture* displacement);
+	void Create(std::string name, std::string diffuseName, std::string specularName, std::string normalName, std::string ambientName, std::string roughName, std::string displacementName);
+	void Create(std::string name, std::string diffuseName, float diffuseStrength, std::string specularName, float specularStrength, std::string normalName, float normalStrength, std::string ambientName, float ambientStrength, std::string roughName, float roughStrength, std::string displacementName, float displacementStrength);
 	bool Add(Material* newMaterial);
 
 	// Get Functions

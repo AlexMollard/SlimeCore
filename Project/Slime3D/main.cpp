@@ -34,9 +34,9 @@ int main()
 	textureManager->ImportAllTextures();
 
 	// Materials
-	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Diffuse));
-	materialManager->Create("defaultMaterial", textureManager->Get(1, TEXTURETYPE::Diffuse), textureManager->Get(1, TEXTURETYPE::Specular), textureManager->Get(1, TEXTURETYPE::Normal), textureManager->Get(1, TEXTURETYPE::Ambient), textureManager->Get(1, TEXTURETYPE::Rough));
-	materialManager->Create("lightMat", textureManager->Get(3, TEXTURETYPE::Diffuse));
+	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Albedo));
+	materialManager->Create("defaultMaterial", textureManager->Get(1, TEXTURETYPE::Albedo), textureManager->Get(1, TEXTURETYPE::Specular), textureManager->Get(1, TEXTURETYPE::Normal), textureManager->Get(1, TEXTURETYPE::Ambient), textureManager->Get(1, TEXTURETYPE::Rough), textureManager->Get(1, TEXTURETYPE::Displacement));
+	materialManager->Create("lightMat", textureManager->Get(3, TEXTURETYPE::Albedo));
 
 	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
@@ -45,7 +45,7 @@ int main()
 	meshManager->Create("Cylinder", Primitives::Cylinder);
 	
 	// Load Stan
-	//meshManager->Create("stan", "..\\Models\\stan.obj");
+	meshManager->Create("stan", "..\\Models\\stan.obj");
 	
 
 	// Objects

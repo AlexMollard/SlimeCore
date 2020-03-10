@@ -48,6 +48,9 @@ protected:
 	std::vector<Texture*> roughList;
 	std::vector<std::string> roughNames;
 
+	std::vector<Texture*> displacementList;
+	std::vector<std::string> displacementNames;
+
 	Texture* skyBox;
 	unsigned int skyboxID = 0;
 };

@@ -1,10 +1,10 @@
 #include "Material.h"
 
-Material::Material(std::string name, Texture* diffuse, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap)
+Material::Material(std::string name, Texture* albedo, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap, Texture* displacementMap)
 {
 	this->name = name;
 
-	this->diffuse = diffuse;
+	this->albedo = albedo;
 	
 	if (specMap)
 		hasSpecMap = true;
@@ -21,15 +21,19 @@ Material::Material(std::string name, Texture* diffuse, Texture* specMap, Texture
 	if (ambientMap)
 		hasRoughMap = true;
 	this->roughMap = roughMap;
+
+	if (displacementMap)
+		hasRoughMap = true;
+	this->displacementMap = displacementMap;
 
 	SetDirectionalLightAttributes();
 }
 
-Material::Material(std::string name, Texture* diffuse, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength)
+Material::Material(std::string name, Texture* albedo, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength, Texture* displacementMap, float displacementStrength)
 {
 	this->name = name;
 
-	this->diffuse = diffuse;
+	this->albedo = albedo;
 
 	if (specMap)
 		hasSpecMap = true;
@@ -46,21 +50,26 @@ Material::Material(std::string name, Texture* diffuse, float diffuseStrength, Te
 	if (ambientMap)
 		hasRoughMap = true;
 	this->roughMap = roughMap;
+
+	if (displacementMap)
+		hasRoughMap = true;
+	this->displacementMap = displacementMap;
 
 	this->diffuseStrength = diffuseStrength;
 	this->specularStrength = specularStrength;
 	this->normalStrength = normalStrength;
 	this->ambientStrength = ambientStrength;
 	this->roughStrength = roughStrength;
+	this->displacementStrength = displacementStrength;
 
 	SetDirectionalLightAttributes();
 }
 
-Material::Material(std::string name, Texture* diffuse)
+Material::Material(std::string name, Texture* albedo)
 {
 	this->name = name;
 
-	this->diffuse = diffuse;
+	this->albedo = albedo;
 	this->specMap = nullptr;
 	this->normalMap = nullptr;
 	this->ambientMap = nullptr;
@@ -73,18 +82,18 @@ Material::~Material()
 {
 }
 
-void Material::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 newAmbient, glm::vec3 newDiffuse, glm::vec3 newSpecular)
+void Material::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 newAmbient, glm::vec3 newAlbedo, glm::vec3 newSpecular)
 {
 	SetDirectionalLightDirection(newDirection);
 	SetDirectionalLightAmbient(newAmbient);
-	SetDirectionalLightDiffuse(newDiffuse);
+	SetDirectionalLightAlbedo(newAlbedo);
 	SetDirectionalLightSpecular(newSpecular);
 }
 
-Texture* Material::GetDiffuse()
+Texture* Material::GetAlbedo()
 {
-	if (diffuse != nullptr)
-		return diffuse;
+	if (albedo != nullptr)
+		return albedo;
 
 	return nullptr;
 }
@@ -121,10 +130,18 @@ Texture* Material::GetRoughMap()
 	return nullptr;
 }
 
-void Material::SetAll(Texture* diffuse, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr)
+Texture* Material::GetDisplacementMap()
 {
-	SetDiffuse(diffuse);
-	SetDiffuseStrength(diffuseStr);
+	if (displacementMap != nullptr)
+		return displacementMap;
+
+	return nullptr;
+}
+
+void Material::SetAll(Texture* albedo, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, Texture* displacement, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr, float displacementStr)
+{
+	SetAlbedo(albedo);
+	SetAlbedoStrength(diffuseStr);
 
 	SetSpecMap(specular);
 	SetSpecularStrength(specularStr);
@@ -137,11 +154,14 @@ void Material::SetAll(Texture* diffuse, Texture* specular, Texture* normal, Text
 
 	SetRoughMap(rough);
 	SetRoughStrength(roughStr);
+
+	SetDisplacementMap(displacement);
+	SetDisplacementStrength(displacementStr);
 }
 
-void Material::SetDiffuse(Texture* newDiffuse)
+void Material::SetAlbedo(Texture* newAlbedo)
 {
-	diffuse = newDiffuse;
+	albedo = newAlbedo;
 }
 
 void Material::SetSpecMap(Texture* newSpecular)
@@ -162,4 +182,9 @@ void Material::SetAmbientMap(Texture* newAmbient)
 void Material::SetRoughMap(Texture* newRough)
 {
 	roughMap = newRough;
+}
+
+void Material::SetDisplacementMap(Texture* newDisplacement)
+{
+	displacementMap = newDisplacement;
 }

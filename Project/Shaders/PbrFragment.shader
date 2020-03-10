@@ -12,12 +12,14 @@ uniform sampler2D specularTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D ambientTexture;
 uniform sampler2D roughTexture;
+uniform sampler2D displacementTexture;
 
 uniform float diffuseStrength;
 uniform float specularStrength;
 uniform float normalStrength;
 uniform float ambientStrength;
 uniform float roughStrength;
+uniform float displacementStrength;
 
 uniform int pointLightTotal;
 
@@ -30,7 +32,7 @@ struct DirectionalLight
 	vec3 direction;
 
 	vec3 ambient;
-	vec3 diffuse;
+	vec3 albedo;
 	vec3 specular;
 };
 
@@ -40,7 +42,7 @@ struct PointLight
 	vec3 direction;
 
 	vec3 ambient;
-	vec3 diffuse;
+	vec3 albedo;
 	vec3 specular;
 
 	float constant;
@@ -108,7 +110,7 @@ vec3 CalculatespotLight(PointLight light, vec3 V, vec3 N, vec3 F0, float roughne
     vec3 H = normalize(V + L);
     float distance = length(light.position - WorldPos);
     float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.diffuse * attenuation;
+    vec3 radiance = light.albedo * attenuation;
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
@@ -153,7 +155,7 @@ void main()
     vec3 L = normalize(-dirLight.direction);
     vec3 H = normalize(V + L);
 
-    vec3 radiance = dirLight.diffuse;
+    vec3 radiance = dirLight.albedo;
 
     float NDF = DistributionGGX(N, H, roughness);
     float NoL = clamp(dot(N, L), 0.0, 1.0);

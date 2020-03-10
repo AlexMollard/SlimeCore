@@ -77,7 +77,7 @@ public:
 	// Current Variables to check to save un needed binds
 	Shader* currentShader = nullptr;
 	Material* currentMaterial = nullptr;
-	Texture* currentTexture[5] = { nullptr,nullptr,nullptr,nullptr,nullptr };
+	Texture* currentTexture[6] = { nullptr,nullptr,nullptr,nullptr,nullptr,nullptr };
 
 	// Misc Variables
 	glm::mat4* projectionView;

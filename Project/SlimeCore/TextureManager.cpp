@@ -10,7 +10,7 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-	Texture* none = Get("None", TEXTURETYPE::Diffuse);
+	Texture* none = Get("None", TEXTURETYPE::Albedo);
 	delete none;
 	none = nullptr;
 
@@ -59,8 +59,17 @@ TextureManager::~TextureManager()
 		}
 	}
 
+	for (int i = 1; i < displacementList.size(); i++)
+	{
+		if (displacementList[i] != nullptr)
+		{
+			delete displacementList[i];
+			displacementList[i] = nullptr;
+		}
+	}
 
 	delete skyBox;
+	skyBox = nullptr;
 }
 
 Texture* TextureManager::Get(std::string name, TEXTURETYPE type, bool creation)
@@ -115,6 +124,7 @@ void TextureManager::CreateBlanks(std::string dir)
 	normalList.push_back(tex);
 	ambientList.push_back(tex);
 	roughList.push_back(tex);
+	displacementList.push_back(tex);
 }
 
 void TextureManager::SetNameList()
@@ -163,6 +173,15 @@ void TextureManager::SetNameList()
 			roughNames.push_back(roughList[i]->GetName());
 		}
 	}
+
+	if (displacementList.size() > 0)
+	{
+		displacementNames.clear();
+		for (int i = 0; i < displacementList.size(); i++)
+		{
+			displacementNames.push_back(displacementList[i]->GetName());
+		}
+	}
 }
 
 std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
@@ -170,7 +189,7 @@ std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
 	SetNameList();
 	switch (type)
 	{
-	case TEXTURETYPE::Diffuse:
+	case TEXTURETYPE::Albedo:
 		return diffuseNames;
 		break;
 	case TEXTURETYPE::Specular:
@@ -187,6 +206,9 @@ std::vector<std::string> TextureManager::GetNameList(TEXTURETYPE type)
 		break;
 	case TEXTURETYPE::Rough:
 		return roughNames;
+		break;
+	case TEXTURETYPE::Displacement:
+		return displacementNames;
 		break;
 	default:
 		break;
@@ -262,7 +284,7 @@ std::vector<Texture*> TextureManager::GetTextureList(TEXTURETYPE type)
 {
 	switch (type)
 	{
-	case TEXTURETYPE::Diffuse:
+	case TEXTURETYPE::Albedo:
 		return diffuseList;
 		break;
 	case TEXTURETYPE::Specular:
@@ -280,6 +302,9 @@ std::vector<Texture*> TextureManager::GetTextureList(TEXTURETYPE type)
 	case TEXTURETYPE::Rough:
 		return roughList;
 		break;
+	case TEXTURETYPE::Displacement:
+		return displacementList;
+		break;
 	default:
 		break;
 	}
@@ -287,11 +312,12 @@ std::vector<Texture*> TextureManager::GetTextureList(TEXTURETYPE type)
 
 void TextureManager::ImportAllTextures()
 {
-	Create(GetAllFiles("..\\Images\\Diffuse\\"), TEXTURETYPE::Diffuse);
+	Create(GetAllFiles("..\\Images\\Albedo\\"), TEXTURETYPE::Albedo);
 	Create(GetAllFiles("..\\Images\\Specular\\"), TEXTURETYPE::Specular);
 	Create(GetAllFiles("..\\Images\\Normal\\"), TEXTURETYPE::Normal);
 	Create(GetAllFiles("..\\Images\\Ambient\\"), TEXTURETYPE::Ambient);
 	Create(GetAllFiles("..\\Images\\Rough\\"), TEXTURETYPE::Rough);
+	Create(GetAllFiles("..\\Images\\Displacement\\"), TEXTURETYPE::Displacement);
 }
 
 std::vector<std::string> TextureManager::GetAllFiles(std::string dirType)
@@ -321,7 +347,7 @@ bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)
 {
 	switch (type)
 	{
-	case TEXTURETYPE::Diffuse:
+	case TEXTURETYPE::Albedo:
 		diffuseList.push_back(newTexture);
 		break;
 	case TEXTURETYPE::Specular:
@@ -339,6 +365,9 @@ bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)
 	case TEXTURETYPE::Rough:
 		roughList.push_back(newTexture);
 		break;
+	case TEXTURETYPE::Displacement:
+		displacementList.push_back(newTexture);
+		break;
 	default:
 		break;
 	}
@@ -349,7 +378,7 @@ bool TextureManager::Add(Texture* newTexture, TEXTURETYPE type)
 bool TextureManager::DebugManager()
 {
 	printf("Textures: \n");
-	printf(" Diffuse: \n");
+	printf(" Albedo: \n");
 	for (int i = 0; i < diffuseList.size(); i++)
 	{
 		std::cout << "  - " << diffuseList[i]->GetName() << std::endl;
@@ -378,9 +407,16 @@ bool TextureManager::DebugManager()
 	printf("\n");
 
 	printf(" Rough: \n");
-	for (int i = 0; i < ambientList.size(); i++)
+	for (int i = 0; i < roughList.size(); i++)
 	{
 		std::cout << "  - " << roughList[i]->GetName() << std::endl;
+	}
+	printf("\n");
+
+	printf(" Displacement: \n");
+	for (int i = 0; i < displacementList.size(); i++)
+	{
+		std::cout << "  - " << displacementList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 	return true;
