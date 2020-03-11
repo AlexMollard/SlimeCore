@@ -23,6 +23,7 @@ public:
 	void AddRotate(float rotSpeed, glm::vec3 rotDIR);	//Broken
 	void SetRotate( glm::vec3 rotation);	//Broken
 	void SetSkyBoxPos(glm::vec3* newPos);
+	glm::vec3 GetRotation() { return rotation; };
 
 	// Frame Functions
 	//-------------------

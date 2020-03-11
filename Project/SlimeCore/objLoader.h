@@ -764,7 +764,7 @@ void LoadMtl(std::map<std::string, int> &material_map,
     }
 
     // bump texture
-    if ((0 == strncmp(token, "map_bump", 8)) && isSpace(token[8])) {
+    if ((0 == strncmp(token, "map_Bump", 8)) && isSpace(token[8])) {
       token += 9;
       material.bump_texname = token;
       continue;

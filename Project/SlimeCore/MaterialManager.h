@@ -24,10 +24,6 @@ public:
 	Material* Get(std::string name, bool creation = false);
 	Material* Get(int index);
 
-	// Light Functions
-	//--------------------
-	void SetDirLightDirection(glm::vec3 direction);
-
 	// Misc Functions
 	//--------------------
 	bool DebugManager();

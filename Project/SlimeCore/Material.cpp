@@ -25,8 +25,6 @@ Material::Material(std::string name, Texture* albedo, Texture* specMap, Texture*
 	if (displacementMap)
 		hasRoughMap = true;
 	this->displacementMap = displacementMap;
-
-	SetDirectionalLightAttributes();
 }
 
 Material::Material(std::string name, Texture* albedo, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength, Texture* displacementMap, float displacementStrength)
@@ -61,8 +59,6 @@ Material::Material(std::string name, Texture* albedo, float diffuseStrength, Tex
 	this->ambientStrength = ambientStrength;
 	this->roughStrength = roughStrength;
 	this->displacementStrength = displacementStrength;
-
-	SetDirectionalLightAttributes();
 }
 
 Material::Material(std::string name, Texture* albedo)
@@ -74,21 +70,13 @@ Material::Material(std::string name, Texture* albedo)
 	this->normalMap = nullptr;
 	this->ambientMap = nullptr;
 	this->roughMap = nullptr;
-
-	SetDirectionalLightAttributes();
 }
 
 Material::~Material()
 {
 }
 
-void Material::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 newAmbient, glm::vec3 newAlbedo, glm::vec3 newSpecular)
-{
-	SetDirectionalLightDirection(newDirection);
-	SetDirectionalLightAmbient(newAmbient);
-	SetDirectionalLightAlbedo(newAlbedo);
-	SetDirectionalLightSpecular(newSpecular);
-}
+
 
 Texture* Material::GetAlbedo()
 {

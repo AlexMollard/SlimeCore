@@ -16,12 +16,14 @@ public:
 	void SetConstant(float newConstant) { constant = newConstant; }
 	void SetLinear(float newLinear) { linear = newLinear; }
 	void SetQuadratic(float newQuadratic) { quadratic = newQuadratic; }
+	void SetStrength(float newStrength) { strength = newStrength; }
 
 	// Get Functions
 	//----------------
 	glm::vec3 GetAmbient() { return ambient; }
 	glm::vec3 GetAlbedo() { return albedo; }
 	glm::vec3 GetSpecular() { return specular; }
+	float GetStrength() { return strength; };
 		 
 	float GetConstant() { return constant ; }
 	float GetLinear() { return linear; }
@@ -31,6 +33,8 @@ public:
 	glm::vec3 albedo = glm::vec3(1);
 	glm::vec3 ambient = glm::vec3(1);
 	glm::vec3 specular = glm::vec3(1);
+
+	float strength = 1.0f;
 
 	float constant = 1.0f;
 	float linear = 0.09f;

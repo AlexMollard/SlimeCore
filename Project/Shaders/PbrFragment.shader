@@ -7,12 +7,12 @@ in vec3 Normal;
 in vec3 Tangent;
 in vec3 BiTangent;
 
-uniform sampler2D diffuseTexture;
-uniform sampler2D specularTexture;
-uniform sampler2D normalTexture;
-uniform sampler2D ambientTexture;
-uniform sampler2D roughTexture;
-uniform sampler2D displacementTexture;
+layout(location = 0) uniform sampler2D diffuseTexture;
+layout(location = 1)uniform sampler2D specularTexture;
+layout(location = 2)uniform sampler2D normalTexture;
+layout(location = 3)uniform sampler2D ambientTexture;
+layout(location = 4)uniform sampler2D roughTexture;
+layout(location = 5)uniform sampler2D displacementTexture;
 
 uniform float diffuseStrength;
 uniform float specularStrength;
@@ -45,6 +45,7 @@ struct PointLight
 	vec3 albedo;
 	vec3 specular;
 
+    float strength;
 	float constant;
 	float linear;
 	float quadratic;
@@ -112,7 +113,7 @@ vec3 CalculatespotLight(PointLight light, vec3 V, vec3 N, vec3 F0, float roughne
     vec3 H = normalize(V + L);
     float distance = length(light.position - WorldPos);
     float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.albedo * attenuation;
+    vec3 radiance = light.albedo * attenuation * light.strength;
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
@@ -183,7 +184,7 @@ void main()
     // add to outgoing radiance Lo
     vec3 dirLightResult = (kD * albedo / PI + specular) * radiance * NdotL;
 
-    //Lo += dirLightResult;
+    Lo += dirLightResult;
 
     for (int i = 0; i < pointLightTotal; ++i)
     {
@@ -198,6 +199,6 @@ void main()
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0 / 2.2));
-   // N = (normalize(N) + vec3(1, 1, 1)) / vec3(2, 2, 2);
-    FragColor = vec4(color, 1.0);
+
+    FragColor = vec4(color, 1);
 }

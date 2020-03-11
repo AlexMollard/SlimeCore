@@ -167,11 +167,3 @@ bool MaterialManager::DebugManager()
 
 	return true;
 }
-
-void MaterialManager::SetDirLightDirection(glm::vec3 direction)
-{
-	for (int i = 0; i < materialList.size(); i++)
-	{
-		materialList[i]->SetDirectionalLightDirection(direction);
-	}
-}

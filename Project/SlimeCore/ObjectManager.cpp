@@ -8,6 +8,8 @@ ObjectManager::ObjectManager(MeshManager* meshManager, MaterialManager* matManag
 	this->meshManager = meshManager;
 	this->projectionView = projectionView;
 	this->camPos = camPos;
+
+	CreateDirectionalLight();
 }
 
 ObjectManager::~ObjectManager()
@@ -206,7 +208,7 @@ void ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, GameObject
 	pLight->SetShader(shaderManager->Get("lightShader"));
 	pLight->SetMaterial(matManager->Get("None"));
 	pLight->SetMesh(meshManager->Get("Cube"));
-	pLight->SetScale(glm::vec3(0.001f));
+	pLight->SetScale(glm::vec3(0.1f));
 	pLight->SetIsLight(true);
 
 	if (parent != nullptr)
@@ -221,6 +223,18 @@ void ObjectManager::AddPointLight(PointLight* light)
 	Add(light);
 }
 
+void ObjectManager::CreateDirectionalLight()
+{
+	DirectionalLight* pLight = new DirectionalLight("DirectionalLight", glm::vec3(0));
+	pLight->SetShader(shaderManager->Get("None"));
+	pLight->SetMaterial(matManager->Get("None"));
+	pLight->SetMesh(meshManager->Get("None"));
+	pLight->SetIsLight(true);
+	directionalLight = pLight;
+	Add(pLight);
+}
+
+
 void ObjectManager::UpdateLights(Shader* shader)
 {
 	// Spot Lights
@@ -233,10 +247,17 @@ void ObjectManager::UpdateLights(Shader* shader)
 		shader->setVec3("pointLights[" + std::to_string(i) + "].albedo", pointLights[i]->GetAlbedo());
 		shader->setVec3("pointLights[" + std::to_string(i) + "].specular", pointLights[i]->GetSpecular());
 
+		shader->setFloat("pointLights[" + std::to_string(i) + "].strength", pointLights[i]->GetStrength());
+
 		shader->setFloat("pointLights[" + std::to_string(i) + "].constant", pointLights[i]->GetConstant());
 		shader->setFloat("pointLights[" + std::to_string(i) + "].linear", pointLights[i]->GetLinear());
 		shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", pointLights[i]->GetQuadratic());
 	}
+
+	shader->setVec3("dirLight.direction", directionalLight->GetRotation());
+	shader->setVec3("dirLight.ambient", directionalLight->dirLightAmbient);
+	shader->setVec3("dirLight.albedo", directionalLight->dirLightAlbedo);
+	shader->setVec3("dirLight.specular", directionalLight->dirLightSpecular);
 }
 
 void ObjectManager::BindTexture(int objectIndex, TEXTURETYPE texType, Texture* texture)
@@ -309,14 +330,11 @@ bool ObjectManager::DebugAll()
 	return true;
 }
 
-/*
 
-*/
+
 
 bool ObjectManager::Draw()
 {
-	//matManager->SetDirLightDirection(glm::vec3(glm::sin(glfwGetTime()), 0, glm::cos(glfwGetTime())));
-	
 	for (int i = 0; i < objects.size(); i++)
 	{
 		Shader* objShader = objects[i]->GetShader();

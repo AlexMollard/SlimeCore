@@ -45,13 +45,6 @@ void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
 	// Material
 	shader->setFloat("material.shininess", mat->GetShininess());
 	shader->setVec3("viewPos", cameraPos);
-
-
-	// Directional Light
-	shader->setVec3("dirLight.direction", mat->dirLightDirection);
-	shader->setVec3("dirLight.ambient", mat->dirLightAmbient);
-	shader->setVec3("dirLight.albedo", mat->dirLightAlbedo);
-	shader->setVec3("dirLight.specular", mat->dirLightSpecular);
 }
 
 void GameObject::SetPos(glm::vec3 newPos)
@@ -83,6 +76,8 @@ void GameObject::SetRotate(glm::vec3 rotation)
 	newModel[1] = mat[1] * scale[1];
 	newModel[2] = mat[2] * scale[2];
 	newModel[3] = newModel[3];
+
+	this->rotation = updatedRotation;
 
 	glm::quat myQuat(updatedRotation);
 	newModel *= glm::mat4(myQuat);

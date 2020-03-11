@@ -9,8 +9,10 @@ public:
 	Texture(std::string name, unsigned int id);
 	Texture(std::string name, unsigned int *id);
 	Texture(std::string name);
+	Texture() {};
 	~Texture();
 
+	void load(std::string dir);
 	void Bind() { glBindTexture(GL_TEXTURE_2D, textureID); };
 	unsigned int GetID() { return textureID; };
 	std::string GetName() { return name; };

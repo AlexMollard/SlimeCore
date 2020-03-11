@@ -1,5 +1,6 @@
 #pragma once
 #include "PointLight.h"
+#include "DirectionalLight.h"
 #include "ShaderManager.h"
 #include "MaterialManager.h"
 #include "MeshManager.h"
@@ -42,6 +43,9 @@ public:
 	int FindPointLight(GameObject* lightObject);
 	void CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
 	void AddPointLight(PointLight* light);
+
+	void CreateDirectionalLight();
+
 	void UpdateLights(Shader* shader);
 
 	// Misc Functions
@@ -67,6 +71,7 @@ public:
 	std::vector<GameObject*> objects;
 	std::vector<std::string> names;
 	std::vector<PointLight*> pointLights;
+	DirectionalLight* directionalLight;
 
 	// Managers
 	MaterialManager* matManager = nullptr;

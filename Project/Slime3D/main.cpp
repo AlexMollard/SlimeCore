@@ -4,7 +4,6 @@ int main()
 {
 	// Check for Memory Leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
 	// Create Application
 	Application* app = new Application(1280, 720, "Slime Core");
 	GLFWwindow* window = glfwGetCurrentContext();
@@ -45,15 +44,14 @@ int main()
 	meshManager->Create("Cylinder", Primitives::Cylinder);
 	
 	// Load Stan
-	meshManager->Create("stan", "..\\Models\\stan.obj");
 	meshManager->Create("sphere", "..\\Models\\sphere.obj");
-	
+	meshManager->Create("girl", "..\\Models\\girl\\tiphaine.obj");
+	meshManager->Create("stormtrooper", "..\\Models\\stormtrooper\\0.obj");
 
 	// Objects
-	objectManager->Create("SkyBox", 1, 1, 1);
+	GameObject* skyBox = objectManager->Create("SkyBox", 1, 1, 1);
 	objectManager->Create("Block", 2, 2, 3);
 	objectManager->Get("Block")->SetPos(glm::vec3(0, -0.25f, 0));
-	objectManager->Get("Block")->SetScale(glm::vec3(0.01f));
 
 	objectManager->CreatePointLight("Light", glm::vec3(2,0,0));
 
@@ -67,7 +65,7 @@ int main()
 	{
 		timer += deltaTime;
 		
-		objectManager->Get(0)->SetSkyBoxPos(&app->GetCamera()->Position);
+		skyBox->SetSkyBoxPos(&app->GetCamera()->Position);
 		lightOBJ->SetPos(glm::vec3(1,0,glm::cos(timer) / 2));
 		// Draw Objects
 		objectManager->Draw();

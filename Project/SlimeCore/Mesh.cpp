@@ -164,15 +164,22 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 
 bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 {
+	if (m_meshChunks.empty() == false) {
+		printf("Mesh already initialised, can't re-initialise!\n");
+		return false;
+	}
+
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	std::string error = "";
 
 	std::string file = filename;
-	std::string folder = file.substr(0, file.find_last_of('/') + 1);
+	std::string folder = file.substr(0, file.find_last_of('\\') + 1);
 
 	bool success = tinyobj::LoadObj(shapes, materials, error,
 		filename, folder.c_str());
+
+	//std::cout << error << std::endl;
 
 	if (success == false) {
 		printf("%s\n", error.c_str());
@@ -181,6 +188,52 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 
 	fileName = filename;
 
+	// copy materials
+	m_materials.resize(materials.size());
+	int index = 0;
+	for (auto& m : materials) {
+		if (materials.size() > 1)
+		{
+
+			m_materials[index].ambient = glm::vec3(m.ambient[0], m.ambient[1], m.ambient[2]);
+			m_materials[index].albedo = glm::vec3(m.albedo[0], m.albedo[1], m.albedo[2]);
+			m_materials[index].specular = glm::vec3(m.specular[0], m.specular[1], m.specular[2]);
+			m_materials[index].emissive = glm::vec3(m.emission[0], m.emission[1], m.emission[2]);
+			m_materials[index].specularPower = m.shininess;
+			m_materials[index].opacity = m.dissolve;
+
+			// textures
+
+			if (m.ambient_texname.size() > 1)
+				m_materials[index].ambientTexture.load((folder + m.ambient_texname).c_str());
+
+			if (m.diffuse_texname.size() > 1)
+				m_materials[index].diffuseTexture.load((folder + m.diffuse_texname).c_str());
+
+			if (m.specular_texname.size() > 1)
+				m_materials[index].specularTexture.load((folder + m.specular_texname).c_str());
+
+			if (m.specular_highlight_texname.size() > 1)
+				m_materials[index].specularHighlightTexture.load((folder + m.specular_highlight_texname).c_str());
+
+			if (m.bump_texname.size() > 1)
+				m_materials[index].normalTexture.load((folder + m.bump_texname).c_str());
+
+			if (m.displacement_texname.size() > 1)
+				m_materials[index].displacementTexture.load((folder + m.displacement_texname).c_str());
+		}
+		else
+		{
+			// textures
+			m_materials[index].ambientTexture.load("../Images/None.png");
+			m_materials[index].diffuseTexture.load("../Images/None.png");
+			m_materials[index].specularTexture.load("../Images/None.png");
+			m_materials[index].specularHighlightTexture.load("../Images/None.png");
+			m_materials[index].normalTexture.load("../Images/None.png");
+			m_materials[index].displacementTexture.load("../Images/None.png");
+		}
+		++index;
+	}
 
 	// copy shapes
 	m_meshChunks.reserve(shapes.size());
@@ -273,26 +326,101 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 	return true;
 }
 
-void Mesh::draw(bool usePatches /* = false */) {
+void BindTexture(Texture* texture, int textureIndex)
+{
+	if (texture != nullptr)
+	{
 
-	int program = -1;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-	if (program == -1) {
-		printf("No shader bound!\n");
-		return;
+			glActiveTexture(GL_TEXTURE0 + textureIndex);
+			texture->Bind();
 	}
-	int currentMaterial = -1;
-
-	// draw the mesh chunks
-	for (auto& c : m_meshChunks) {
-		// bind and draw geometry
-		glBindVertexArray(c.vao);
-		if (usePatches)
-			glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
-		else
-			glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+	else
+	{
+		glActiveTexture(GL_TEXTURE0 + textureIndex);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+}
+
+void Mesh::draw(bool usePatches) {
+
+	if (m_materials.size() > 1)
+	{
+		int program = -1;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+
+		if (program == -1) {
+			printf("No shader bound!\n");
+			return;
+		}
+
+		int specularStrengthUniform = glGetUniformLocation(program, "specularStrength");
+
+		int ambientTexUniform = glGetUniformLocation(program, "ambientTexture");
+		int diffuseTexUniform = glGetUniformLocation(program, "diffuseTexture");
+		int specTexUniform = glGetUniformLocation(program, "specularTexture");
+		int specHighlightTexUniform = glGetUniformLocation(program, "roughTexture");
+		int normalTexUniform = glGetUniformLocation(program, "normalTexture");
+		int dispTexUniform = glGetUniformLocation(program, "displacementTexture");
+
+		// set texture slots (these don't change per material)
+		if (diffuseTexUniform >= 0)
+			glUniform1i(diffuseTexUniform, 0);
+		if (specTexUniform >= 0)
+			glUniform1i(specTexUniform, 1);
+		if (normalTexUniform >= 0)
+			glUniform1i(normalTexUniform, 2);
+		if (ambientTexUniform >= 0)
+			glUniform1i(ambientTexUniform, 3);
+		if (specHighlightTexUniform >= 0)
+			glUniform1i(specHighlightTexUniform, 4);
+		if (dispTexUniform >= 0)
+			glUniform1i(dispTexUniform, 5);
+
+		// draw the mesh chunks
+		int count = -1;
+		for (auto& c : m_meshChunks) {
+
+			if (m_materials[c.materialID].diffuseTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].diffuseTexture, 0);
+
+			if (m_materials[c.materialID].specularTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].specularTexture, 1);
+			
+			if (m_materials[c.materialID].normalTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].normalTexture, 2);
+			
+			if (m_materials[c.materialID].ambientTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].ambientTexture, 3);
+			
+			if (m_materials[c.materialID].specularHighlightTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].specularHighlightTexture, 4);
+			
+			if (m_materials[c.materialID].displacementTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].displacementTexture, 5);
+
+
+			// bind and draw geometry
+			glBindVertexArray(c.vao);
+			if (usePatches)
+				glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
+			else
+				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+		}
+	}
+	else
+	{
+		for (auto& c : m_meshChunks) {
+
+			// bind and draw geometry
+			glBindVertexArray(c.vao);
+			if (usePatches)
+				glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
+			else
+				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+		}
+	}
+
+
 }
 
 void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {

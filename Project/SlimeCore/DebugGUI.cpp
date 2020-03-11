@@ -680,9 +680,9 @@ void DebugGUI::HierarchyGUI()
 		//Transform
 		ImGui::Text("Transform");
 		ImGui::Separator();
-		ImGui::InputFloat3("Position", pos, 4);
-		ImGui::InputFloat3("Rotation", rot, 4);
-		ImGui::InputFloat3("Scale", scale, 4);
+		ImGui::InputFloat3("Position", pos, 3);
+		ImGui::InputFloat3("Rotation", rot, 3);
+		ImGui::InputFloat3("Scale", scale, 3);
 
 		//Mesh
 		ImGui::Separator();
@@ -744,9 +744,12 @@ void DebugGUI::HierarchyGUI()
 			ImGui::TextColored(ImVec4(1,1,0,1), "Light Properties");
 			PointLight* currentLight = (PointLight*)currentOBJ;
 			glm::vec3 difColorvec = currentLight->GetAlbedo();
+			float lightStregth = currentLight->GetStrength();
 			float difColor[3] = { difColorvec.x,difColorvec.y,difColorvec.z };
-			ImGui::InputFloat3("AlbedoColor",difColor);
+			ImGui::InputFloat3("Light Color",difColor);
+			ImGui::InputFloat("Light Strength", &lightStregth);
 			currentLight->SetAlbedo(glm::vec3(difColor[0], difColor[1], difColor[2]));
+			currentLight->SetStrength(lightStregth);
 		}
 
 			objManager->SetVars(

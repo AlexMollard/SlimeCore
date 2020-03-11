@@ -5,7 +5,7 @@
 #include "ext.hpp"
 #include "Primitives.h"
 #include "objLoader.h"
-
+#include "Material.h"
 // a vertex structure for obj files
 struct Vertex {
 	glm::vec3 position; // added to attrib location 0
@@ -33,13 +33,35 @@ public:
 		unsigned int	indexCount;
 		int				materialID;
 	};
+
+	class MeshMaterial
+	{
+	public:
+		MeshMaterial() {};
+		~MeshMaterial() {};
+
+		glm::vec3 ambient;
+		glm::vec3 albedo;
+		glm::vec3 specular;
+		glm::vec3 emissive;
+		float specularPower;
+		float opacity;
+
+
+		Texture ambientTexture;
+		Texture diffuseTexture;
+		Texture specularTexture;
+		Texture specularHighlightTexture;
+		Texture normalTexture;
+		Texture displacementTexture;
+	};
 protected:
 	std::vector<MeshChunk>	m_meshChunks;
+	std::vector<MeshMaterial> m_materials;
 	std::string name;
 	std::string fileName;
 	Primitives prim;
 	bool hasIBO = false;
-
 	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 };
 
