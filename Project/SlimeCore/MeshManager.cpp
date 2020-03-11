@@ -97,7 +97,7 @@ int MeshManager::GetIndex(std::string name)
 	}
 
 	printf("Cant Find index for that mesh");
-	return 404;
+	return -404;
 }
 
 int MeshManager::GetIndex(Mesh* name)
@@ -109,7 +109,7 @@ int MeshManager::GetIndex(Mesh* name)
 	}
 
 	printf("Cant Find index for that mesh");
-	return 404;
+	return -404;
 }
 
 void MeshManager::SetNames()

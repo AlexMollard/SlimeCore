@@ -89,12 +89,12 @@ int MaterialManager::GetIndex(std::string name)
 		if (materialNames[i] == name)
 			return i;
 	}
-	return 404;
+	return -404;
 }
 
 int MaterialManager::GetIndex(Material* mat)
 {
-	return (GetIndex(mat->GetName()) != 404 ? GetIndex(mat->GetName()) : 404);
+	return (GetIndex(mat->GetName()) != -404 ? GetIndex(mat->GetName()) : -404);
 }
 
 void MaterialManager::SetNames()
@@ -104,6 +104,36 @@ void MaterialManager::SetNames()
 	{
 		materialNames.push_back(materialList[i]->GetName());
 	}
+}
+
+void MaterialManager::Remove(Material* mat, std::vector<GameObject*> objects)
+{
+	// Get all objects that have this as thier material.
+	// Set all objects to have "None"(materials[0]) as thier material.
+	// Grab all materials in new vector (excluding the one you want to delete).
+	// Delete material you want to delete.
+	// Cleat materials vector, then assign the new vector to it.
+	// Done!.
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (objects[i]->GetMaterial() == mat)
+			objects[i]->SetMaterial(Get("None"));
+	}
+
+
+	std::vector<Material*> newMaterialList;
+	for (int i = 0; i < materialList.size(); i++)
+	{
+		if (materialList[i] == mat)
+			continue;
+		
+		newMaterialList.push_back(materialList[i]);
+	}
+	
+	delete mat;
+	mat = nullptr;
+
+	materialList = newMaterialList;
 }
 
 std::vector<std::string> MaterialManager::GetNames()

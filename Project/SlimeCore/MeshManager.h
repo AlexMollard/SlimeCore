@@ -25,7 +25,7 @@ public:
 	bool DebugManager();
 	void SetNames();
 	std::vector<std::string> GetNames();
-	Mesh* NotFound(bool creation, std::string name = "---", int index = 404);
+	Mesh* NotFound(bool creation, std::string name = "---", int index = -404);
 
 protected:
 	// Keep track of all meshes and names for future use

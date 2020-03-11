@@ -46,7 +46,7 @@ public:
 
 	// Misc Functions
 	//------------------
-	void SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName);
+	void SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec3 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName);
 	void Swap(int objIndex, int vectorPos);
 	bool DebugManager();
 	bool DebugAll();

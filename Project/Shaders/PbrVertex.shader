@@ -37,13 +37,13 @@ void main()
     WorldPos = vec3(Model * vec4(aPos, 1.0));
     Normal = mat3(Model) * aNormal;
 
-    Tangent = normalize(mat3(Model) * Tangent);
-    BiTangent = normalize(mat3(Model) * BiTangent);
+    Tangent = normalize(Tangent);
+    BiTangent = normalize(BiTangent);
 
     Tangent = aTangent;
     BiTangent = aBiTangent;
 
-    float p = texture(displacementTexture, TexCoord).a * displacementStrength;
+    //float p = texture(displacementTexture, TexCoord).a * displacementStrength;
     
-    gl_Position = ProjectionView * vec4(WorldPos + (aNormal * p), 1.0);
+    gl_Position = ProjectionView * vec4(WorldPos, 1.0);
 }

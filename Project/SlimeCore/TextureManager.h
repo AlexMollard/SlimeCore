@@ -12,7 +12,7 @@ public:
 	Texture* Get(std::string, TEXTURETYPE type, bool creation = false);
 	Texture* Get(int index, TEXTURETYPE type);
 
-	Texture* NotFound(bool creation, std::string name = "---", int index = 404);
+	Texture* NotFound(bool creation, std::string name = "---", int index = -404);
 
 	std::vector<Texture*> GetTextureList(TEXTURETYPE type);
 

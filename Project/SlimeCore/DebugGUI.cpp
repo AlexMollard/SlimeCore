@@ -129,8 +129,8 @@ void DebugGUI::MaterialGUI()
 	float materialselectpos = namePos - imageOffset * 0.55f;
 	float childcenter = imageOffset * 0.25f;
 	ImVec2 childSize = ImVec2(imageOffset * 0.95f, materialImageSize.y + 100);
-	std::string currentValues[5] = { currentAlbedo,currentSpecular,currentNormal,currentAmbient,currentRough };
-	float currentStrengthValues[5] = { diffuseStrength,specularStrength,normalStrength,ambientStrength,roughStrength };
+	std::string currentValues[6] = { currentAlbedo,currentSpecular,currentNormal,currentAmbient,currentRough,currentDisplacement };
+	float currentStrengthValues[6] = { diffuseStrength,specularStrength,normalStrength,ambientStrength,roughStrength,displacementStrength };
 
 
 	ImGui::SameLine(materialselectpos - 50);
@@ -184,7 +184,13 @@ void DebugGUI::MaterialGUI()
 	}
 
 	ImGui::SameLine(materialselectpos - 30);
-	if (ImGui::Button("-", ImVec2(20, 20)));
+	if (matManager->GetIndex(matManager->Get(currentEditorMaterial)) >= 4)
+		if (ImGui::Button("-", ImVec2(20, 20))) 
+	{
+		matManager->Remove(matManager->Get(currentEditorMaterial), objManager->Get(0,objManager->GetObjectSize()));
+		materialList = matManager->GetNames();
+		currentEditorMaterial = materialList[0].c_str();
+	}
 
 	ImGui::PushItemWidth(imageOffset);
 	ImGui::SameLine(namePos);
@@ -292,7 +298,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::NewLine();
 	ImGui::SameLine(childcenter);
 	ImGui::PushItemWidth(materialImageSize.x);
-	ImGui::SliderFloat("##normalStrength", &normalStrength, 0, 1);
+	ImGui::SliderFloat("##normalStrength", &normalStrength, 0, 10);
 	ImGui::EndChild();
 #pragma endregion
 
@@ -397,11 +403,13 @@ void DebugGUI::MaterialGUI()
 		currentValues[2] != std::string(currentNormal) ||
 		currentValues[3] != std::string(currentAmbient) ||
 		currentValues[4] != std::string(currentRough) ||
+		currentValues[5] != std::string(currentDisplacement) ||
 		currentStrengthValues[0] != diffuseStrength ||
 		currentStrengthValues[1] != specularStrength ||
 		currentStrengthValues[2] != normalStrength ||
 		currentStrengthValues[3] != ambientStrength ||
-		currentStrengthValues[4] != roughStrength
+		currentStrengthValues[4] != roughStrength ||
+		currentStrengthValues[5] != displacementStrength
 		)
 	matManager->Get(currentEditorMaterial)->SetAll(
 		textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) != nullptr ? textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) : nullptr,
@@ -672,9 +680,9 @@ void DebugGUI::HierarchyGUI()
 		//Transform
 		ImGui::Text("Transform");
 		ImGui::Separator();
-		ImGui::InputFloat3("Position", pos, 2);
-		ImGui::InputFloat4("Rotation", rot, 2);
-		ImGui::InputFloat3("Scale", scale, 2);
+		ImGui::InputFloat3("Position", pos, 4);
+		ImGui::InputFloat3("Rotation", rot, 4);
+		ImGui::InputFloat3("Scale", scale, 4);
 
 		//Mesh
 		ImGui::Separator();
@@ -746,7 +754,7 @@ void DebugGUI::HierarchyGUI()
 				objNameCharP,
 				staticBool,
 				glm::vec3(pos[0], pos[1], pos[2]),
-				glm::vec4(rot[0], rot[1], rot[2], rot[3]),
+				glm::vec3(rot[0], rot[1], rot[2]),
 				glm::vec3(scale[0], scale[1], scale[2]),
 				std::string(currentMesh),
 				currentMaterial,

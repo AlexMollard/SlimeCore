@@ -40,31 +40,35 @@ int main()
 
 	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
-	meshManager->Create("Cube", Primitives::Cube);
+	meshManager->Create("Cube", "..\\Models\\cube.obj");
 	meshManager->Create("Plane", Primitives::Plane);
 	meshManager->Create("Cylinder", Primitives::Cylinder);
 	
 	// Load Stan
 	meshManager->Create("stan", "..\\Models\\stan.obj");
+	meshManager->Create("sphere", "..\\Models\\sphere.obj");
 	
 
 	// Objects
 	objectManager->Create("SkyBox", 1, 1, 1);
 	objectManager->Create("Block", 2, 2, 3);
-	objectManager->Get("Block")->SetDescription("This object is the default cube on startup.");
+	objectManager->Get("Block")->SetPos(glm::vec3(0, -0.25f, 0));
+	objectManager->Get("Block")->SetScale(glm::vec3(0.01f));
 
 	objectManager->CreatePointLight("Light", glm::vec3(2,0,0));
 
 	debugGui->FirstFrame();
 
+	GameObject* lightOBJ = objectManager->Get("Light");
+
 	objectManager->DebugAll();
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{
-		timer += 0.5f * deltaTime;
+		timer += deltaTime;
 		
 		objectManager->Get(0)->SetSkyBoxPos(&app->GetCamera()->Position);
-
+		lightOBJ->SetPos(glm::vec3(1,0,glm::cos(timer) / 2));
 		// Draw Objects
 		objectManager->Draw();
 

@@ -55,10 +55,12 @@ uniform DirectionalLight dirLight;
 
 vec3 getNormalFromMap()
 {
-	vec3 tangentNormal = (texture(normalTexture, TexCoord).xyz * normalStrength) * 2.0 - 1.0;
+	vec3 tangentNormal = (texture(normalTexture, TexCoord).xyz) * 2.0 - 1.0;
+    tangentNormal.z *= normalStrength;
+    tangentNormal = normalize(tangentNormal);
 
 	vec3 N = normalize(Normal);
-	mat3 TBN = mat3(Tangent, BiTangent, N);
+	mat3 TBN = mat3(normalize(Tangent), normalize(BiTangent), N);
 
 	return normalize(TBN * tangentNormal);
 }
@@ -181,7 +183,7 @@ void main()
     // add to outgoing radiance Lo
     vec3 dirLightResult = (kD * albedo / PI + specular) * radiance * NdotL;
 
-    Lo += dirLightResult;
+    //Lo += dirLightResult;
 
     for (int i = 0; i < pointLightTotal; ++i)
     {
@@ -196,6 +198,6 @@ void main()
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0 / 2.2));
-
+   // N = (normalize(N) + vec3(1, 1, 1)) / vec3(2, 2, 2);
     FragColor = vec4(color, 1.0);
 }

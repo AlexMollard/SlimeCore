@@ -89,7 +89,7 @@ int ObjectManager::FindIndex(GameObject* object)
 	}
 
 	printf("Object not found");
-	return 404;
+	return -404;
 }
 
 int ObjectManager::FindIndex(std::string name)
@@ -103,7 +103,7 @@ int ObjectManager::FindIndex(std::string name)
 	}
 
 	printf("Object not found");
-	return 404;
+	return -404;
 }
 
 int ObjectManager::GetObjectSize()
@@ -154,13 +154,14 @@ std::vector<GameObject*> ObjectManager::Get(int start, int end)
 	return gameObjects;
 }
 
-void ObjectManager::SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec4 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName)
+void ObjectManager::SetVars(int index, std::string name, bool isStatic, glm::vec3 pos, glm::vec3 rotation, glm::vec3 scale, std::string meshName, std::string materialName, std::string shaderName)
 {
 	GameObject* go = Get(index);
 	go->SetName(name);
 	go->SetPos(pos);
 	go->SetScale(scale);
 
+	go->SetRotate(rotation);
 	if (meshName != "")
 		go->SetMesh(meshManager->Get(meshName.c_str()));
 
@@ -196,7 +197,7 @@ int ObjectManager::FindPointLight(GameObject* lightObject)
 	}
 
 	std::cout << "Cannot find a light." << std::endl;
-	return 404;
+	return -404;
 }
 
 void ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent)
@@ -205,7 +206,7 @@ void ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, GameObject
 	pLight->SetShader(shaderManager->Get("lightShader"));
 	pLight->SetMaterial(matManager->Get("None"));
 	pLight->SetMesh(meshManager->Get("Cube"));
-	pLight->SetScale(glm::vec3(0.1f));
+	pLight->SetScale(glm::vec3(0.001f));
 	pLight->SetIsLight(true);
 
 	if (parent != nullptr)
@@ -352,7 +353,7 @@ bool ObjectManager::Draw()
 			objShader->setFloat("normalStrength", objMaterial->GetNormalStrength());
 			objShader->setFloat("ambientStrength", objMaterial->GetAmbientStrength());
 			objShader->setFloat("roughStrength", objMaterial->GetRoughStrength());
-			objShader->setFloat("displacementStrength", objMaterial->GetRoughStrength());
+			objShader->setFloat("displacementStrength", objMaterial->GetDisplacementStrength());
 		}
 
 		BindTexture(i, TEXTURETYPE::Albedo, objects[i]->GetTexture(TEXTURETYPE::Albedo));

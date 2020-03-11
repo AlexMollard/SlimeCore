@@ -67,7 +67,7 @@ int ShaderManager::GetIndex(Shader* shader)
 		}
 	}
 	std::cout << "Cannot find Shader: " << shader->GetName() << ".\n";
-	return 404;
+	return -404;
 }
 
 void ShaderManager::SetNames()

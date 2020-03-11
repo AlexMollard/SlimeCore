@@ -72,6 +72,24 @@ void GameObject::AddRotate(float rotSpeed, glm::vec3 rotDIR)
 	model = glm::rotate(model, rotSpeed, rotation);
 }
 
+void GameObject::SetRotate(glm::vec3 rotation)
+{
+	glm::vec3 updatedRotation = rotation * 3.141592f / 180.0f;
+	glm::mat4 newModel = glm::mat4(1);
+	newModel[3] = glm::vec4(position, 1);
+
+	glm::mat4 mat = glm::mat4(1);
+	newModel[0] = mat[0] * scale[0];
+	newModel[1] = mat[1] * scale[1];
+	newModel[2] = mat[2] * scale[2];
+	newModel[3] = newModel[3];
+
+	glm::quat myQuat(updatedRotation);
+	newModel *= glm::mat4(myQuat);
+
+	model = newModel;
+}
+
 void GameObject::SetSkyBoxPos(glm::vec3* newPos)
 {
 	model[3][0] = newPos[0][0];
@@ -137,6 +155,9 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 		break;
 	case TEXTURETYPE::Rough:
 		return mat->GetRoughMap();
+		break;
+	case TEXTURETYPE::Displacement:
+		return mat->GetDisplacementMap();
 		break;
 	default:
 		break;
@@ -250,7 +271,7 @@ int GameObject::FindChild(GameObject* childToFind)
 			return i;
 	}
 	std::cout << "Cant find child!" << std::endl;
-	return 404;
+	return -404;
 }
 
 void GameObject::SetParent(GameObject* newParent)

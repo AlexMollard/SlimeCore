@@ -1,6 +1,7 @@
 #pragma once
 #include "Material.h"
 #include "TextureManager.h"
+#include "GameObject.h"
 
 class MaterialManager
 {
@@ -31,8 +32,9 @@ public:
 	//--------------------
 	bool DebugManager();
 	void SetNames();
+	void Remove(Material* mat, std::vector<GameObject*> objects);
 	std::vector<std::string> GetNames();
-	Material* NotFound(bool creation, std::string name = "---", int index = 404);
+	Material* NotFound(bool creation, std::string name = "---", int index = -404);
 
 //protected:
 	// Get a refrence to all textures

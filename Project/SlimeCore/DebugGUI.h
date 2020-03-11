@@ -60,7 +60,7 @@ private:
 	
 	// Default Object Vars
 	float pos[3] = { 0,0,0 };
-	float rot[4] = { 0,0,0,0 };
+	float rot[3] = { 0,0,0 };
 	float scale[3] = { 1,1,1 };
 
 	// Object Name
