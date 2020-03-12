@@ -190,18 +190,6 @@
     <None Include="..\Shaders\Vertex.shader">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\litFragment.shader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\litVertex.shader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\DepthVertex.shader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\DepthFragment.shader">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="..\Shaders\SkyBoxFragment.shader">
       <Filter>Shaders</Filter>
     </None>
@@ -212,6 +200,21 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\Shaders\PbrVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\PointShadowDepthGeometry.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\PointShadowDepthVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\PointShadowDepthFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\litVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\litFragment.shader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

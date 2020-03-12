@@ -12,7 +12,7 @@ public:
 
 	Shader* NotFound(bool creation, std::string name = "---", int index = -404);
 	bool Add(Shader* newShader);
-	bool Create(std::string name, const char* vertex, const char* fragment);
+	Shader* Create(std::string name, const char* vertex, const char* fragment, const char* geometry = nullptr);
 	bool Create(std::string name);
 
 	int GetIndex(Shader* shader);

@@ -23,6 +23,10 @@ public:
 	double now = 0.0;
 	float delta = 1.0f;
 
+	// Window Size
+	int appWindowWidth = 1920;
+	int appWindowHeight = 1080;
+
 	// Functions
 	int Create(int windowWidth, int windowHeight, std::string name);
 	void Update();
