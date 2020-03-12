@@ -4,148 +4,91 @@ int main()
 {
 	// Check for Memory Leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
+	// Create Application
 	Application* app = new Application(1280, 720, "Slime Core");
 	GLFWwindow* window = glfwGetCurrentContext();
 
+	// Create Managers
 	ShaderManager* shaderManager = new ShaderManager();
-	MaterialManager* materialManager = new MaterialManager();
 	TextureManager* textureManager = new TextureManager();
-	ObjectManager* objectManager = new ObjectManager(materialManager, shaderManager, textureManager, app->projectionViewMat);
-
-	shaderManager->Create("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
-	shaderManager->Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
-	shaderManager->Create("skyBoxShader", "..\\Shaders\\SkyBoxVertex.shader", "..\\Shaders\\SkyBoxFragment.shader");
-
-	textureManager->Create("Grass Texture", "..\\Images\\grass.png");
-	textureManager->Create("Light Texture", "..\\Images\\light.png");
-
-	//Skybox
-	std::vector<std::string> faces
-	{
-		"..\\Images\\SkyBox\\skyrender0001.bmp",
-		"..\\Images\\SkyBox\\skyrender0002.bmp",
-		"..\\Images\\SkyBox\\skyrender0003.bmp",
-		"..\\Images\\SkyBox\\skyrender0004.bmp",
-		"..\\Images\\SkyBox\\skyrender0005.bmp",
-		"..\\Images\\SkyBox\\skyrender0006.bmp"
-	};
-	textureManager->CreateSkyBox(faces);
-
-
-	materialManager->Create("grassMat", textureManager->Get(0));
-	materialManager->Create("lightMat", textureManager->Get(1));
-	materialManager->Create("skyBoxMat", textureManager->Get(2));
+	MaterialManager* materialManager = new MaterialManager(textureManager);
+	MeshManager* meshManager = new MeshManager();
+	ObjectManager* objectManager = new ObjectManager(meshManager, materialManager, shaderManager, textureManager, app->projectionViewMat, &app->GetCamera()->Position);
+	
+	// Creating debugging GUI
+	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager,materialManager,textureManager,shaderManager);
 
 	// Setting variables
-	glm::vec3 lightPos[4] = { glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0),glm::vec3(0, 2, 0) };
 	float& deltaTime = *app->GetDeltaPointer();
 	float timer = 0.0f;
-	int gridSize = 5;
 
-	Mesh* cube = new Mesh();
-	cube->create(Primitives::Cube);
+	// Shaders
+	shaderManager->Create("skyBoxShader", "..\\Shaders\\SkyBoxVertex.shader", "..\\Shaders\\SkyBoxFragment.shader");
+	shaderManager->Create("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	shaderManager->Create("pbrShader", "..\\Shaders\\PbrVertex.shader", "..\\Shaders\\PbrFragment.shader");
+	shaderManager->Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
+	
+	// Textures
+	textureManager->CreateSkyBox("..\\Images\\SkyBox\\");
+	textureManager->ImportAllTextures();
 
-	std::vector<GameObject*> gm;
-	for (int x = 0; x < gridSize; x++)
-	{
-		for (int y = 0; y < gridSize; y++)
-		{
-			gm.push_back(new GameObject("Green Cube: " + std::to_string(x) + ", " + std::to_string(y), cube, materialManager->Get(0), shaderManager->Get(0)));
-			gm.back()->SetPos(glm::vec3((x * 2) - gridSize, -5, (y * 2) - gridSize));
-		}
-	}
+	// Materials
+	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Albedo));
+	materialManager->Create("defaultMaterial", textureManager->Get(1, TEXTURETYPE::Albedo), textureManager->Get(1, TEXTURETYPE::Specular), textureManager->Get(1, TEXTURETYPE::Normal), textureManager->Get(1, TEXTURETYPE::Ambient), textureManager->Get(1, TEXTURETYPE::Rough), textureManager->Get(1, TEXTURETYPE::Displacement));
+	materialManager->Create("lightMat", textureManager->Get(3, TEXTURETYPE::Albedo));
 
-	objectManager->AddArray(gm);
+	// Meshes
+	meshManager->Create("SkyBox", Primitives::SkyBox);
+	meshManager->Create("Cube", "..\\Models\\cube.obj");
+	meshManager->Create("Plane", Primitives::Plane);
+	meshManager->Create("Cylinder", Primitives::Cylinder);
+	
+	// Load Stan
+	meshManager->Create("sphere", "..\\Models\\sphere.obj");
+	meshManager->Create("girl", "..\\Models\\girl\\tiphaine.obj");
+	meshManager->Create("stormtrooper", "..\\Models\\stormtrooper\\0.obj");
 
-	// Testing
-	GameObject* lightOB[4] = 
-	{ 
-		new GameObject("Light 0", cube, materialManager->Get(1), shaderManager->Get(1)),
-		new GameObject("Light 1", cube, materialManager->Get(1), shaderManager->Get(1)),
-		new GameObject("Light 2", cube, materialManager->Get(1), shaderManager->Get(1)),
-		new GameObject("Light 3", cube, materialManager->Get(1), shaderManager->Get(1))
-	};
-	objectManager->AddArray(lightOB,4);
+	// Objects
+	GameObject* skyBox = objectManager->Create("SkyBox", 1, 1, 1);
+	objectManager->Create("Block", 2, 2, 3);
+	objectManager->Get("Block")->SetPos(glm::vec3(0, -0.25f, 0));
 
-	for (int i = 0; i < 4; i++)
-	{
-		lightOB[i]->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
-	}
+	objectManager->CreatePointLight("Light", glm::vec3(2,0,0));
 
-	int currentCubeIndex = 0;
-	GameObject* currentGameObject = nullptr;
-	glm::vec3 currentPOS = glm::vec3(0,2,0);
+	debugGui->FirstFrame();
 
-	std::vector<const char*> names;
-	int currentName = 0;
-	objectManager->SetNamesVector();
-	names = objectManager->GetNameVector();
-
-	objectManager->Create("SkyBox", cube, 2, 2);
+	GameObject* lightOBJ = objectManager->Get("Light");
 
 	objectManager->DebugAll();
-
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{
-		timer += 0.5f * deltaTime;
-
-		for (int i = 0; i < 4; i++)
-		{
-			lightPos[i] = glm::vec3(glm::cos(i % 2 ? -timer : timer) * (i * 6), 2, glm::sin(i % 2 ? -timer : timer) * (i * 6));
-			lightOB[i]->SetPos(lightPos[i]);
-
-			for (int x = 0; x < gm.size(); x++)
-				gm[x]->GetMaterial()->pointLights[i].SetLightPosition(lightPos[i]);
-		}
-
+		timer += deltaTime;
+		
+		skyBox->SetSkyBoxPos(&app->GetCamera()->Position);
+		lightOBJ->SetPos(glm::vec3(1,0,glm::cos(timer) / 2));
+		// Draw Objects
 		objectManager->Draw();
 
-		// feed inputs to dear imgui, start new frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		// Draw Gui
+		debugGui->Render(deltaTime);
 
-		// Start of gui window
-		ImGui::Begin("Create Cube");
-
-		if (ImGui::Button("Create"))
-		{
-			objectManager->Create("New Object: " + std::to_string(currentCubeIndex),cube, 0, 0, glm::vec3(0, currentCubeIndex, 0));
-			currentGameObject = objectManager->objects.back();
-			currentCubeIndex++;
-			objectManager->SetNamesVector();
-			names = objectManager->GetNameVector();
-		}
-
-		ImGui::SliderFloat("X: ", &currentPOS.x, -100.0f, 100.0f);
-		ImGui::SliderFloat("Y: ", &currentPOS.y, -100.0f, 100.0f);
-		ImGui::SliderFloat("Z: ", &currentPOS.z, -100.0f, 100.0f);
-
-		if (currentGameObject != nullptr)
-			currentGameObject->SetPos(currentPOS);
-
-		ImGui::ListBox("Objects", &currentName, names.data(), names.size());
-
-		// End of gui window
-		ImGui::End();
-
-		// Render dear imgui into screen
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+		// Update callbacks ect.
 		app->Update();
 	}
 
-	delete cube;
+	// Delete pointers
 	delete shaderManager;
+	delete meshManager;
 	delete materialManager;
 	delete textureManager;
 	delete objectManager;
+	delete debugGui;
 	delete app;
 
+	// Destroy openGL instance
 	glfwDestroyWindow(window);
 	glfwTerminate();
+
 	return 0;
 }

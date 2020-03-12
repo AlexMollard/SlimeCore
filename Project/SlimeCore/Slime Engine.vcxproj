@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -51,6 +52,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -135,7 +137,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Shaders;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,13 +157,18 @@
     <ClCompile Include="..\Dependencies\IMgui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugGUI.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="imgui_impl_glfw.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="OBJMesh.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Primitives.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -177,19 +184,26 @@
     <ClInclude Include="..\Dependencies\IMgui\imstb_truetype.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugGUI.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="dirent.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialManager.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshManager.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="objLoader.h" />
     <ClInclude Include="OBJMesh.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\DepthFragment.shader" />
@@ -197,6 +211,8 @@
     <None Include="..\Shaders\Fragment.shader" />
     <None Include="..\Shaders\litFragment.shader" />
     <None Include="..\Shaders\litVertex.shader" />
+    <None Include="..\Shaders\PbrFragment.shader" />
+    <None Include="..\Shaders\PbrVertex.shader" />
     <None Include="..\Shaders\SkyBoxFragment.shader" />
     <None Include="..\Shaders\SkyBoxVertex.shader" />
     <None Include="..\Shaders\Vertex.shader" />

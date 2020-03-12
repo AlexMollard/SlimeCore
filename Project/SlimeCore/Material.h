@@ -1,71 +1,93 @@
 #pragma once
 #include "glm.hpp"
-#include "ext.hpp"
-#include "gl_core_4_5.h"
-#include "glfw3.h"
 #include "Texture.h"
 
 class Material
 {
 public:
-	Material(const char* name, Texture*);
+
+	// Constructors (Subject to change)
+	//-----------------
+	Material(std::string name, Texture* albedo, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap, Texture* displacementMap);
+	Material(std::string name, Texture* albedo, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength, Texture* displacementMap, float displacementStrength);
+	Material(std::string name, Texture* albedo);
+	
 	virtual ~Material();
 
-	Texture* GetTexture();
-	const char* name = "DefaultName";
+	// Textures
+	//----------------
+	// Set
+	void SetAlbedo(Texture* newAlbedo);
+	void SetSpecMap(Texture* newSpecular);
+	void SetNormalMap(Texture* newNormal);
+	void SetAmbientMap(Texture* newAmbient);
+	void SetRoughMap(Texture* newRough);
+	void SetDisplacementMap(Texture* newDisplacement);
 
-	// Materials
-	glm::vec3 ambient = glm::vec3(1);
-	glm::vec3 diffuseColor = glm::vec3(1);
-	glm::vec3 specular = glm::vec3(1);
+	// Get
+	Texture* GetAlbedo();
+	Texture* GetSpecMap();
+	Texture* GetNormalMap();
+	Texture* GetAmbientMap();
+	Texture* GetRoughMap();
+	Texture* GetDisplacementMap();
+
+	// Texture Strengths
+	//----------------
+	// Set
+	void SetAlbedoStrength(float value) { diffuseStrength = value; }
+	void SetSpecularStrength(float value) { specularStrength = value; }
+	void SetNormalStrength(float value) { normalStrength = value; }
+	void SetAmbientStrength(float value) { ambientStrength = value; }
+	void SetRoughStrength(float value) { roughStrength = value; }
+	void SetDisplacementStrength(float value) { displacementStrength = value; }
+	void SetAll(Texture* albedo, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, Texture*displacement, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr, float displaceStr);
+
+	// Get
+	float GetAlbedoStrength() { return diffuseStrength; }
+	float GetSpecularStrength() { return specularStrength; }
+	float GetNormalStrength() { return normalStrength; }
+	float GetAmbientStrength() { return ambientStrength; }
+	float GetRoughStrength() { return roughStrength; }
+	float GetDisplacementStrength() { return displacementStrength; }
+
+	// Material Attributes (Outdated mainly used in phong lighting)
+	// -------------------
+	void setShininess(float newShininess) { shininess = newShininess; }
+	float GetShininess() { return shininess; }
+
+	// Misc Functions
+	//------------------
+	void SetName(std::string newName) { name = newName; }
+	std::string GetName() { return name.c_str(); }
+
+protected:
+	// Misc
+	std::string name = "DefaultName";
+
+	// Phong Lighting variables
 	float shininess = 1.0f;
 
-	void setMatAtrributes(glm::vec3 newAmbient = glm::vec3(0.4f, 0.05f, 0.14f), glm::vec3 newDiffuseColor = glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3 newSpecular = glm::vec3(0.5f), float newShininess = 32.0f);
-	void setAmbient(glm::vec3 newAmbient)			{ ambient = newAmbient;		};
-	void setDiffuseColor(glm::vec3 newDiffuseColor)	{ diffuseColor = newDiffuseColor;};
-	void setSpecular(glm::vec3 newSpecular)			{ specular = newSpecular;	};
-	void setShininess(float newShininess)			{ shininess = newShininess; };
+	// Has Bools
+	bool hasSpecMap = false;
+	bool hasNormalMap = false;
+	bool hasSpecColorMap = false;
+	bool hasRoughMap = false;
+	bool hasDisplacementMap = false;
 
-	// SpotLight
-	struct PointLight
-	{
-		PointLight() { SetLightAttributes(); };
+	// Texture Strengths
+	float diffuseStrength = 1.0f;
+	float specularStrength = 1.0f;
+	float normalStrength = 1.0f;
+	float ambientStrength = 1.0f;
+	float roughStrength = 1.0f;
+	float displacementStrength = 1.0f;
 
-		glm::vec3 lightPosition = glm::vec3(0, 1, 0);
-		glm::vec3 lightAmbient = glm::vec3(1);
-		glm::vec3 lightDiffuse = glm::vec3(1);
-		glm::vec3 lightSpecular = glm::vec3(1);
-
-		float lightConstant = 1.0f;
-		float lightLinear = 0.09f;
-		float lightQuadratic = 0.032f;
-
-		void SetLightAttributes(glm::vec3 newAmbient = glm::vec3(0.2f), glm::vec3 newDiffuse = glm::vec3(0.5f), glm::vec3 newSpecular = glm::vec3(1.0f), float newConstant = 1.0f, float newLinear = 0.09f, float newQuadratic = 0.032f);
-		void SetLightPosition(glm::vec3 newLightPos) { lightPosition = newLightPos; };
-		void SetLightAmbient(glm::vec3 newAmbient) { lightAmbient = newAmbient; };
-		void SetLightDiffuse(glm::vec3 newDiffuse) { lightDiffuse = newDiffuse; };
-		void SetLightSpecular(glm::vec3 newSpecular) { lightSpecular = newSpecular; };
-
-		void SetLightConstant(float newLightConstant) { lightConstant = newLightConstant; };
-		void SetLightLinear(float newLightLinear) { lightLinear = newLightLinear; };
-		void SetLightQuadratic(float newLightQuadratic) { lightQuadratic = newLightQuadratic; };
-	};
-	PointLight pointLights[4];
-
-
-	// DirectionalLight
-	glm::vec3 dirLightDirection = glm::vec3(-0.2f, -1.0f, -0.3f);
-
-	glm::vec3 dirLightAmbient = glm::vec3(0.2f);
-	glm::vec3 dirLightDiffuse = glm::vec3(1.0, 0.75, 0.5);
-	glm::vec3 dirLightSpecular = glm::vec3(1.0f);
-	
-	void SetDirectionalLightAttributes(glm::vec3 newDirection = glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3 newAmbient = glm::vec3(0.2f), glm::vec3 newDiffuse = glm::vec3(0.5f), glm::vec3 newSpecular = glm::vec3(1.0f));
-	void SetDirectionalLightDirection(glm::vec3 newDirection) { dirLightDirection = newDirection; };
-	void SetDirectionalLightAmbient(glm::vec3 newAmbient) { dirLightAmbient = newAmbient; };
-	void SetDirectionalLightDiffuse(glm::vec3 newDiffuse) { dirLightDiffuse = newDiffuse; };
-	void SetDirectionalLightSpecular(glm::vec3 newSpecular) { dirLightSpecular = newSpecular; };
-protected:
-	Texture* texture = nullptr;
+	// TextureMaps
+	Texture* albedo = nullptr;
+	Texture* specMap = nullptr;
+	Texture* normalMap = nullptr;
+	Texture* ambientMap = nullptr;
+	Texture* roughMap = nullptr;
+	Texture* displacementMap = nullptr;
 };
-

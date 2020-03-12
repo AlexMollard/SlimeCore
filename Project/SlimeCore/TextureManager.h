@@ -1,25 +1,56 @@
 #pragma once
 #include "Texture.h"
 #include <vector>
+
 class TextureManager
 {
 public:
+
 	TextureManager();
 	~TextureManager();
 
-	Texture* Get(const char* name, bool creation = false);
-	Texture* Get(int index);
+	Texture* Get(std::string, TEXTURETYPE type, bool creation = false);
+	Texture* Get(int index, TEXTURETYPE type);
 
-	Texture* NotFound(bool creation, const char* name = "---", int index = 404);
-	bool Add(Texture* newTexture);
-	bool Create(const char* name, std::string dir);
+	Texture* NotFound(bool creation, std::string name = "---", int index = -404);
 
-	unsigned int CreateSkyBox(std::vector<std::string> faces);
-	unsigned int GetSkyBox();
+	std::vector<Texture*> GetTextureList(TEXTURETYPE type);
+
+	void ImportAllTextures();
+	std::vector<std::string> GetAllFiles(std::string dir);
+
+	bool Add(Texture* newTexture, TEXTURETYPE type);
+	bool Create(std::string, std::string dir, TEXTURETYPE type);
+	void Create(std::vector<std::string> dirs, TEXTURETYPE type);
+	void CreateBlanks(std::string dir);
+
+	void SetNameList();
+	std::vector<std::string> GetNameList(TEXTURETYPE type);
+	int GetTextureIndex(std::string name, TEXTURETYPE type);
+
+	unsigned int CreateSkyBox(std::string facesDIR);
+	Texture* GetSkyBox();
 
 	bool DebugManager();
 protected:
-	std::vector<Texture*> textureList;
+	std::vector<Texture*> diffuseList;
+	std::vector<std::string> diffuseNames;
+
+	std::vector<Texture*> specularList;
+	std::vector<std::string> specularNames;
+
+	std::vector<Texture*> normalList;
+	std::vector<std::string> normalNames;
+
+	std::vector<Texture*> ambientList;
+	std::vector<std::string> ambientNames;
+
+	std::vector<Texture*> roughList;
+	std::vector<std::string> roughNames;
+
+	std::vector<Texture*> displacementList;
+	std::vector<std::string> displacementNames;
+
 	Texture* skyBox;
 	unsigned int skyboxID = 0;
 };

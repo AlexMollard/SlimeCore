@@ -7,11 +7,12 @@ layout(location = 2) in vec2 aTexCoord;
 out vec3 texCoord;
 
 uniform mat4 ProjectionView;
+uniform vec3 viewPos;
 uniform mat4 Model;
 
 void main()
 {
-    texCoord = vec3(aTexCoord,1);
-    vec4 pos = ProjectionView * vec4(aPos, 1.0);
-    gl_Position = pos.xyww;
+    texCoord = aPos;
+    vec4 pos = ProjectionView * Model * vec4(aPos, 1.0);
+    gl_Position = pos;
 }

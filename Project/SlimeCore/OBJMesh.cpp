@@ -42,7 +42,7 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 	//for (auto& m : materials) {
 	//
 	//	m_materials[index].ambient = glm::vec3(m.ambient[0], m.ambient[1], m.ambient[2]);
-	//	m_materials[index].diffuse = glm::vec3(m.diffuse[0], m.diffuse[1], m.diffuse[2]);
+	//	m_materials[index].albedo = glm::vec3(m.albedo[0], m.albedo[1], m.albedo[2]);
 	//	m_materials[index].specular = glm::vec3(m.specular[0], m.specular[1], m.specular[2]);
 	//	m_materials[index].emissive = glm::vec3(m.emission[0], m.emission[1], m.emission[2]);
 	//	m_materials[index].specularPower = m.shininess;
@@ -113,21 +113,25 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 		// fill vertex buffer
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
-		// enable first element as positions
+		// Enable first element as position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
-		// enable normals
+		// Enable second element as normals
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 1));
 
-		// enable texture coords
+		// Enable third element as UVS
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
 
-		//// enable tangents
-		//glEnableVertexAttribArray(3);
-		//glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2 + sizeof(glm::vec2)));
+		// Enable third element as Tangents
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
+		glEnableVertexAttribArray(3);
+
+		// Enable third element as BiTangents
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+		glEnableVertexAttribArray(4);
 
 		// bind 0 for safety
 		glBindVertexArray(0);

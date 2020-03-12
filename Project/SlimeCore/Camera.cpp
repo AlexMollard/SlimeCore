@@ -27,6 +27,11 @@ glm::mat4 Camera::GetViewMatrix()
 	return glm::lookAt(Position, Position + Front, Up);
 }
 
+glm::mat4 Camera::GetViewWithoutPosition()
+{
+	return glm::lookAt(glm::vec3(), Front, Up);
+}
+
 glm::mat4 Camera::GetProjectionMatrix()
 {
 	return Projection;
@@ -65,24 +70,23 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPi
 {
 	if (!mouseLock)
 	{
+		xoffset *= MouseSensitivity;
+		yoffset *= MouseSensitivity;
 
-	xoffset *= MouseSensitivity;
-	yoffset *= MouseSensitivity;
+		Yaw += xoffset;
+		Pitch += yoffset;
 
-	Yaw += xoffset;
-	Pitch += yoffset;
+		// Make sure that when pitch is out of bounds, screen doesn't get flipped
+		if (constrainPitch)
+		{
+			if (Pitch > 89.0f)
+				Pitch = 89.0f;
+			if (Pitch < -89.0f)
+				Pitch = -89.0f;
+		}
 
-	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (Pitch > 89.0f)
-			Pitch = 89.0f;
-		if (Pitch < -89.0f)
-			Pitch = -89.0f;
-	}
-
-	// Update Front, Right and Up Vectors using the updated Euler angles
-	updateCameraVectors();
+		// Update Front, Right and Up Vectors using the updated Euler angles
+		updateCameraVectors();
 	}
 }
 

@@ -43,6 +43,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -50,6 +51,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -87,7 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)SlimeCore\;$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SlimeCore\;$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)SlimeCore\;$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SlimeCore\;$(SolutionDir)Dependencies\glcore;$(SolutionDir)Dependencies\glfw\GLFW;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,7 +142,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;SlimeCore.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)Dependencies\glfw</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)Dependencies\glfw;$(SolutionDir)Dependencies\IMgui;$(SolutionDir)Dependencies\IMgui\examples</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

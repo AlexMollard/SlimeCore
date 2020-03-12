@@ -2,29 +2,26 @@
 
 ShaderManager::ShaderManager()
 {
+	Create("None");
 }
 
 ShaderManager::~ShaderManager()
 {
-	printf("Deleteing ShaderManager:\n");
-
 	for (int i = 0; i < shaderList.size(); i++)
 	{
 		if (shaderList[i] != nullptr)
 		{
-			printf(" - Deleteing shader: %s.\n", shaderList[i]->name.c_str());
 			delete shaderList[i];
 			shaderList[i] = nullptr;
 		}
 	}
-	printf("\n");
 }
 
-Shader* ShaderManager::Get(const char* name, bool creation)
+Shader* ShaderManager::Get(std::string name, bool creation)
 {
 	for (int i = 0; i < shaderList.size(); i++)
 	{
-		if (shaderList[i]->name == name)
+		if (shaderList[i]->GetName() == name)
 		{
 			return shaderList[i];
 		}
@@ -38,11 +35,10 @@ Shader* ShaderManager::Get(int index)
 	return shaderList[index] ? shaderList[index] : NotFound(false);
 }
 
-bool ShaderManager::Create(const char* name, const char* vertex, const char* fragment)
+bool ShaderManager::Create(std::string name, const char* vertex, const char* fragment)
 {
 	if (Get(name,true) == nullptr)
 	{
-		printf("Creating Shader with name: %s.\n", name);
 		Add(new Shader(name, vertex, fragment));
 		return true;
 	}
@@ -50,7 +46,46 @@ bool ShaderManager::Create(const char* name, const char* vertex, const char* fra
 	return false;
 }
 
-Shader* ShaderManager::NotFound(bool creation, const char* name, int index)
+bool ShaderManager::Create(std::string name)
+{
+	if (Get(name, true) == nullptr)
+	{
+		Add(new Shader(name));
+		return true;
+	}
+	printf("Shader already exist with name: %s.\n", name);
+	return false;
+}
+
+int ShaderManager::GetIndex(Shader* shader)
+{
+	for (int i = 0; i < shaderList.size(); i++)
+	{
+		if (shaderList[i] == shader)
+		{
+			return i;
+		}
+	}
+	std::cout << "Cannot find Shader: " << shader->GetName() << ".\n";
+	return -404;
+}
+
+void ShaderManager::SetNames()
+{
+	names.clear();
+	for (int i = 0; i < shaderList.size(); i++)
+	{
+		names.push_back(shaderList[i]->GetName());
+	}
+}
+
+std::vector<std::string> ShaderManager::GetNames()
+{
+	SetNames();
+	return names;
+}
+
+Shader* ShaderManager::NotFound(bool creation, std::string name, int index)
 {
 	if (!creation)
 		printf("Shader Not Found with name: %s, index: %d.\n", name, index);
@@ -69,7 +104,7 @@ bool ShaderManager::DebugManager()
 	printf("Shaders: \n");
 	for (int i = 0; i < shaderList.size(); i++)
 	{
-		std::cout << " - " << shaderList[i]->name << std::endl;
+		std::cout << " - " << shaderList[i]->GetName() << std::endl;
 	}
 	printf("\n");
 	return true;

@@ -1,26 +1,14 @@
 #pragma once
 
-#include "glm.hpp"
-#include "ext.hpp"
-#include "gl_core_4_5.h"
-#include "glfw3.h"
+#include "GameManager.h"
 #include "Camera.h"
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include "ObjectManager.h"
-#include "GameObject.h"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "DebugGUI.h"
 
 class Application
 {
 public:
 	Application(int windowWidth, int windowHeight, std::string name) { Create(windowWidth,windowHeight,name); };
 	~Application();
-	int Create(int windowWidth, int windowHeight, std::string name);
 
 	GLFWwindow* window = nullptr;
 	using uint = unsigned int;
@@ -36,6 +24,7 @@ public:
 	float delta = 1.0f;
 
 	// Functions
+	int Create(int windowWidth, int windowHeight, std::string name);
 	void Update();
 	void processInput(GLFWwindow* window);
 	void Update_Window(GLFWwindow* window);

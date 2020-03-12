@@ -1,7 +1,11 @@
 #include "Mesh.h"
 
-Mesh::Mesh()
+Mesh::Mesh(const char* name, const char* dir)
 {
+	this->name = name;
+
+	if (dir != nullptr)
+		load(dir);
 }
 
 Mesh::~Mesh()
@@ -37,10 +41,14 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 		prim = Torus::Create(argOne, argTwo, argThree, 10);
 		hasIBO = true;
 		break;
+	case Primitives::SkyBox:
+		prim = SkyBox::Create();
+		hasIBO = false;
+		break;
 	default:
 		break;
 	}
-	
+
 	MeshChunk chunk;
 
 	// generate buffers
@@ -52,7 +60,6 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 	glBindVertexArray(chunk.vao);
 
 	std::vector<float> newvertices;
-
 	for (int i = 0; i < prim.vertices.size(); i++)
 	{
 		// Postitions
@@ -74,6 +81,7 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 			newvertices.push_back(prim.normals[i].z);
 		}
 
+		// UVS
 		if (prim.uvs.size() < 1)
 		{
 			newvertices.push_back(0.5);
@@ -82,9 +90,36 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 		}
 		else
 		{
-			// UVS
 			newvertices.push_back(prim.uvs[i].x);
 			newvertices.push_back(prim.uvs[i].y);
+		}
+
+		// Tangents
+		if (prim.tangents.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(prim.tangents[i].x);
+			newvertices.push_back(prim.tangents[i].y);
+			newvertices.push_back(prim.tangents[i].z);
+		}
+
+		// Biangents
+		if (prim.biTangents.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(prim.biTangents[i].x);
+			newvertices.push_back(prim.biTangents[i].y);
+			newvertices.push_back(prim.biTangents[i].z);
 		}
 	}
 
@@ -94,40 +129,57 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 	// Fill vertex Buffer
 	glBindBuffer(GL_ARRAY_BUFFER, chunk.vbo);
 	glBufferData(GL_ARRAY_BUFFER, newvertices.size() * sizeof(float), newvertices.data(), GL_STATIC_DRAW);
-	
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk.ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, prim.indices.size() * sizeof(unsigned int), prim.indices.data(), GL_STATIC_DRAW);
 
 	// Enable first element as position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// Enable second element as normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	// Enable third element as UVS
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	// Enable third element as Tangents
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	// Enable third element as BiTangents
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+	glEnableVertexAttribArray(4);
 
 	// Unbind buffer
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	m_meshChunks.push_back(chunk);
+
+	return (void)0;
 }
 
 bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 {
+	if (m_meshChunks.empty() == false) {
+		printf("Mesh already initialised, can't re-initialise!\n");
+		return false;
+	}
+
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	std::string error = "";
 
 	std::string file = filename;
-	std::string folder = file.substr(0, file.find_last_of('/') + 1);
+	std::string folder = file.substr(0, file.find_last_of('\\') + 1);
 
 	bool success = tinyobj::LoadObj(shapes, materials, error,
 		filename, folder.c_str());
+
+	//std::cout << error << std::endl;
 
 	if (success == false) {
 		printf("%s\n", error.c_str());
@@ -136,6 +188,52 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 
 	fileName = filename;
 
+	// copy materials
+	m_materials.resize(materials.size());
+	int index = 0;
+	for (auto& m : materials) {
+		if (materials.size() > 1)
+		{
+
+			m_materials[index].ambient = glm::vec3(m.ambient[0], m.ambient[1], m.ambient[2]);
+			m_materials[index].albedo = glm::vec3(m.albedo[0], m.albedo[1], m.albedo[2]);
+			m_materials[index].specular = glm::vec3(m.specular[0], m.specular[1], m.specular[2]);
+			m_materials[index].emissive = glm::vec3(m.emission[0], m.emission[1], m.emission[2]);
+			m_materials[index].specularPower = m.shininess;
+			m_materials[index].opacity = m.dissolve;
+
+			// textures
+
+			if (m.ambient_texname.size() > 1)
+				m_materials[index].ambientTexture.load((folder + m.ambient_texname).c_str());
+
+			if (m.diffuse_texname.size() > 1)
+				m_materials[index].diffuseTexture.load((folder + m.diffuse_texname).c_str());
+
+			if (m.specular_texname.size() > 1)
+				m_materials[index].specularTexture.load((folder + m.specular_texname).c_str());
+
+			if (m.specular_highlight_texname.size() > 1)
+				m_materials[index].specularHighlightTexture.load((folder + m.specular_highlight_texname).c_str());
+
+			if (m.bump_texname.size() > 1)
+				m_materials[index].normalTexture.load((folder + m.bump_texname).c_str());
+
+			if (m.displacement_texname.size() > 1)
+				m_materials[index].displacementTexture.load((folder + m.displacement_texname).c_str());
+		}
+		else
+		{
+			// textures
+			m_materials[index].ambientTexture.load("../Images/None.png");
+			m_materials[index].diffuseTexture.load("../Images/None.png");
+			m_materials[index].specularTexture.load("../Images/None.png");
+			m_materials[index].specularHighlightTexture.load("../Images/None.png");
+			m_materials[index].normalTexture.load("../Images/None.png");
+			m_materials[index].displacementTexture.load("../Images/None.png");
+		}
+		++index;
+	}
 
 	// copy shapes
 	m_meshChunks.reserve(shapes.size());
@@ -179,6 +277,8 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 			// flip the T / V (might not always be needed, depends on how mesh was made)
 			if (hasTexture)
 				vertices[i].texcoord = glm::vec2(s.mesh.texcoords[i * 2 + 0], flipTextureV ? 1.0f - s.mesh.texcoords[i * 2 + 1] : s.mesh.texcoords[i * 2 + 1]);
+
+		
 		}
 
 		// calculate for normal mapping
@@ -191,17 +291,25 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 		// fill vertex buffer
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
-		// enable first element as positions
+		// Enable first element as position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
-		// enable normals
+		// Enable second element as normals
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)(sizeof(glm::vec3) * 1));
 
-		// enable texture coords
+		// Enable third element as UVS
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec3) * 2));
+
+		// Enable third element as Tangents
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(8 * sizeof(float)));
+		glEnableVertexAttribArray(3);
+
+		// Enable third element as BiTangents
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(float), (void*)(12 * sizeof(float)));
+		glEnableVertexAttribArray(4);
 
 		// bind 0 for safety
 		glBindVertexArray(0);
@@ -218,26 +326,101 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 	return true;
 }
 
-void Mesh::draw(bool usePatches /* = false */) {
+void BindTexture(Texture* texture, int textureIndex)
+{
+	if (texture != nullptr)
+	{
 
-	int program = -1;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-
-	if (program == -1) {
-		printf("No shader bound!\n");
-		return;
+			glActiveTexture(GL_TEXTURE0 + textureIndex);
+			texture->Bind();
 	}
-	int currentMaterial = -1;
-
-	// draw the mesh chunks
-	for (auto& c : m_meshChunks) {
-		// bind and draw geometry
-		glBindVertexArray(c.vao);
-		if (usePatches)
-			glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
-		else
-			glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+	else
+	{
+		glActiveTexture(GL_TEXTURE0 + textureIndex);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+}
+
+void Mesh::draw(bool usePatches) {
+
+	if (m_materials.size() > 1)
+	{
+		int program = -1;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+
+		if (program == -1) {
+			printf("No shader bound!\n");
+			return;
+		}
+
+		int specularStrengthUniform = glGetUniformLocation(program, "specularStrength");
+
+		int ambientTexUniform = glGetUniformLocation(program, "ambientTexture");
+		int diffuseTexUniform = glGetUniformLocation(program, "diffuseTexture");
+		int specTexUniform = glGetUniformLocation(program, "specularTexture");
+		int specHighlightTexUniform = glGetUniformLocation(program, "roughTexture");
+		int normalTexUniform = glGetUniformLocation(program, "normalTexture");
+		int dispTexUniform = glGetUniformLocation(program, "displacementTexture");
+
+		// set texture slots (these don't change per material)
+		if (diffuseTexUniform >= 0)
+			glUniform1i(diffuseTexUniform, 0);
+		if (specTexUniform >= 0)
+			glUniform1i(specTexUniform, 1);
+		if (normalTexUniform >= 0)
+			glUniform1i(normalTexUniform, 2);
+		if (ambientTexUniform >= 0)
+			glUniform1i(ambientTexUniform, 3);
+		if (specHighlightTexUniform >= 0)
+			glUniform1i(specHighlightTexUniform, 4);
+		if (dispTexUniform >= 0)
+			glUniform1i(dispTexUniform, 5);
+
+		// draw the mesh chunks
+		int count = -1;
+		for (auto& c : m_meshChunks) {
+
+			if (m_materials[c.materialID].diffuseTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].diffuseTexture, 0);
+
+			if (m_materials[c.materialID].specularTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].specularTexture, 1);
+			
+			if (m_materials[c.materialID].normalTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].normalTexture, 2);
+			
+			if (m_materials[c.materialID].ambientTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].ambientTexture, 3);
+			
+			if (m_materials[c.materialID].specularHighlightTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].specularHighlightTexture, 4);
+			
+			if (m_materials[c.materialID].displacementTexture.GetID() != 0)
+				BindTexture(&m_materials[c.materialID].displacementTexture, 5);
+
+
+			// bind and draw geometry
+			glBindVertexArray(c.vao);
+			if (usePatches)
+				glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
+			else
+				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+		}
+	}
+	else
+	{
+		for (auto& c : m_meshChunks) {
+
+			// bind and draw geometry
+			glBindVertexArray(c.vao);
+			if (usePatches)
+				glDrawElements(GL_PATCHES, c.indexCount, GL_UNSIGNED_INT, 0);
+			else
+				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
+		}
+	}
+
+
 }
 
 void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {
@@ -296,6 +479,8 @@ void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<un
 
 		// Calculate handedness (direction of bitangent)
 		vertices[a].tangent.w = (glm::dot(glm::cross(glm::vec3(n), glm::vec3(t)), glm::vec3(tan2[a])) < 0.0F) ? 1.0F : -1.0F;
+
+		vertices[a].bitangent = glm::cross(n, t);
 	}
 
 	delete[] tan1;
