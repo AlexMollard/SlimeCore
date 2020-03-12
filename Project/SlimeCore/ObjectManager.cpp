@@ -333,66 +333,77 @@ bool ObjectManager::DebugAll()
 
 
 
-bool ObjectManager::Draw()
+bool ObjectManager::Draw(Shader* currentShader, unsigned int* depthMap)
 {
-	for (int i = 0; i < objects.size(); i++)
+	if (currentShader != nullptr)
 	{
-		Shader* objShader = objects[i]->GetShader();
-		if (objShader == nullptr)
-			continue;
-		
-		Material* objMaterial = objects[i]->GetMaterial();
-		if (objMaterial == nullptr)
+		for (int i = 0; i < objects.size(); i++)
+			if (!(objects[i]->GetName() == "SkyBox" || objects[i]->GetIsLight()))
+				objects[i]->Draw(projectionView);
+	}
+	else
+	{
+		for (int i = 0; i < objects.size(); i++)
 		{
+			Shader* objShader = objects[i]->GetShader();
+			if (objShader == nullptr)
+				continue;
+
+			Material* objMaterial = objects[i]->GetMaterial();
+			if (objMaterial == nullptr)
+			{
+				objects[i]->Draw(projectionView);
+				continue;
+			}
+
+			if (currentShader != objects[i]->GetShader())
+			{
+				objects[i]->GetShader()->Use();
+				currentShader = objects[i]->GetShader();
+				objects[i]->UpdateUniforms(projectionView, *camPos);
+				UpdateLights(objShader);
+			}
+
+			if (objShader->GetName() == "lightShader")
+				objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->GetAlbedo());
+
+			if (currentMaterial != objMaterial)
+			{
+				currentMaterial = objMaterial;
+
+				for (int n = 0; n < 5; n++)
+					currentTexture[n] = nullptr;
+
+				objShader->setFloat("diffuseStrength", objMaterial->GetAlbedoStrength());
+				objShader->setFloat("specularStrength", objMaterial->GetSpecularStrength());
+				objShader->setFloat("normalStrength", objMaterial->GetNormalStrength());
+				objShader->setFloat("ambientStrength", objMaterial->GetAmbientStrength());
+				objShader->setFloat("roughStrength", objMaterial->GetRoughStrength());
+				objShader->setFloat("displacementStrength", objMaterial->GetDisplacementStrength());
+			}
+
+			BindTexture(i, TEXTURETYPE::Albedo, objects[i]->GetTexture(TEXTURETYPE::Albedo));
+
+			if (objects[i]->GetName() == "SkyBox")
+			{
+				glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
+				glBindTexture(GL_TEXTURE_CUBE_MAP, textureManager->GetSkyBox()->GetID());
+				glDepthMask(GL_FALSE);
+				objects[i]->Draw(projectionView);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, *depthMap);
+				glDepthMask(GL_TRUE);
+
+				continue;
+			}
+
+			BindTexture(i, TEXTURETYPE::Specular, objects[i]->GetTexture(TEXTURETYPE::Specular));
+			BindTexture(i, TEXTURETYPE::Normal, objects[i]->GetTexture(TEXTURETYPE::Normal));
+			BindTexture(i, TEXTURETYPE::Ambient, objects[i]->GetTexture(TEXTURETYPE::Ambient));
+			BindTexture(i, TEXTURETYPE::Rough, objects[i]->GetTexture(TEXTURETYPE::Rough));
+			BindTexture(i, TEXTURETYPE::Displacement, objects[i]->GetTexture(TEXTURETYPE::Displacement));
+
 			objects[i]->Draw(projectionView);
-			continue;
 		}
-
-		if (currentShader != objects[i]->GetShader())
-		{
-			objects[i]->GetShader()->Use();
-			currentShader = objects[i]->GetShader();
-			objects[i]->UpdateUniforms(projectionView, *camPos);
-			UpdateLights(objShader);
-		}
-
-		if (objShader->GetName() == "lightShader")
-			objShader->setVec3("diffuseColor", pointLights[FindPointLight(objects[i])]->GetAlbedo());
-
-		if (currentMaterial != objMaterial)
-		{
-			currentMaterial = objMaterial;
-
-			for (int n = 0; n < 5; n++)
-				currentTexture[n] = nullptr;
-
-			objShader->setFloat("diffuseStrength", objMaterial->GetAlbedoStrength());
-			objShader->setFloat("specularStrength", objMaterial->GetSpecularStrength());
-			objShader->setFloat("normalStrength", objMaterial->GetNormalStrength());
-			objShader->setFloat("ambientStrength", objMaterial->GetAmbientStrength());
-			objShader->setFloat("roughStrength", objMaterial->GetRoughStrength());
-			objShader->setFloat("displacementStrength", objMaterial->GetDisplacementStrength());
-		}
-
-		BindTexture(i, TEXTURETYPE::Albedo, objects[i]->GetTexture(TEXTURETYPE::Albedo));
-
-		if (objects[i]->GetName() == "SkyBox")
-		{
-			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
-			glDepthMask(GL_FALSE);
-			objects[i]->Draw(projectionView);
-			glDepthMask(GL_TRUE);
-
-			continue;
-		}
-
-		BindTexture(i, TEXTURETYPE::Specular, objects[i]->GetTexture(TEXTURETYPE::Specular));
-		BindTexture(i, TEXTURETYPE::Normal, objects[i]->GetTexture(TEXTURETYPE::Normal));
-		BindTexture(i, TEXTURETYPE::Ambient, objects[i]->GetTexture(TEXTURETYPE::Ambient));
-		BindTexture(i, TEXTURETYPE::Rough, objects[i]->GetTexture(TEXTURETYPE::Rough));
-		BindTexture(i, TEXTURETYPE::Displacement, objects[i]->GetTexture(TEXTURETYPE::Displacement));
-
-		objects[i]->Draw(projectionView);
 	}
 
 	return true;

@@ -35,15 +35,16 @@ Shader* ShaderManager::Get(int index)
 	return shaderList[index] ? shaderList[index] : NotFound(false);
 }
 
-bool ShaderManager::Create(std::string name, const char* vertex, const char* fragment)
+Shader* ShaderManager::Create(std::string name, const char* vertex, const char* fragment, const char* geometry)
 {
 	if (Get(name,true) == nullptr)
 	{
-		Add(new Shader(name, vertex, fragment));
-		return true;
+		Shader* tempShader = new Shader(name, vertex, fragment, geometry);
+		Add(tempShader);
+		return tempShader;
 	}
 	printf("Shader already exist with name: %s.\n", name);
-	return false;
+	return nullptr;
 }
 
 bool ShaderManager::Create(std::string name)

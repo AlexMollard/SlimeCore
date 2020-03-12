@@ -84,6 +84,8 @@ int Application::Create(int Width, int Height, std::string name)
 
 void Application::Update()
 {
+	this->appWindowWidth = windowWidth;
+	this->appWindowHeight = windowHeight;
 	processInput(window);
 	Update_Window(window);
 	camera->UpdateProjectionViewMatrix();
