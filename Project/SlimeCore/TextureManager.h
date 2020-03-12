@@ -22,7 +22,7 @@ public:
 	bool Add(Texture* newTexture, TEXTURETYPE type);
 	bool Create(std::string, std::string dir, TEXTURETYPE type);
 	void Create(std::vector<std::string> dirs, TEXTURETYPE type);
-	void CreateBlanks(std::string dir);
+	void CreateBlanks();
 
 	void SetNameList();
 	std::vector<std::string> GetNameList(TEXTURETYPE type);
@@ -30,6 +30,7 @@ public:
 
 	unsigned int CreateSkyBox(std::string facesDIR);
 	Texture* GetSkyBox();
+	unsigned int* GetSkyBoxID();
 
 	bool DebugManager();
 protected:

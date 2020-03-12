@@ -13,7 +13,7 @@ public:
 
 	// Every Frame Functions
 	//------------------
-	bool Draw();
+	bool Draw(Shader* currentShader = nullptr, unsigned int* depthMap = 0);
 	bool Update(float deltaTime);
 
 	// Create / Add Functions

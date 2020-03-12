@@ -5,18 +5,28 @@
 #include <iostream>
 TextureManager::TextureManager()
 {
-	CreateBlanks("../Images/None.png");
+	CreateBlanks();
 }
 
 TextureManager::~TextureManager()
 {
-	Texture* none = Get("None", TEXTURETYPE::Albedo);
-	delete none;
-	none = nullptr;
+
+	Texture* white = Get("DefaultWhite",TEXTURETYPE::Albedo);
+	Texture* grey = Get("DefaultNormal",TEXTURETYPE::Normal);
+	Texture* normal = Get("DefaultGrey",TEXTURETYPE::Specular);
+
+	delete white;
+	white = nullptr;
+
+	delete grey;
+	grey = nullptr;
+
+	delete normal;
+	normal = nullptr;
 
 	for (int i = 1; i < diffuseList.size(); i++)
 	{
-		if (diffuseList[i])
+		if (diffuseList[i] != nullptr)
 		{
 			delete diffuseList[i];
 			diffuseList[i] = nullptr;
@@ -116,15 +126,17 @@ void TextureManager::Create(std::vector<std::string> dirs, TEXTURETYPE type)
 	}
 }
 
-void TextureManager::CreateBlanks(std::string dir)
+void TextureManager::CreateBlanks()
 {
-	Texture* tex = new Texture("None",dir);
-	diffuseList.push_back(tex);
-	specularList.push_back(tex);
-	normalList.push_back(tex);
-	ambientList.push_back(tex);
-	roughList.push_back(tex);
-	displacementList.push_back(tex);
+	Texture* white = new Texture("DefaultWhite", "../Images/white.png");
+	Texture* grey = new Texture("DefaultGrey", "../Images/grey.png");
+	Texture* normal = new Texture("DefaultNormal", "../Images/normal.png");
+	diffuseList.push_back(white);
+	specularList.push_back(grey);
+	normalList.push_back(normal);
+	ambientList.push_back(white);
+	roughList.push_back(grey);
+	displacementList.push_back(grey);
 }
 
 void TextureManager::SetNameList()
@@ -232,44 +244,52 @@ unsigned int TextureManager::CreateSkyBox(std::string facesDIR)
 	std::vector<std::string> dirs = GetAllFiles(facesDIR);
 	std::vector<std::string> faces;
 
-	for (int i = 0; i < dirs.size(); i+=2)
+	for (int i = 0; i < dirs.size(); i += 2)
 	{
 		faces.push_back(dirs[i + 1]);
 	}
 
-		glGenTextures(1, &skyboxID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
+	glGenTextures(1, &skyboxID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 
-		int width, height, nrChannels;
-		for (unsigned int i = 0; i < faces.size(); i++)
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		//std::cout << faces[i] << ": " << nrChannels << std::endl;
+		if (data)
 		{
-			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-			//std::cout << faces[i] << ": " << nrChannels << std::endl;
-			if (data)
-			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data
-				);
-				stbi_image_free(data);
-			}
-			else
-			{
-				std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-				stbi_image_free(data);
-			}
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data
+			);
+			stbi_image_free(data);
 		}
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	
-	Add(new Texture("Sky Box", &skyboxID), TEXTURETYPE::SkyBox);
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	Texture* sBox = new Texture("Sky Box", &skyboxID);
+
+	skyBox = sBox;
+	Add(sBox, TEXTURETYPE::SkyBox);
 	return 0;
 }
 
 Texture* TextureManager::GetSkyBox()
 {
 	return skyBox;
+}
+
+unsigned int* TextureManager::GetSkyBoxID()
+{
+	return &skyboxID;
 }
 
 Texture* TextureManager::NotFound(bool creation, std::string name, int index)
