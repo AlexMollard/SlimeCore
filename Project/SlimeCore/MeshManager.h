@@ -9,9 +9,9 @@ public:
 	// Create / Add Functions
 	//--------------------
 	bool Add(Mesh* newMesh);
-	bool Create(const char* name, const char* dir);
-	bool Create(const char* name, Primitives::TYPE type);
-	bool Create(const char* name);
+	Mesh* Create(const char* name, const char* dir);
+	Mesh* Create(const char* name, Primitives::TYPE type);
+	Mesh* Create(const char* name);
 	
 	// Get Functions
 	//--------------------

@@ -217,5 +217,11 @@
     <None Include="..\Shaders\litFragment.shader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\DebugVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\DebugFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

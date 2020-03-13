@@ -50,42 +50,45 @@ bool MeshManager::Add(Mesh* newMesh)
 	return true;
 }
 
-bool MeshManager::Create(const char* name, const char* dir)
+Mesh* MeshManager::Create(const char* name, const char* dir)
 {
 	if (Get(name, true) == nullptr)
 	{
 		printf("Creating Mesh with name: %s.\n", name);
-		Add(new Mesh(name, dir));
-		return true;
+		Mesh* tempMesh = new Mesh(name,dir);
+		Add(tempMesh);
+		return tempMesh;
 	}
 
 	printf("Mesh already exist with name: %s.\n", name);
-	return false;
+	return nullptr;
 }
 
-bool MeshManager::Create(const char* name, Primitives::TYPE type)
+Mesh* MeshManager::Create(const char* name, Primitives::TYPE type)
 {
 	if (Get(name, true) == nullptr)
 	{
-		Add(new Mesh(name));
+		Mesh* tempMesh = new Mesh(name);
+		Add(tempMesh);
 		meshList.back()->create(type);
-		return true;
+		return tempMesh;
 	}
 
 	printf("Mesh already exist with name: %s.\n", name);
-	return false;
+	return nullptr;
 }
 
-bool MeshManager::Create(const char* name)
+Mesh* MeshManager::Create(const char* name)
 {
 	if (Get(name, true) == nullptr)
 	{
-		Add(new Mesh(name));
-		return true;
+		Mesh* tempMesh = new Mesh(name);
+		Add(tempMesh);
+		return tempMesh;
 	}
 
 	printf("Mesh already exist with name: %s.\n", name);
-	return false;
+	return nullptr;
 }
 
 int MeshManager::GetIndex(std::string name)

@@ -5,15 +5,15 @@
 
 Plane::Plane()
 {
-	vertices.push_back(glm::vec3(-0.5f, 0, 0.5f));	// Back-Left	0
-	vertices.push_back(glm::vec3(0.5f, 0, 0.5f));	// Back-Right	1
-	vertices.push_back(glm::vec3(-0.5f, 0, -0.5f));	// Front-Left	2
-	vertices.push_back(glm::vec3(0.5f, 0, -0.5f));	//Front-Right	3
+	vertices.push_back(glm::vec3(-1.0f, 1.0f, 0.0f));	// Back-Left	0
+	vertices.push_back(glm::vec3(1.0f, 1.0f, 0.0f));	// Back-Right	1
+	vertices.push_back(glm::vec3(-1.0f, -1.0f, 0.0f));	// Front-Left	2
+	vertices.push_back(glm::vec3(1.0f, -1.0f, 0.0f));	//Front-Right	3
 
 	unsigned int planeIndices[] =
 	{
-		1, 2, 0,	// first triangle
-		3, 2, 1		// second triangle
+		0, 2, 1,	// first triangle
+		1, 2, 3		// second triangle
 	};
 
 	uvs.push_back(glm::vec2(0,1));

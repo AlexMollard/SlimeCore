@@ -160,6 +160,7 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 	return nullptr;
 }
 
+
 Shader* GameObject::GetShader()
 {
 	return shader;

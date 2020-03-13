@@ -13,7 +13,7 @@ public:
 
 	// Every Frame Functions
 	//------------------
-	bool Draw(Shader* currentShader = nullptr, unsigned int* depthMap = 0);
+	bool Draw(bool isBuffer = false);
 	bool Update(float deltaTime);
 
 	// Create / Add Functions
@@ -41,7 +41,7 @@ public:
 	// Light Functions
 	//------------------
 	int FindPointLight(GameObject* lightObject);
-	void CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
+	GameObject* CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
 	void AddPointLight(PointLight* light);
 
 	void CreateDirectionalLight();

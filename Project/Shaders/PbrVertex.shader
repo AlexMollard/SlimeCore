@@ -11,9 +11,11 @@ out vec3 WorldPos;
 out vec3 Normal;
 out vec3 Tangent;
 out vec3 BiTangent;
+out vec4 FragPosLightSpace;;
 
 uniform mat4 ProjectionView;
 uniform mat4 Model; 
+uniform mat4 lightSpaceMatrix;
 
 void main() 
 { 
@@ -28,6 +30,8 @@ void main()
 
     Tangent = aTangent;
     BiTangent = aBiTangent;
+    
+    FragPosLightSpace = lightSpaceMatrix * vec4(WorldPos, 1.0);
 
     gl_Position = ProjectionView * vec4(WorldPos, 1.0);
 }

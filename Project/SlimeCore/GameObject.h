@@ -73,7 +73,9 @@ public:
 	std::string GetName();
 	void SetDescription(std::string newDesc);
 	std::string GetDescription();
-
+	
+	// Debug
+	bool isDebugObject = false;
 protected:
 	// Misc
 	std::string name = "Default GameObject";
