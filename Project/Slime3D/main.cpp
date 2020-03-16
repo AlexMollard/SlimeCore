@@ -120,11 +120,17 @@ int main()
 
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDisable(GL_DEPTH_TEST);
 		 
+
+		debugObject->GetShader()->Use();
+		glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
+		glBindTexture(GL_TEXTURE_2D, debugObject->GetTexture(TEXTURETYPE::Albedo)->GetID());
+		debugObject->Draw(&app->GetCamera()->GetProjectionViewMatrix());
+
 		// Draw Quad
-		objectManager->Draw(false);
+		//objectManager->Draw(false);
 
 		// Draw Gui
 		debugGui->Render(deltaTime);

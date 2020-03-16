@@ -29,9 +29,9 @@ void main()
         );
 
     float kernel[9] = float[](
-        -1, -1, -1,
-        -1, 9, -1,
-        -1, -1, -1
+       1, 0, -1,
+        0, 0, 0,
+        -1, 0, 1
         );
 
     vec3 sampleTex[9];
@@ -43,7 +43,16 @@ void main()
     for (int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
 
-   // col = vec3(texture(Texture, TexCoords).rgb) * col;
+    float temp = 0.01;
+    if (col.r > temp && col.g > temp && col.b > temp)
+    {
+        col = vec3(0,1,0);
+    }
+    else
+    {
+        col = vec3(texture(Texture, TexCoords).rgb);
+    }
+
 
     FragColor = vec4(col, 1.0);
 }

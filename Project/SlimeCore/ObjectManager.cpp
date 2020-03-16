@@ -366,6 +366,10 @@ bool ObjectManager::Draw(bool isBuffer)
 			objects[i]->Draw(projectionView);
 			continue;
 		}
+		else if (objects[i]->isDebugObject)
+		{
+			continue;
+		}
 
 		if (!isBuffer)
 			continue;
