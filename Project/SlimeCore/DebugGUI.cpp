@@ -491,13 +491,17 @@ void DebugGUI::HierarchyGUI()
 		}
 		if (ImGui::BeginPopup("HierarchyOptions"))
 		{
-			if (ImGui::MenuItem("Delete")) 
+
+			if (currentObject != 0 && currentObject != 1)
 			{
-				if (currentObject != -1)
+				if (ImGui::MenuItem("Delete"))
 				{
-					objManager->DeleteObject(objManager->Get(currentObject));
-					objectList = objManager->GetNameVector();
-					currentObject = -1;
+					if (currentObject != -1)
+					{
+						objManager->DeleteObject(objManager->Get(currentObject));
+						objectList = objManager->GetNameVector();
+						currentObject = -1;
+					}
 				}
 			}
 

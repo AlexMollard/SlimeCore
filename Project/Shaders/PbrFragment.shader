@@ -184,7 +184,7 @@ void main()
     // add to outgoing radiance Lo
     vec3 dirLightResult = (kD * albedo / PI + specular) * radiance * NdotL;
 
-    Lo += dirLightResult;
+    //Lo += dirLightResult;
 
     for (int i = 0; i < pointLightTotal; ++i)
     {

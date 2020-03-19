@@ -35,102 +35,61 @@ int main()
 
 	// Materials
 	materialManager->Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Albedo));
-	materialManager->Create("defaultMaterial", textureManager->Get(1, TEXTURETYPE::Albedo), textureManager->Get(1, TEXTURETYPE::Specular), textureManager->Get(1, TEXTURETYPE::Normal), textureManager->Get(1, TEXTURETYPE::Ambient), textureManager->Get(1, TEXTURETYPE::Rough), textureManager->Get(0, TEXTURETYPE::Displacement));
+	materialManager->Create("defaultMaterial", textureManager->Get("Planks.jpg", TEXTURETYPE::Albedo), textureManager->Get("Planks.jpg", TEXTURETYPE::Specular), textureManager->Get("Planks.jpg", TEXTURETYPE::Normal), textureManager->Get("Planks.jpg", TEXTURETYPE::Ambient), textureManager->Get("Planks.jpg", TEXTURETYPE::Rough), textureManager->Get(0, TEXTURETYPE::Displacement));
 	materialManager->Create("lightMat", textureManager->Get(3, TEXTURETYPE::Albedo));
 	materialManager->Create("debugMat", textureManager->Get(5, TEXTURETYPE::Albedo));
 
 	// Meshes
 	meshManager->Create("SkyBox", Primitives::SkyBox);
 	meshManager->Create("Cube", "..\\Models\\cube.obj");
-	Mesh* plane = meshManager->Create("Plane", Primitives::Plane);
+	meshManager->Create("Plane", Primitives::Plane);
 	meshManager->Create("Cylinder", Primitives::Cylinder);
 	
 	// Load Objs
-	//meshManager->Create("sphere", "..\\Models\\sphere.obj");
-	//meshManager->Create("girl", "..\\Models\\girl\\tiphaine.obj");
-	//meshManager->Create("stormtrooper", "..\\Models\\stormtrooper\\0.obj");
+	meshManager->Create("sphere", "..\\Models\\sphere.obj");
+	meshManager->Create("girl", "..\\Models\\girl\\tiphaine.obj");
+	meshManager->Create("stormtrooper", "..\\Models\\stormtrooper\\0.obj");
 
 	// Objects
 	GameObject* skyBox = objectManager->Create("SkyBox", 1, 1, 1);
 	objectManager->Create("Block", 2, 2, 3);
-	objectManager->Get("Block")->SetPos(glm::vec3(0, 0, 0));
-	objectManager->Create("Block2", 2, 2, 3);
-	objectManager->Get("Block2")->SetPos(glm::vec3(0, -1, 0));
-	objectManager->Get("Block2")->SetScale(glm::vec3(5, 1, 5));
+	objectManager->Get("Block")->SetPos(glm::vec3(0, -1, 0));
+	objectManager->Get("Block")->SetScale(glm::vec3(5, 1, 5));
 
-	GameObject* lightOBJ = objectManager->CreatePointLight("Light", glm::vec3(2,2,0));
+	// Create girl and set pos
+	GameObject* Girl = objectManager->Create("Girl", 6, 1, 3);
+	Girl->SetPos(glm::vec3(1, 0, 0));
 
-	GameObject* debugObject = objectManager->Create("DeBugUI",3,4,5);
-	debugObject->isDebugObject = true;
+	// Create stormTrooper and set pos
+	GameObject* StormTrooper = objectManager->Create("StormTrooper", 7, 1, 3);
+	StormTrooper->SetPos(glm::vec3(-1, 0, 0));
+
+	// Setting moving lights up
+	PointLight* movingLightOne = (PointLight*)objectManager->CreatePointLight("MovingLightOne", glm::vec3(2,2,0));
+	PointLight* movingLightTwo = (PointLight*)objectManager->CreatePointLight("MovingLightTwo", glm::vec3(1,2,1));
+
+	// Setting static lights up
+	PointLight* stormTrooperLight = (PointLight*)objectManager->CreatePointLight("StormTrooperLight", glm::vec3(-1,2,1));
+	stormTrooperLight->SetAlbedo(glm::vec3(1,0,0));
+	PointLight* girlLight = (PointLight*)objectManager->CreatePointLight("GirlLight", glm::vec3(1,2,1));
+	girlLight->SetAlbedo(glm::vec3(0,0,1));
+
+
 	objectManager->DebugAll();
 	debugGui->FirstFrame();
-
-	debugShader->Use();
-	debugShader->setInt("Texture", 0);
-
-
-
-
-
-
-	// framebuffer configuration
-	// -------------------------
-	unsigned int framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	// create a color attachment texture
-	unsigned int textureColorbuffer;
-	glGenTextures(1, &textureColorbuffer);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, app->appWindowWidth, app->appWindowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-	// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, app->appWindowWidth, app->appWindowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-
-
-	debugObject->GetMaterial()->GetAlbedo()->SetID(textureColorbuffer);
-
+	
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{
 		timer += deltaTime;
-		lightOBJ->SetPos(glm::vec3(sin(glfwGetTime()) * 3.0f, cos(glfwGetTime()) * 2.0f, cos(glfwGetTime()) * 3.0f));
-		glm::vec3 lightPos = lightOBJ->GetPos();
+		movingLightOne->SetAlbedo(glm::vec3(sin(timer), sin(timer + 1), sin(timer + 2)));
+		movingLightTwo->SetAlbedo(glm::vec3(sin(timer + 3), sin(timer + 4), sin(timer + 5)));
+		movingLightOne->SetPos(glm::vec3(sin(timer) * 3.0f, cos(timer) * 2.0f, cos(timer) * 3.0f));
+		movingLightTwo->SetPos(glm::vec3(sin(timer + 3) * 3.0f, cos(timer + 3) * 2.0f, cos(timer + 3) * 3.0f));
 
 		skyBox->SetSkyBoxPos(&app->GetCamera()->Position);
 
-
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		objectManager->Draw(true);
-
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDisable(GL_DEPTH_TEST);
-		 
-
-		debugObject->GetShader()->Use();
-		glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
-		glBindTexture(GL_TEXTURE_2D, debugObject->GetTexture(TEXTURETYPE::Albedo)->GetID());
-		debugObject->Draw(&app->GetCamera()->GetProjectionViewMatrix());
-
-		// Draw Quad
-		//objectManager->Draw(false);
 
 		// Draw Gui
 		debugGui->Render(deltaTime);

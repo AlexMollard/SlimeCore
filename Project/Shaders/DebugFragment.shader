@@ -44,9 +44,9 @@ void main()
         col += sampleTex[i] * kernel[i];
 
     float temp = 0.01;
-    if (col.r > temp && col.g > temp && col.b > temp)
+    if (col.r > temp || col.g > temp || col.b > temp)
     {
-        col = vec3(0,1,0);
+        col = vec3(1,1,1);
     }
     else
     {

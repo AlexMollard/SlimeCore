@@ -222,16 +222,6 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 			if (m.displacement_texname.size() > 1)
 				m_materials[index].displacementTexture.load((folder + m.displacement_texname).c_str());
 		}
-		else
-		{
-			// textures
-			m_materials[index].ambientTexture.load("../Images/None.png");
-			m_materials[index].diffuseTexture.load("../Images/None.png");
-			m_materials[index].specularTexture.load("../Images/None.png");
-			m_materials[index].specularHighlightTexture.load("../Images/None.png");
-			m_materials[index].normalTexture.load("../Images/None.png");
-			m_materials[index].displacementTexture.load("../Images/None.png");
-		}
 		++index;
 	}
 
