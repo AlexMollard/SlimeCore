@@ -425,6 +425,20 @@ bool ObjectManager::Update(float deltaTime)
 	return true;
 }
 
+bool ObjectManager::FixedUpdate(float deltaTime)
+{
+	if (fixedUpdateFrameAmount >= fixedUpdateCount)
+		return false;
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update(deltaTime);
+	}
+	fixedUpdateCount++;
+	
+	return true;
+}
+
 void ObjectManager::DeleteObject(GameObject* object)
 {
 	// Grab all children from object.

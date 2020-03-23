@@ -1,11 +1,7 @@
 #pragma once
-#include "glm.hpp"
-#include "Mesh.h"
-#include "Types.h"
-#include "Shader.h"
-#include "Material.h"
+#include "PhysicsObject.h"
 
-class GameObject
+class GameObject : public PhysicsObject
 {
 public:
 	GameObject();

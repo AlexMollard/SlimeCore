@@ -72,7 +72,7 @@ void DebugGUI::FirstFrame()
 	currentDisplacement = displacementList[0].c_str();
 
 	meshList = meshManager->GetNames();
-	currentMesh = meshList[1].c_str();
+	currentMesh = meshList[0].c_str();
 
 	materialList = matManager->GetNames();
 	currentMaterial = materialList[0].c_str();

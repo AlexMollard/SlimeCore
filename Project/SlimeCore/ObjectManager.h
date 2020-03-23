@@ -8,6 +8,7 @@
 class ObjectManager
 {
 public:
+	ObjectManager() {};
 	ObjectManager(MeshManager* meshManager, MaterialManager* matManager, ShaderManager* shaderManager, TextureManager* textureManager, glm::mat4* projectionView, glm::vec3* cameraPos);
 	~ObjectManager();
 
@@ -15,6 +16,7 @@ public:
 	//------------------
 	bool Draw(bool isBuffer = false);
 	bool Update(float deltaTime);
+	bool FixedUpdate(float deltaTime);
 
 	// Create / Add Functions
 	//------------------
@@ -87,4 +89,7 @@ public:
 	// Misc Variables
 	glm::mat4* projectionView;
 	glm::vec3* camPos;
+
+	int fixedUpdateCount = 0;
+	int fixedUpdateFrameAmount = 2;
 };

@@ -73,8 +73,10 @@ int Application::Create(int Width, int Height, std::string name)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glfwSwapInterval(0);
+	glfwSwapInterval(1);
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 	camera = new Camera(projection);
 	projectionViewMat = &camera->ProjectionViewMat;

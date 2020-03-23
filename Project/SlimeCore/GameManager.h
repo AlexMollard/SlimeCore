@@ -2,7 +2,7 @@
 #include"MaterialManager.h"
 #include"ShaderManager.h"
 #include"TextureManager.h"
-#include"ObjectManager.h"
+#include"Object2DManager.h"
 
 //----------------------
 // WORK IN PROGRESS

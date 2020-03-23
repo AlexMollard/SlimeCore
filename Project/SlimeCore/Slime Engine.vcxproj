@@ -161,15 +161,19 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="imgui_impl_glfw.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshManager.cpp" />
+    <ClCompile Include="Object2DManager.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="OBJMesh.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Primitives.cpp" />
+    <ClCompile Include="PhysicsScene.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -189,16 +193,20 @@
     <ClInclude Include="dirent.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshManager.h" />
+    <ClInclude Include="Object2DManager.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="objLoader.h" />
     <ClInclude Include="OBJMesh.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Primitives.h" />
+    <ClInclude Include="PhysicsScene.h" />
+    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Texture.h" />
@@ -206,6 +214,8 @@
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Shaders\2DFragment.shader" />
+    <None Include="..\Shaders\2DVertex.shader" />
     <None Include="..\Shaders\DebugFragment.shader" />
     <None Include="..\Shaders\DebugVertex.shader" />
     <None Include="..\Shaders\Fragment.shader" />
