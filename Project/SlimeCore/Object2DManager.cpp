@@ -5,6 +5,7 @@ Object2DManager::Object2DManager(TextureManager* textureManager)
 	texManager = textureManager;
 	TwoDShader = new Shader("TwoDShader", "..\\Shaders\\2DVertex.shader", "..\\Shaders\\2DFragment.shader");
 	defaultWhite = texManager->Get(0, TEXTURETYPE::Albedo);
+	defaultCircleTexture = texManager->Create("CircleSprite", "..\\Images\\Sprites\\circle.png", TEXTURETYPE::Albedo);
 }
 
 Object2DManager::~Object2DManager()
@@ -27,7 +28,7 @@ void Object2DManager::Draw()
 	{
 		TwoDShader->setMat4("Model", objects[i]->model);
 		TwoDShader->setVec3("color", objects[i]->color);
-		TwoDShader->setVec3("position", objects[i]->position);
+		TwoDShader->setVec3("position", objects[i]->GetPos());
 		
 		//Texture Binding
 		if (objects[i]->tex != nullptr && currentTexture != objects[i]->tex)
@@ -44,6 +45,15 @@ void Object2DManager::Draw()
 	}
 }
 
+void Object2DManager::Update(float deltaTime)
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update(deltaTime);
+		objects[i]->UpdatePos();
+	}
+}
+
 GameObject2D* Object2DManager::CreateBox(glm::vec3 Position, float xWidth, float yWidth)
 {
 	objects.push_back(new GameObject2D());
@@ -51,11 +61,57 @@ GameObject2D* Object2DManager::CreateBox(glm::vec3 Position, float xWidth, float
 	currentObject->tex = defaultWhite;
 	currentObject->size = glm::vec2(xWidth, yWidth);
 
+	glm::vec3 topLeft = glm::vec3(-1.0f * xWidth, 1.0f * yWidth, 0.0f);
+	glm::vec3 bottomLeft = glm::vec3(1.0f * xWidth, 1.0f * yWidth, 0.0f);
+	glm::vec3 topRight = glm::vec3(-1.0f * xWidth, -1.0f * yWidth, 0.0f);
+	glm::vec3 bottomRight = glm::vec3(1.0f * xWidth, -1.0f * yWidth, 0.0f);
 
-	currentObject->twoMesh.vertices.push_back(glm::vec3(-1.0f * xWidth, 1.0f * yWidth, 0.0f));	// Back-Left	0
-	currentObject->twoMesh.vertices.push_back(glm::vec3(1.0f * xWidth, 1.0f * yWidth, 0.0f));	// Back-Right	1
-	currentObject->twoMesh.vertices.push_back(glm::vec3(-1.0f * xWidth, -1.0f * yWidth, 0.0f));	// Front-Left	2
-	currentObject->twoMesh.vertices.push_back(glm::vec3(1.0f * xWidth, -1.0f * yWidth, 0.0f));	//Front-Right	3
+	SetUpSpriteMesh(currentObject, topLeft, bottomLeft, topRight, bottomRight);
+	currentObject->SetPos(Position);
+
+	return currentObject;
+}
+
+GameObject2D* Object2DManager::CreateLine(glm::vec3 startPosition, glm::vec3 endPosition, float width)
+{
+	objects.push_back(new GameObject2D());
+	GameObject2D* currentObject = objects.back();
+	currentObject->tex = defaultWhite;
+	currentObject->size = glm::vec2(width, width);
+
+	glm::vec3 topLeft = glm::vec3(startPosition.x, startPosition.y - (width / 2), startPosition.z);
+	glm::vec3 bottomLeft = glm::vec3(startPosition.x, startPosition.y + (width / 2), startPosition.z);
+	glm::vec3 topRight = glm::vec3(endPosition.x, endPosition.y - (width / 2), endPosition.z);
+	glm::vec3 bottomRight = glm::vec3(endPosition.x, endPosition.y + (width / 2), endPosition.z);
+
+	SetUpSpriteMesh(currentObject, topLeft, bottomLeft, topRight, bottomRight);
+
+	return currentObject;
+}
+
+GameObject2D* Object2DManager::CreateCircle(glm::vec3 Position, float Diameter)
+{
+	objects.push_back(new GameObject2D());
+	GameObject2D* currentObject = objects.back();
+	currentObject->tex = defaultCircleTexture;
+	currentObject->size = glm::vec2(Diameter, Diameter);
+
+	glm::vec3 topLeft = glm::vec3(-1.0f * Diameter, 1.0f * Diameter, 0.0f);
+	glm::vec3 bottomLeft = glm::vec3(1.0f * Diameter, 1.0f * Diameter, 0.0f);
+	glm::vec3 topRight = glm::vec3(-1.0f * Diameter, -1.0f * Diameter, 0.0f);
+	glm::vec3 bottomRight = glm::vec3(1.0f * Diameter, -1.0f * Diameter, 0.0f);
+
+	SetUpSpriteMesh(currentObject, topLeft, bottomLeft, topRight, bottomRight);
+	currentObject->SetPos(Position);
+	return currentObject;
+}
+
+void Object2DManager::SetUpSpriteMesh(GameObject2D* currentObject, glm::vec3 topLeft, glm::vec3 bottomLeft, glm::vec3 topRight, glm::vec3 bottomRight)
+{
+	currentObject->twoMesh.vertices.push_back(topLeft);	// Back-Left	0
+	currentObject->twoMesh.vertices.push_back(bottomLeft);	// Back-Right	1
+	currentObject->twoMesh.vertices.push_back(topRight);	// Front-Left	2
+	currentObject->twoMesh.vertices.push_back(bottomRight); //Front-Right	3
 
 	unsigned int planeIndices[] =
 	{
@@ -71,9 +127,7 @@ GameObject2D* Object2DManager::CreateBox(glm::vec3 Position, float xWidth, float
 	int length = sizeof(planeIndices) / sizeof(unsigned int);
 
 	currentObject->twoMesh.indices = std::vector<unsigned int>(planeIndices, planeIndices + length);
-	currentObject->SetPos(Position);
 	CreateMesh(currentObject);
-	return currentObject;
 }
 
 void Object2DManager::CreateMesh(GameObject2D* currentObject)

@@ -7,10 +7,9 @@ void GameObject2D::Draw()
 	glDrawElements(GL_TRIANGLES, twoMesh.indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void GameObject2D::SetPos(glm::vec3 newPos)
+void GameObject2D::UpdatePos()
 { 
-	position = newPos;
-	model[3] = glm::vec4(newPos, 1);
+	model[3] = glm::vec4(position, 1);
 }
 void GameObject2D::SetTexture(Texture* texture)
 {

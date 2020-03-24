@@ -1,5 +1,5 @@
 #include "PhysicsScene.h"
-
+#include "PhysicsObject.h"
 
 PhysicsScene::PhysicsScene() : timeStep(0.01f), gravity(glm::vec2(0, 0))
 {
@@ -18,12 +18,17 @@ void PhysicsScene::update(float dt) {
 		}
 		accumulatedTime -= timeStep;
 	}
-}
 
-void PhysicsScene::updateGizmos()
-{
-	for(auto pActor : actors) 
+	static std::vector<PhysicsObject*> dirty;
+
+	for (auto object : actors)
 	{
-		pActor->makeGizmo();
+		for (auto other : actors)
+		{
+			if (object == other)
+				continue;
+
+		}
 	}
+
 }

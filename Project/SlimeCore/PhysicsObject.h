@@ -9,10 +9,11 @@ class PhysicsObject
 {
 protected:
 	PhysicsObject() {}
+
 public:
+
 	void fixedUpdate(glm::vec2 gravity, float timeStep);
 	void debug();
-	void makeGizmo();
 	void resetPosition() {};
 };
 

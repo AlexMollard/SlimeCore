@@ -1,16 +1,20 @@
 #pragma once
 #include "ObjectManager.h"
 #include "GameObject2D.h"
-class Object2DManager : public ObjectManager
+class Object2DManager
 {
 public:
 	Object2DManager(TextureManager* textureManager);
 	~Object2DManager();
 
 	GameObject2D* CreateBox(glm::vec3 Position = glm::vec3(0), float xWidth = 1.0f, float yWidth = 1.0f);
+	GameObject2D* CreateLine(glm::vec3 startPosition, glm::vec3 endPosition, float width = 1.0f);
+	GameObject2D* CreateCircle(glm::vec3 Position = glm::vec3(0), float Diameter = 1.0f);
+	
+	void SetUpSpriteMesh(GameObject2D* currentObject, glm::vec3 topLeft, glm::vec3 bottomLeft, glm::vec3 topRight, glm::vec3 bottomRight);
 	void CreateMesh(GameObject2D* currentObject);
-
-	void Draw();
+	void Draw();		 
+	void Update(float deltaTime);		 
 
 protected:
 	std::vector<GameObject2D*> objects;
@@ -19,5 +23,5 @@ protected:
 	Shader* TwoDShader = nullptr;
 	Texture* defaultWhite = nullptr;
 	Texture* currentTexture = nullptr;
+	Texture* defaultCircleTexture = nullptr;
 };
-

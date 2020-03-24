@@ -1,7 +1,7 @@
 #pragma once
-#include "PhysicsObject.h"
+#include "RigidBody.h"
 
-class GameObject2D : public PhysicsObject
+class GameObject2D : public RigidBody
 {
 public :
 	GameObject2D() {};
@@ -16,14 +16,13 @@ public :
 
 
 	void Draw();
-	void SetPos(glm::vec3 newPos);
+	void UpdatePos();
 	void SetTexture(Texture* texture);
 	void Rotate(float rotation);
 
 	unsigned int	vao, vbo, ibo;
 	glm::vec3 color = glm::vec3(1);
 	glm::vec2 size = glm::vec2(1, 1);
-	glm::vec3 position = glm::vec3(0);
 	TwoMesh twoMesh;
 	Texture* tex = nullptr;
 	glm::mat4 model = glm::mat4(1);

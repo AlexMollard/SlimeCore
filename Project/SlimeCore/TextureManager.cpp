@@ -106,16 +106,16 @@ Texture* TextureManager::Get(int index, TEXTURETYPE type)
 	return textureList[index] ? textureList[index] : NotFound(false, "---", index);
 }
 
-bool TextureManager::Create(std::string name, std::string dir, TEXTURETYPE type)
+Texture* TextureManager::Create(std::string name, std::string dir, TEXTURETYPE type)
 {
 	if (Get(name,type, true) == nullptr)
 	{
 		Add(new Texture(name, dir), type);
-		return true;
+		return Get(GetTextureList(type).size() - 1, type);
 	}
 
 	printf("Texture already exist with name: %s.\n", name.c_str());
-	return false;
+	return nullptr;
 }
 
 void TextureManager::Create(std::vector<std::string> dirs, TEXTURETYPE type)

@@ -25,21 +25,30 @@ int main()
 	float& deltaTime = *app->GetDeltaPointer();
 	float timer = 0.0f;
 
-	GameObject2D* square = object2DManager->CreateBox();
-	GameObject2D* testSquare = object2DManager->CreateBox(glm::vec3(4, 0, 0.1f), 2, 2);
-	GameObject2D* testSquareTwo = object2DManager->CreateBox(glm::vec3(-3, 0, 0.2f), 0.5f, 0.5f);
-	testSquareTwo->color = glm::vec3(0,1,0);
-	testSquare->SetTexture(textureManager->Get("grass.png", TEXTURETYPE::Albedo));
+	GameObject2D* platform = object2DManager->CreateBox(glm::vec3(0,-8,0),15.0f,0.5f);
+	platform->color = glm::vec3(0.3f);
+
+	int size = 5;
+	for (float x = 0; x < size; x++)
+	{
+		for (float y = 0; y < size; y++)
+		{
+			GameObject2D* currentOBJ = object2DManager->CreateBox(glm::vec3(x - size/2, y - size/2, 0), 0.25f, 0.25f);
+			currentOBJ->color = glm::vec3(glm::cos((x / 3.0f)), glm::cos((y / 3.0f)),0);
+			currentOBJ->SetAcceleration(glm::vec3(x * 0.01f, -3.9f / 50, 0));
+		}
+	}
+
 	debugGui->FirstFrame();
 	
 	// Main engine loop
 	while (glfwWindowShouldClose(window) == false)
 	{	
 		timer += deltaTime;
-		square->Rotate(5 * deltaTime);
 
 		// Draw 2D objects
 		object2DManager->Draw();
+		object2DManager->Update(deltaTime);
 
 		// Draw Gui
 		debugGui->Render(deltaTime);
