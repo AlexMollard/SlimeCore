@@ -95,8 +95,6 @@ void Application::Update()
 
 void Application::Update_Window(GLFWwindow* window)
 {
-
-
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 

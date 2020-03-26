@@ -11,12 +11,13 @@ void GameObject2D::UpdatePos()
 { 
 	model[3] = glm::vec4(position, 1);
 }
+
 void GameObject2D::SetTexture(Texture* texture)
 {
 	tex = texture;
 }
+
 void GameObject2D::Rotate(float rotation)
 {
 	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Then rotate
 }
-;

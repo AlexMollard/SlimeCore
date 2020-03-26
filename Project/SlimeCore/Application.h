@@ -3,6 +3,7 @@
 #include "GameManager.h"
 #include "Camera.h"
 #include "DebugGUI.h"
+#include "PhysicsScene.h"
 
 class Application
 {

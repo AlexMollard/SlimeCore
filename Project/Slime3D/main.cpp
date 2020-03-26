@@ -15,7 +15,8 @@ int main()
 	MeshManager* meshManager = new MeshManager();
 	ObjectManager* objectManager = new ObjectManager(meshManager, materialManager, shaderManager, textureManager, app->projectionViewMat, &app->GetCamera()->Position);
 	Object2DManager* object2DManager = new Object2DManager(textureManager);
-	
+	PhysicsScene* pScene = new PhysicsScene();
+
 	// Creating debugging GUI
 	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager,materialManager,textureManager,shaderManager);
 
@@ -27,16 +28,42 @@ int main()
 
 	GameObject2D* platform = object2DManager->CreateBox(glm::vec3(0,-8,0),15.0f,0.5f);
 	platform->color = glm::vec3(0.3f);
+	platform->SetKinematic(true);
+	platform->name = "Platform1";
 
-	int size = 5;
+	GameObject2D* platform2 = object2DManager->CreateBox(glm::vec3(0, 7, 0), 15.0f, 0.5f);
+	platform2->color = glm::vec3(0.3f);
+	platform2->SetKinematic(true);
+	platform2->name = "Platform2";
+
+	GameObject2D* platform3 = object2DManager->CreateBox(glm::vec3(14.5f, -0.5f, 0), 0.5f, 6.0f);
+	platform3->color = glm::vec3(0.3f);
+	platform3->SetKinematic(true);
+	platform3->name = "Platform3";
+
+	GameObject2D* platform4 = object2DManager->CreateBox(glm::vec3(-14.5f, -0.5f, 0), 0.5f, 6.0f);
+	platform4->color = glm::vec3(0.3f);
+	platform4->SetKinematic(true);
+	platform4->name = "Platform4";
+
+	int size = 4;
+	
 	for (float x = 0; x < size; x++)
 	{
 		for (float y = 0; y < size; y++)
 		{
 			GameObject2D* currentOBJ = object2DManager->CreateBox(glm::vec3(x - size/2, y - size/2, 0), 0.25f, 0.25f);
-			currentOBJ->color = glm::vec3(glm::cos((x / 3.0f)), glm::cos((y / 3.0f)),0);
-			currentOBJ->SetAcceleration(glm::vec3(x * 0.01f, -3.9f / 50, 0));
+			currentOBJ->color = glm::vec3(glm::sin(x / size), glm::sin(y / size), 0.3f);
+			currentOBJ->name = "Cube";
+			currentOBJ->ApplyForce(((int)x % 2 == 0) ? glm::vec3(0.80f, 0.0f, 0.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
 		}
+	}
+
+	std::vector<GameObject2D*> allObjects = object2DManager->GetAllObjects();
+	
+	for (int i = 0; i < allObjects.size(); i++)
+	{
+		pScene->addActor((RigidBody*)allObjects[i]);
 	}
 
 	debugGui->FirstFrame();
@@ -47,8 +74,9 @@ int main()
 		timer += deltaTime;
 
 		// Draw 2D objects
-		object2DManager->Draw();
 		object2DManager->Update(deltaTime);
+		object2DManager->Draw();
+		pScene->update(deltaTime);
 
 		// Draw Gui
 		debugGui->Render(deltaTime);
@@ -61,6 +89,7 @@ int main()
 	delete shaderManager;
 	delete meshManager;
 	delete materialManager;
+	delete pScene;
 	delete textureManager;
 	delete objectManager;
 	delete object2DManager;

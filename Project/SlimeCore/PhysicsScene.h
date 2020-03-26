@@ -1,20 +1,23 @@
 #pragma once
-#include "PhysicsObject.h"
+#include "RigidBody.h"
 class PhysicsScene
 {
 public:
 	PhysicsScene();
-	~PhysicsScene();
-	void addActor(PhysicsObject* actor);
-	void removeActor(PhysicsObject* actor);
+	~PhysicsScene() {};
+	void addActor(RigidBody* actor);
+	void addActor(std::vector<RigidBody*> actors);
+	void addActor(RigidBody** actors, int amount);
+	void removeActor(RigidBody* actor);
 	void update(float dt); 
-	void updateGizmos();
-	void setGravity(const glm::vec2 gravity) { this->gravity = gravity; }
-	glm::vec2 getGravity() const { return gravity; }
+	bool CheckCollision(RigidBody& one, RigidBody& two);
+	glm::vec3 GetOverLap(RigidBody& one, RigidBody& two);
+	void setGravity(const glm::vec3 gravity) { this->gravity = gravity; }
+	glm::vec3 getGravity() const { return gravity; }
 	void setTimeStep(const float timeStep) { this->timeStep = timeStep; }
 	float getTimeStep() const { return timeStep; }
 protected:
-	glm::vec2 gravity;
-	float timeStep;
-	std::vector<PhysicsObject*> actors;
+	glm::vec3 gravity;
+	float timeStep = 0.01f;
+	std::vector<RigidBody*> actors;
 };

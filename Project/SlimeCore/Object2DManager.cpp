@@ -49,25 +49,39 @@ void Object2DManager::Update(float deltaTime)
 {
 	for (int i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(deltaTime);
+		//objects[i]->Update(deltaTime);
 		objects[i]->UpdatePos();
 	}
 }
 
-GameObject2D* Object2DManager::CreateBox(glm::vec3 Position, float xWidth, float yWidth)
+std::vector<GameObject2D*> Object2DManager::GetAllObjects()
+{
+	return objects;
+}
+
+GameObject2D* Object2DManager::CreateBox(glm::vec3 Position, float width, float height)
 {
 	objects.push_back(new GameObject2D());
 	GameObject2D* currentObject = objects.back();
 	currentObject->tex = defaultWhite;
-	currentObject->size = glm::vec2(xWidth, yWidth);
+	currentObject->size = glm::vec2(width, height);
 
-	glm::vec3 topLeft = glm::vec3(-1.0f * xWidth, 1.0f * yWidth, 0.0f);
-	glm::vec3 bottomLeft = glm::vec3(1.0f * xWidth, 1.0f * yWidth, 0.0f);
-	glm::vec3 topRight = glm::vec3(-1.0f * xWidth, -1.0f * yWidth, 0.0f);
-	glm::vec3 bottomRight = glm::vec3(1.0f * xWidth, -1.0f * yWidth, 0.0f);
+	glm::vec3 topLeft = glm::vec3(-1.0f * width, 1.0f * height, 0.0f);
+	glm::vec3 bottomLeft = glm::vec3(1.0f * width, 1.0f * height, 0.0f);
+	glm::vec3 topRight = glm::vec3(-1.0f * width, -1.0f * height, 0.0f);
+	glm::vec3 bottomRight = glm::vec3(1.0f * width, -1.0f * height, 0.0f);
 
 	SetUpSpriteMesh(currentObject, topLeft, bottomLeft, topRight, bottomRight);
 	currentObject->SetPos(Position);
+
+	//Setting bounding box
+	glm::vec3 bLeft;
+	glm::vec3 tRight;
+	
+	bLeft = glm::vec3(-width / 2, -height / 2, 0);
+	tRight = glm::vec3(width * 0.5f, height * 0.5f, 0);
+	
+	currentObject->SetBoundingBox(bLeft, tRight);
 
 	return currentObject;
 }

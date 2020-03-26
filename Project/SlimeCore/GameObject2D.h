@@ -22,7 +22,6 @@ public :
 
 	unsigned int	vao, vbo, ibo;
 	glm::vec3 color = glm::vec3(1);
-	glm::vec2 size = glm::vec2(1, 1);
 	TwoMesh twoMesh;
 	Texture* tex = nullptr;
 	glm::mat4 model = glm::mat4(1);

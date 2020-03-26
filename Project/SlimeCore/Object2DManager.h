@@ -7,7 +7,7 @@ public:
 	Object2DManager(TextureManager* textureManager);
 	~Object2DManager();
 
-	GameObject2D* CreateBox(glm::vec3 Position = glm::vec3(0), float xWidth = 1.0f, float yWidth = 1.0f);
+	GameObject2D* CreateBox(glm::vec3 Position = glm::vec3(0), float width = 1.0f, float height = 1.0f);
 	GameObject2D* CreateLine(glm::vec3 startPosition, glm::vec3 endPosition, float width = 1.0f);
 	GameObject2D* CreateCircle(glm::vec3 Position = glm::vec3(0), float Diameter = 1.0f);
 	
@@ -15,6 +15,7 @@ public:
 	void CreateMesh(GameObject2D* currentObject);
 	void Draw();		 
 	void Update(float deltaTime);		 
+	std::vector<GameObject2D*> GetAllObjects();
 
 protected:
 	std::vector<GameObject2D*> objects;
