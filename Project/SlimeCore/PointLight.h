@@ -24,12 +24,12 @@ public:
 	glm::vec3 GetAlbedo() { return albedo; }
 	glm::vec3 GetSpecular() { return specular; }
 	float GetStrength() { return strength; };
-		 
-	float GetConstant() { return constant ; }
+
+	float GetConstant() { return constant; }
 	float GetLinear() { return linear; }
 	float GetQuadratic() { return quadratic; }
-//protected:
-	//glm::vec3 lightPosition = glm::vec3(0, 1, 0);
+	//protected:
+		//glm::vec3 lightPosition = glm::vec3(0, 1, 0);
 	glm::vec3 albedo = glm::vec3(1.0, 0.75, 0.5);
 	glm::vec3 ambient = glm::vec3(1);
 	glm::vec3 specular = glm::vec3(1);
@@ -40,4 +40,3 @@ public:
 	float linear = 0.09f;
 	float quadratic = 0.032f;
 };
-

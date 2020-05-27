@@ -4,6 +4,7 @@ int main()
 {
 	// Check for Memory Leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	// Create Application
 	Application* app = new Application(1280, 720, "Slime Core");
 	GLFWwindow* window = glfwGetCurrentContext();
@@ -14,16 +15,20 @@ int main()
 	MaterialManager* materialManager = new MaterialManager(textureManager);
 	MeshManager* meshManager = new MeshManager();
 	ObjectManager* objectManager = new ObjectManager(meshManager, materialManager, shaderManager, textureManager, app->projectionViewMat, &app->GetCamera()->Position);
+<<<<<<< HEAD
 	Object2DManager* object2DManager = new Object2DManager(textureManager);
 	PhysicsScene* pScene = new PhysicsScene();
+=======
+>>>>>>> idk
 
 	// Creating debugging GUI
-	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager,materialManager,textureManager,shaderManager);
+	DebugGUI* debugGui = new DebugGUI(objectManager, meshManager, materialManager, textureManager, shaderManager);
 
 	textureManager->ImportAllTextures();
 
 	// Setting variables
 	float& deltaTime = *app->GetDeltaPointer();
+<<<<<<< HEAD
 	float timer = 0.0f;
 
 	GameObject2D* platform = object2DManager->CreateBox(glm::vec3(0,-8,0),15.0f,0.5f);
@@ -77,6 +82,24 @@ int main()
 		object2DManager->Update(deltaTime);
 		object2DManager->Draw();
 		pScene->update(deltaTime);
+=======
+
+	// Objects
+	GameObject* skyBox = objectManager->Create("SkyBox", 1, 1, 1);
+	objectManager->Create("Block", Primitives::TYPE::Cube, 2, 3);
+
+	// Lights
+	objectManager->CreatePointLight("PointLight", glm::vec3(1, 2, 1));
+
+	// Main engine loop
+	while (glfwWindowShouldClose(window) == false)
+	{
+		// Move skybox with camera
+		skyBox->SetSkyBoxPos(&app->GetCamera()->Position);
+
+		// Draw objects/Meshes
+		objectManager->Draw(true);
+>>>>>>> idk
 
 		// Draw Gui
 		debugGui->Render(deltaTime);
@@ -86,11 +109,14 @@ int main()
 	}
 
 	// Delete pointers
+<<<<<<< HEAD
 	delete shaderManager;
 	delete meshManager;
 	delete materialManager;
 	delete pScene;
 	delete textureManager;
+=======
+>>>>>>> idk
 	delete objectManager;
 	delete object2DManager;
 	delete debugGui;

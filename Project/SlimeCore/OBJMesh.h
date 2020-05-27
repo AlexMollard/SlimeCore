@@ -56,9 +56,8 @@ public:
 	const std::string& getFilename() const { return m_filename; }
 
 	// material access
-	size_t getMaterialCount() const { return m_materials.size();  }
-	Material& getMaterial(size_t index) { return m_materials[index];  }
-
+	size_t getMaterialCount() const { return m_materials.size(); }
+	Material& getMaterial(size_t index) { return m_materials[index]; }
 
 private:
 

@@ -47,7 +47,6 @@ public:
 		float specularPower;
 		float opacity;
 
-
 		Texture ambientTexture;
 		Texture diffuseTexture;
 		Texture specularTexture;
@@ -64,4 +63,3 @@ protected:
 	bool hasIBO = false;
 	void calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 };
-

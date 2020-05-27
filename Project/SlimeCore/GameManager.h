@@ -19,4 +19,3 @@ public:
 	TextureManager* textureManager = nullptr;
 	ObjectManager* objectManager = nullptr;
 };
-

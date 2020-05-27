@@ -9,10 +9,10 @@ out vec3 normal;
 out vec2 texCoord;
 
 uniform mat4 ProjectionView;
-uniform mat4 Model; 
+uniform mat4 Model;
 
-void main() 
-{ 
+void main()
+{
 	FragPos = vec3(Model * vec4(aPos, 1.0));
 	texCoord = vec2(aTexCoord.x, aTexCoord.y);
 	gl_Position = ProjectionView * Model * vec4(aPos, 1.0);

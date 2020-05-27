@@ -12,7 +12,7 @@ public:
 	Mesh* Create(const char* name, const char* dir);
 	Mesh* Create(const char* name, Primitives::TYPE type);
 	Mesh* Create(const char* name);
-	
+
 	// Get Functions
 	//--------------------
 	int GetIndex(std::string name);
@@ -32,4 +32,3 @@ protected:
 	std::vector<Mesh*> meshList;
 	std::vector<std::string> meshNames;
 };
-

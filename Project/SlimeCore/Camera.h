@@ -4,7 +4,7 @@
 #include <glfw3.h>
 #include <vector>
 
-enum Camera_Movement 
+enum Camera_Movement
 {
 	FORWARD,
 	BACKWARD,
@@ -20,7 +20,6 @@ const float PITCH = -15.0f;
 const float SPEED = 10.5f;
 const float SENSITIVITY = 0.2f;
 const float ZOOM = 45.0f;
-
 
 class Camera
 {

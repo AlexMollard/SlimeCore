@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 class Shader
-{	
+{
 public:
 	Shader(std::string name, const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
 	Shader(std::string name);
@@ -92,4 +92,3 @@ protected:
 	unsigned int shader_ID = 0;
 	std::string name = "DefaultName";
 };
-

@@ -32,12 +32,11 @@ public:
 	std::vector<std::string> GetNames();
 	Material* NotFound(bool creation, std::string name = "---", int index = -404);
 
-//protected:
-	// Get a refrence to all textures
+	//protected:
+		// Get a refrence to all textures
 	TextureManager* textureManager = nullptr;
-	
+
 	// Keep track of all textures and names for future use
 	std::vector<Material*> materialList;
 	std::vector<std::string> materialNames;
 };
-

@@ -22,6 +22,7 @@ public:
 	//------------------
 	GameObject* Create(GameObject* parent, std::string name);
 	GameObject* Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, int parent = 0, glm::vec3 pos = glm::vec3(0));
+	GameObject* Create(std::string name, Primitives::TYPE type, int materialIndex, int shaderIndex, int parent = 0, glm::vec3 pos = glm::vec3(0));
 	GameObject* Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos = glm::vec3(0));
 	void Add(GameObject* gameObject);
 	void Add(GameObject** gameObject, int amount);
@@ -43,7 +44,7 @@ public:
 	// Light Functions
 	//------------------
 	int FindPointLight(GameObject* lightObject);
-	GameObject* CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
+	PointLight* CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
 	void AddPointLight(PointLight* light);
 
 	void CreateDirectionalLight();
@@ -68,8 +69,8 @@ public:
 	void BindTexture(int objectIndex, TEXTURETYPE type, Texture* texture);
 	void SetIntTexture(int objectIndex, TEXTURETYPE type);
 
-//protected:
-	// Objects
+	//protected:
+		// Objects
 	std::vector<GameObject*> objects;
 	std::vector<std::string> names;
 	std::vector<PointLight*> pointLights;

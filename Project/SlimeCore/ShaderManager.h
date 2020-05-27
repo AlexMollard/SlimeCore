@@ -26,4 +26,3 @@ protected:
 	std::vector<std::string> names;
 	std::vector<Shader*> shaderList;
 };
-

@@ -14,7 +14,6 @@ int windowWidth, windowHeight;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
-
 Application::~Application()
 {
 	delete camera;
@@ -65,6 +64,7 @@ int Application::Create(int Width, int Height, std::string name)
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 450");
 	// Setup Dear ImGui style
+<<<<<<< HEAD
 	ImGui::StyleColorsDark();
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -98,6 +98,39 @@ void Application::Update_Window(GLFWwindow* window)
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 
+=======
+	ImGui::StyleColorsDark();
+
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	glfwSwapInterval(1);
+	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+	camera = new Camera(projection);
+	projectionViewMat = &camera->ProjectionViewMat;
+
+	return 1;
+}
+
+void Application::Update()
+{
+	this->appWindowWidth = windowWidth;
+	this->appWindowHeight = windowHeight;
+	processInput(window);
+	Update_Window(window);
+	camera->UpdateProjectionViewMatrix();
+}
+
+void Application::Update_Window(GLFWwindow* window)
+{
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+
+>>>>>>> idk
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	now = glfwGetTime();

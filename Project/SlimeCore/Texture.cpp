@@ -22,7 +22,7 @@ Texture::Texture(std::string name, std::string dir)
 	// Load Image and generate mipmaps
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load(dir.c_str(), &width, &height, &nrChannels, 0);
-	
+
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, width, height, 0, nrChannels != 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -60,7 +60,6 @@ Texture::~Texture()
 
 void Texture::load(std::string dir)
 {
-
 	// Create and bind texture ID
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);

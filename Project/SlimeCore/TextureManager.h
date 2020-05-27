@@ -55,4 +55,3 @@ protected:
 	Texture* skyBox;
 	unsigned int skyboxID = 0;
 };
-

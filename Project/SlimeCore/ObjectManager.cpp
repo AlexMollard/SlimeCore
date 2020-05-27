@@ -22,6 +22,11 @@ ObjectManager::~ObjectManager()
 			objects[i] = nullptr;
 		}
 	}
+
+	delete matManager;
+	delete shaderManager;
+	delete textureManager;
+	delete meshManager;
 }
 
 GameObject* ObjectManager::Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, int parent, glm::vec3 pos)
@@ -33,6 +38,21 @@ GameObject* ObjectManager::Create(std::string name, int meshIndex, int materialI
 
 	objects.back()->SetPos(pos);
 	return objects.back();
+}
+
+GameObject* ObjectManager::Create(std::string name, Primitives::TYPE type, int materialIndex, int shaderIndex, int parent, glm::vec3 pos)
+{
+	int objectType = 0;
+	switch (type)
+	{
+	case Primitives::Cube:
+		objectType = 2;
+		break;
+	default:
+		break;
+	}
+
+	return Create("Block", objectType, 2, 3);
 }
 
 GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos)
@@ -202,7 +222,7 @@ int ObjectManager::FindPointLight(GameObject* lightObject)
 	return -404;
 }
 
-GameObject*  ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent)
+PointLight* ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent)
 {
 	PointLight* pLight = new PointLight(name, pos);
 	pLight->SetShader(shaderManager->Get("lightShader"));
@@ -234,7 +254,6 @@ void ObjectManager::CreateDirectionalLight()
 	directionalLight = pLight;
 	Add(pLight);
 }
-
 
 void ObjectManager::UpdateLights(Shader* shader)
 {
@@ -331,12 +350,8 @@ bool ObjectManager::DebugAll()
 	return true;
 }
 
-
-
-
 bool ObjectManager::Draw(bool isBuffer)
 {
-
 	for (int i = 0; i < objects.size(); i++)
 	{
 		Shader* objShader = objects[i]->GetShader();
@@ -356,7 +371,6 @@ bool ObjectManager::Draw(bool isBuffer)
 			this->currentShader = objects[i]->GetShader();
 			objects[i]->UpdateUniforms(projectionView, *camPos);
 			UpdateLights(objShader);
-
 		}
 
 		if (objects[i]->isDebugObject && !isBuffer)

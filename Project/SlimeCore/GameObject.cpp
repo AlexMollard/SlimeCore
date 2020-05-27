@@ -37,7 +37,7 @@ void GameObject::Draw(glm::mat4* ProjectionView)
 		shader->setMat4("Model", model);
 	}
 	if (mesh != nullptr)
-		mesh->draw(); 
+		mesh->draw();
 }
 
 void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
@@ -50,9 +50,8 @@ void GameObject::UpdateUniforms(glm::mat4* ProjectionView, glm::vec3 cameraPos)
 void GameObject::SetPos(glm::vec3 newPos)
 {
 	position = newPos;
-	model[3] = glm::vec4(newPos,1);
+	model[3] = glm::vec4(newPos, 1);
 }
-
 
 glm::vec3 GameObject::GetPos()
 {
@@ -159,7 +158,6 @@ Texture* GameObject::GetTexture(TEXTURETYPE type)
 	}
 	return nullptr;
 }
-
 
 Shader* GameObject::GetShader()
 {
