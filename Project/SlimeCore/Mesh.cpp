@@ -86,7 +86,6 @@ void Mesh::create(Primitives::TYPE type, float argOne, float argTwo, int argThre
 		{
 			newvertices.push_back(0.5);
 			newvertices.push_back(0.5);
-
 		}
 		else
 		{
@@ -194,7 +193,6 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 	for (auto& m : materials) {
 		if (materials.size() > 1)
 		{
-
 			m_materials[index].ambient = glm::vec3(m.ambient[0], m.ambient[1], m.ambient[2]);
 			m_materials[index].albedo = glm::vec3(m.albedo[0], m.albedo[1], m.albedo[2]);
 			m_materials[index].specular = glm::vec3(m.specular[0], m.specular[1], m.specular[2]);
@@ -229,7 +227,6 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 	m_meshChunks.reserve(shapes.size());
 
 	for (auto& s : shapes) {
-
 		MeshChunk chunk;
 
 		// generate buffers
@@ -267,8 +264,6 @@ bool Mesh::load(const char* filename, bool loadTextures, bool flipTextureV)
 			// flip the T / V (might not always be needed, depends on how mesh was made)
 			if (hasTexture)
 				vertices[i].texcoord = glm::vec2(s.mesh.texcoords[i * 2 + 0], flipTextureV ? 1.0f - s.mesh.texcoords[i * 2 + 1] : s.mesh.texcoords[i * 2 + 1]);
-
-		
 		}
 
 		// calculate for normal mapping
@@ -320,9 +315,8 @@ void BindTexture(Texture* texture, int textureIndex)
 {
 	if (texture != nullptr)
 	{
-
-			glActiveTexture(GL_TEXTURE0 + textureIndex);
-			texture->Bind();
+		glActiveTexture(GL_TEXTURE0 + textureIndex);
+		texture->Bind();
 	}
 	else
 	{
@@ -332,7 +326,6 @@ void BindTexture(Texture* texture, int textureIndex)
 }
 
 void Mesh::draw(bool usePatches) {
-
 	if (m_materials.size() > 1)
 	{
 		int program = -1;
@@ -369,25 +362,23 @@ void Mesh::draw(bool usePatches) {
 		// draw the mesh chunks
 		int count = -1;
 		for (auto& c : m_meshChunks) {
-
 			if (m_materials[c.materialID].diffuseTexture.GetID() != 0)
 				BindTexture(&m_materials[c.materialID].diffuseTexture, 0);
 
 			if (m_materials[c.materialID].specularTexture.GetID() != 0)
 				BindTexture(&m_materials[c.materialID].specularTexture, 1);
-			
+
 			if (m_materials[c.materialID].normalTexture.GetID() != 0)
 				BindTexture(&m_materials[c.materialID].normalTexture, 2);
-			
+
 			if (m_materials[c.materialID].ambientTexture.GetID() != 0)
 				BindTexture(&m_materials[c.materialID].ambientTexture, 3);
-			
+
 			if (m_materials[c.materialID].specularHighlightTexture.GetID() != 0)
 				BindTexture(&m_materials[c.materialID].specularHighlightTexture, 4);
-			
+
 			if (m_materials[c.materialID].displacementTexture.GetID() != 0)
 				BindTexture(&m_materials[c.materialID].displacementTexture, 5);
-
 
 			// bind and draw geometry
 			glBindVertexArray(c.vao);
@@ -400,7 +391,6 @@ void Mesh::draw(bool usePatches) {
 	else
 	{
 		for (auto& c : m_meshChunks) {
-
 			// bind and draw geometry
 			glBindVertexArray(c.vao);
 			if (usePatches)
@@ -409,8 +399,6 @@ void Mesh::draw(bool usePatches) {
 				glDrawElements(GL_TRIANGLES, c.indexCount, GL_UNSIGNED_INT, 0);
 		}
 	}
-
-
 }
 
 void Mesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {

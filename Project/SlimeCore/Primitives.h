@@ -5,7 +5,7 @@
 class Primitives
 {
 public:
-	enum TYPE 
+	enum TYPE
 	{
 		Plane,
 		Cube,
@@ -27,7 +27,6 @@ public:
 	std::vector<glm::vec3> CalculateVertNormals(std::vector<glm::vec3>& vertices, std::vector<unsigned int>& indices);
 	void CalculateTangents();
 };
-
 
 class Plane : public Primitives
 {

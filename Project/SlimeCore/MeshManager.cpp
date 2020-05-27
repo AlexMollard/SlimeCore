@@ -3,6 +3,14 @@
 MeshManager::MeshManager()
 {
 	Create("None");
+
+	// Meshes
+	Create("SkyBox", Primitives::SkyBox);
+	Create("Cube", "..\\Models\\cube.obj");
+	Create("Plane", Primitives::Plane);
+
+	// Load Objs
+	Create("sphere", "..\\Models\\sphere.obj");
 }
 
 MeshManager::~MeshManager()
@@ -55,7 +63,7 @@ Mesh* MeshManager::Create(const char* name, const char* dir)
 	if (Get(name, true) == nullptr)
 	{
 		printf("Creating Mesh with name: %s.\n", name);
-		Mesh* tempMesh = new Mesh(name,dir);
+		Mesh* tempMesh = new Mesh(name, dir);
 		Add(tempMesh);
 		return tempMesh;
 	}

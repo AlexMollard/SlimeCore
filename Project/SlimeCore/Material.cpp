@@ -5,11 +5,11 @@ Material::Material(std::string name, Texture* albedo, Texture* specMap, Texture*
 	this->name = name;
 
 	this->albedo = albedo;
-	
+
 	if (specMap)
 		hasSpecMap = true;
 	this->specMap = specMap;
-	
+
 	if (normalMap)
 		hasNormalMap = true;
 	this->normalMap = normalMap;
@@ -75,8 +75,6 @@ Material::Material(std::string name, Texture* albedo)
 Material::~Material()
 {
 }
-
-
 
 Texture* Material::GetAlbedo()
 {

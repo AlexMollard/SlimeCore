@@ -9,7 +9,6 @@ PointLight::PointLight(std::string name, glm::vec3 pos)
 
 PointLight::~PointLight()
 {
-
 }
 
 void PointLight::SetAttributes(glm::vec3 newAmbient, glm::vec3 newAlbedo, glm::vec3 newSpecular, float newConstant, float newLinear, float newQuadratic)

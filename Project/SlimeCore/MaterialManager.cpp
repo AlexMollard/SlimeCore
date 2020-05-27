@@ -4,7 +4,13 @@
 MaterialManager::MaterialManager(TextureManager* textureManager)
 {
 	this->textureManager = textureManager;
-	Create("None",nullptr);
+	Create("None", nullptr);
+
+	// Materials
+	Create("skyBoxMat", textureManager->Get(0, TEXTURETYPE::Albedo));
+	Create("defaultMaterial", textureManager->Get("Planks.jpg", TEXTURETYPE::Albedo), textureManager->Get("Planks.jpg", TEXTURETYPE::Specular), textureManager->Get("Planks.jpg", TEXTURETYPE::Normal), textureManager->Get("Planks.jpg", TEXTURETYPE::Ambient), textureManager->Get("Planks.jpg", TEXTURETYPE::Rough), textureManager->Get(0, TEXTURETYPE::Displacement));
+	Create("lightMat", textureManager->Get(3, TEXTURETYPE::Albedo));
+	Create("debugMat", textureManager->Get(5, TEXTURETYPE::Albedo));
 }
 
 MaterialManager::~MaterialManager()
@@ -34,12 +40,12 @@ Material* MaterialManager::Get(std::string name, bool creation)
 
 Material* MaterialManager::Get(int index)
 {
-	return materialList[index] ? materialList[index] : NotFound(false, "---",index);
+	return materialList[index] ? materialList[index] : NotFound(false, "---", index);
 }
 
 bool MaterialManager::Create(std::string name, Texture* texture)
 {
-	if (Get(name,true) == nullptr)
+	if (Get(name, true) == nullptr)
 	{
 		//printf("Creating Material with name: %s.\n", name);
 		Add(new Material(name, texture));
@@ -55,7 +61,7 @@ bool MaterialManager::Create(std::string name, Texture* albedo, Texture* specula
 	if (Get(name.c_str(), true) == nullptr)
 	{
 		//printf("Creating Material with name: %s.\n", name);
-		Add(new Material(name, albedo, specular, normal, ambient, rough,displacement));
+		Add(new Material(name, albedo, specular, normal, ambient, rough, displacement));
 		return true;
 	}
 
@@ -76,7 +82,7 @@ void MaterialManager::Create(std::string name, std::string diffuseName, float di
 {
 	if (Get(name.c_str(), true) == nullptr)
 	{
-		Add(new Material(name.c_str(), textureManager->Get(diffuseName, TEXTURETYPE::Albedo), diffuseStrength, textureManager->Get(specularName, TEXTURETYPE::Specular),specularStrength, textureManager->Get(normalName, TEXTURETYPE::Normal), normalStrength, textureManager->Get(ambientName, TEXTURETYPE::Ambient), ambientStrength, textureManager->Get(roughName, TEXTURETYPE::Rough), roughStrength, textureManager->Get(displacementName, TEXTURETYPE::Displacement), displacementStrength));
+		Add(new Material(name.c_str(), textureManager->Get(diffuseName, TEXTURETYPE::Albedo), diffuseStrength, textureManager->Get(specularName, TEXTURETYPE::Specular), specularStrength, textureManager->Get(normalName, TEXTURETYPE::Normal), normalStrength, textureManager->Get(ambientName, TEXTURETYPE::Ambient), ambientStrength, textureManager->Get(roughName, TEXTURETYPE::Rough), roughStrength, textureManager->Get(displacementName, TEXTURETYPE::Displacement), displacementStrength));
 		std::cout << "IMGUI just made a material: " << name << std::endl;
 	}
 }
@@ -120,16 +126,15 @@ void MaterialManager::Remove(Material* mat, std::vector<GameObject*> objects)
 			objects[i]->SetMaterial(Get("None"));
 	}
 
-
 	std::vector<Material*> newMaterialList;
 	for (int i = 0; i < materialList.size(); i++)
 	{
 		if (materialList[i] == mat)
 			continue;
-		
+
 		newMaterialList.push_back(materialList[i]);
 	}
-	
+
 	delete mat;
 	mat = nullptr;
 
@@ -146,7 +151,7 @@ Material* MaterialManager::NotFound(bool creation, std::string name, int index)
 {
 	if (!creation)
 		printf("Material Not Found with name: %s, index: %d.\n", name.c_str(), index);
-	
+
 	return nullptr;
 }
 

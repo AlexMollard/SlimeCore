@@ -11,7 +11,7 @@ public:
 	Material(std::string name, Texture* albedo, Texture* specMap, Texture* normalMap, Texture* ambientMap, Texture* roughMap, Texture* displacementMap);
 	Material(std::string name, Texture* albedo, float diffuseStrength, Texture* specMap, float specularStrength, Texture* normalMap, float normalStrength, Texture* ambientMap, float ambientStrength, Texture* roughMap, float roughStrength, Texture* displacementMap, float displacementStrength);
 	Material(std::string name, Texture* albedo);
-	
+
 	virtual ~Material();
 
 	// Textures
@@ -41,7 +41,7 @@ public:
 	void SetAmbientStrength(float value) { ambientStrength = value; }
 	void SetRoughStrength(float value) { roughStrength = value; }
 	void SetDisplacementStrength(float value) { displacementStrength = value; }
-	void SetAll(Texture* albedo, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, Texture*displacement, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr, float displaceStr);
+	void SetAll(Texture* albedo, Texture* specular, Texture* normal, Texture* ambient, Texture* rough, Texture* displacement, float diffuseStr, float specularStr, float normalStr, float ambientStr, float roughStr, float displaceStr);
 
 	// Get
 	float GetAlbedoStrength() { return diffuseStrength; }

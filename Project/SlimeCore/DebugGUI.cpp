@@ -19,13 +19,16 @@ DebugGUI::~DebugGUI()
 
 void DebugGUI::Render(float deltaTime)
 {
+	if (firstFrameDone == false)
+		FirstFrame();
+
 	// feed inputs to dear imgui, start new frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
 	MainMenuBar();
-	
+
 	if (materialWindowVisable)
 		MaterialGUI();
 
@@ -83,6 +86,8 @@ void DebugGUI::FirstFrame()
 
 	shaderList = shaderManager->GetNames();
 	currentShaderName = shaderList[0].c_str();
+
+	firstFrameDone = true;
 }
 
 void DebugGUI::MainMenuBar()
@@ -105,9 +110,9 @@ void DebugGUI::MainMenuBar()
 		if (ImGui::MenuItem("Hierarchy", "CTRL+H", hierarchyWindowVisable))
 			hierarchyWindowVisable = (hierarchyWindowVisable ? false : true);
 
-		if (ImGui::MenuItem("Create Material","", materialWindowVisable))
+		if (ImGui::MenuItem("Create Material", "", materialWindowVisable))
 			materialWindowVisable = (materialWindowVisable ? false : true);
-		
+
 		ImGui::EndMenu();
 	}
 
@@ -116,7 +121,6 @@ void DebugGUI::MainMenuBar()
 
 void DebugGUI::MaterialGUI()
 {
-
 	ImGui::Begin("Create Material", &materialWindowVisable, ImGuiWindowFlags_NoScrollbar);
 
 	ImVec2 windowSize = ImVec2(ImGui::GetWindowWidth() - 20, ImGui::GetWindowHeight());
@@ -131,7 +135,6 @@ void DebugGUI::MaterialGUI()
 	ImVec2 childSize = ImVec2(imageOffset * 0.95f, materialImageSize.y + 100);
 	std::string currentValues[6] = { currentAlbedo,currentSpecular,currentNormal,currentAmbient,currentRough,currentDisplacement };
 	float currentStrengthValues[6] = { diffuseStrength,specularStrength,normalStrength,ambientStrength,roughStrength,displacementStrength };
-
 
 	ImGui::SameLine(materialselectpos - 50);
 	if (ImGui::Button("+", ImVec2(20, 20)))
@@ -185,12 +188,12 @@ void DebugGUI::MaterialGUI()
 
 	ImGui::SameLine(materialselectpos - 30);
 	if (matManager->GetIndex(matManager->Get(currentEditorMaterial)) >= 4)
-		if (ImGui::Button("-", ImVec2(20, 20))) 
-	{
-		matManager->Remove(matManager->Get(currentEditorMaterial), objManager->Get(0,objManager->GetObjectSize()));
-		materialList = matManager->GetNames();
-		currentEditorMaterial = materialList[0].c_str();
-	}
+		if (ImGui::Button("-", ImVec2(20, 20)))
+		{
+			matManager->Remove(matManager->Get(currentEditorMaterial), objManager->Get(0, objManager->GetObjectSize()));
+			materialList = matManager->GetNames();
+			currentEditorMaterial = materialList[0].c_str();
+		}
 
 	ImGui::PushItemWidth(imageOffset);
 	ImGui::SameLine(namePos);
@@ -269,7 +272,7 @@ void DebugGUI::MaterialGUI()
 	ImGui::SliderFloat("##specularStrength", &specularStrength, 0, 1);
 	ImGui::EndChild();
 #pragma endregion
-	
+
 #pragma region Normal
 	// Normal
 	ImGui::SameLine();
@@ -411,20 +414,20 @@ void DebugGUI::MaterialGUI()
 		currentStrengthValues[4] != roughStrength ||
 		currentStrengthValues[5] != displacementStrength
 		)
-	matManager->Get(currentEditorMaterial)->SetAll(
-		textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) != nullptr ? textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) : nullptr,
-		textureManager->Get(currentSpecular, TEXTURETYPE::Specular) != nullptr ? textureManager->Get(currentSpecular, TEXTURETYPE::Specular) : nullptr,
-		textureManager->Get(currentNormal, TEXTURETYPE::Normal) != nullptr ? textureManager->Get(currentNormal, TEXTURETYPE::Normal) : nullptr,
-		textureManager->Get(currentAmbient, TEXTURETYPE::Ambient) != nullptr ? textureManager->Get(currentAmbient, TEXTURETYPE::Ambient) : nullptr,
-		textureManager->Get(currentRough, TEXTURETYPE::Rough) != nullptr ? textureManager->Get(currentRough, TEXTURETYPE::Rough) : nullptr,
-		textureManager->Get(currentDisplacement, TEXTURETYPE::Displacement) != nullptr ? textureManager->Get(currentDisplacement, TEXTURETYPE::Displacement) : nullptr,
-		diffuseStrength,
-		specularStrength,
-		normalStrength,
-		ambientStrength,
-		roughStrength,
-		displacementStrength
-	);
+		matManager->Get(currentEditorMaterial)->SetAll(
+			textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) != nullptr ? textureManager->Get(currentAlbedo, TEXTURETYPE::Albedo) : nullptr,
+			textureManager->Get(currentSpecular, TEXTURETYPE::Specular) != nullptr ? textureManager->Get(currentSpecular, TEXTURETYPE::Specular) : nullptr,
+			textureManager->Get(currentNormal, TEXTURETYPE::Normal) != nullptr ? textureManager->Get(currentNormal, TEXTURETYPE::Normal) : nullptr,
+			textureManager->Get(currentAmbient, TEXTURETYPE::Ambient) != nullptr ? textureManager->Get(currentAmbient, TEXTURETYPE::Ambient) : nullptr,
+			textureManager->Get(currentRough, TEXTURETYPE::Rough) != nullptr ? textureManager->Get(currentRough, TEXTURETYPE::Rough) : nullptr,
+			textureManager->Get(currentDisplacement, TEXTURETYPE::Displacement) != nullptr ? textureManager->Get(currentDisplacement, TEXTURETYPE::Displacement) : nullptr,
+			diffuseStrength,
+			specularStrength,
+			normalStrength,
+			ambientStrength,
+			roughStrength,
+			displacementStrength
+		);
 
 	ImGui::End();
 }
@@ -439,8 +442,8 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 	if (timerDelay > 1.0f)
 	{
 		lines[29] = currentFPS;
-			smallest = 10000.0f;
-			largest = 0.0f;
+		smallest = 10000.0f;
+		largest = 0.0f;
 
 		for (int n = 0; n < 29; n++)
 		{
@@ -450,12 +453,11 @@ void DebugGUI::ProfilerGUI(float deltaTime)
 			{
 				smallest = lines[n];
 			}
-			
+
 			if (lines[n] > largest)
 			{
 				largest = lines[n];
 			}
-
 		}
 		largest *= 1.1f;
 		currentFPS = fpsTotal / fpsCount;
@@ -491,7 +493,6 @@ void DebugGUI::HierarchyGUI()
 		}
 		if (ImGui::BeginPopup("HierarchyOptions"))
 		{
-
 			if (currentObject != 0 && currentObject != 1)
 			{
 				if (ImGui::MenuItem("Delete"))
@@ -507,17 +508,16 @@ void DebugGUI::HierarchyGUI()
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Create Empty")) 
+			if (ImGui::MenuItem("Create Empty"))
 			{
 				currentMaterial = materialList[0].c_str();
 				currentShaderName = shaderList[0].c_str();
 				currentMesh = meshList[0].c_str();
 
 				if (currentObject != -1)
-					objManager->Create(objManager->Get(currentObject),"New Object");
+					objManager->Create(objManager->Get(currentObject), "New Object");
 				else
 					objManager->Create(nullptr, "New Object");
-
 
 				objectList = objManager->GetNameVector();
 				currentObject = objManager->GetObjectSize() - 1;
@@ -536,7 +536,6 @@ void DebugGUI::HierarchyGUI()
 					else
 						objManager->Create(nullptr, "New Cube");
 
-
 					objectList = objManager->GetNameVector();
 					currentObject = objManager->GetObjectSize() - 1;
 				}
@@ -551,7 +550,6 @@ void DebugGUI::HierarchyGUI()
 						objManager->Create(objManager->Get(currentObject), "New Plane");
 					else
 						objManager->Create(nullptr, "New Plane");
-
 
 					objectList = objManager->GetNameVector();
 					currentObject = objManager->GetObjectSize() - 1;
@@ -568,10 +566,8 @@ void DebugGUI::HierarchyGUI()
 					else
 						objManager->Create(nullptr, "New Cylinder");
 
-
 					objectList = objManager->GetNameVector();
 					currentObject = objManager->GetObjectSize() - 1;
-
 				}
 				ImGui::EndMenu();
 			}
@@ -592,7 +588,6 @@ void DebugGUI::HierarchyGUI()
 
 					objectList = objManager->GetNameVector();
 					currentObject = objManager->GetObjectSize() - 1;
-
 				}
 				ImGui::EndMenu();
 			}
@@ -642,23 +637,20 @@ void DebugGUI::HierarchyGUI()
 		pos[0] = tempPos.x;
 		pos[1] = tempPos.y;
 		pos[2] = tempPos.z;
-		
+
 		glm::vec3 tempScale = currentOBJ->GetScale();
 		scale[0] = tempScale.x;
 		scale[1] = tempScale.y;
 		scale[2] = tempScale.z;
 
-
 		if (currentOBJ->GetMaterial() != nullptr)
-			currentMaterial =  materialList[matManager->GetIndex(currentOBJ->GetMaterial())].c_str();
+			currentMaterial = materialList[matManager->GetIndex(currentOBJ->GetMaterial())].c_str();
 
 		if (currentOBJ->GetMesh() != nullptr)
 			currentMesh = meshList[meshManager->GetIndex(currentOBJ->GetMesh())].c_str();
-		
+
 		if (currentOBJ->GetShader() != nullptr)
 			currentShaderName = shaderList[shaderManager->GetIndex(currentOBJ->GetShader())].c_str();
-
-
 
 		if (objectList[currentObject] == "SkyBox")
 		{
@@ -745,28 +737,28 @@ void DebugGUI::HierarchyGUI()
 		if (isLight)
 		{
 			ImGui::Separator();
-			ImGui::TextColored(ImVec4(1,1,0,1), "Light Properties");
+			ImGui::TextColored(ImVec4(1, 1, 0, 1), "Light Properties");
 			PointLight* currentLight = (PointLight*)currentOBJ;
 			glm::vec3 difColorvec = currentLight->GetAlbedo();
 			float lightStregth = currentLight->GetStrength();
 			float difColor[3] = { difColorvec.x,difColorvec.y,difColorvec.z };
-			ImGui::InputFloat3("Light Color",difColor);
+			ImGui::InputFloat3("Light Color", difColor);
 			ImGui::InputFloat("Light Strength", &lightStregth);
 			currentLight->SetAlbedo(glm::vec3(difColor[0], difColor[1], difColor[2]));
 			currentLight->SetStrength(lightStregth);
 		}
 
-			objManager->SetVars(
-				currentObject,
-				objNameCharP,
-				staticBool,
-				glm::vec3(pos[0], pos[1], pos[2]),
-				glm::vec3(rot[0], rot[1], rot[2]),
-				glm::vec3(scale[0], scale[1], scale[2]),
-				std::string(currentMesh),
-				currentMaterial,
-				currentShaderName
-			);
+		objManager->SetVars(
+			currentObject,
+			objNameCharP,
+			staticBool,
+			glm::vec3(pos[0], pos[1], pos[2]),
+			glm::vec3(rot[0], rot[1], rot[2]),
+			glm::vec3(scale[0], scale[1], scale[2]),
+			std::string(currentMesh),
+			currentMaterial,
+			currentShaderName
+		);
 
 		ImGui::EndChild();
 		ImGui::EndGroup();
@@ -785,7 +777,7 @@ void DebugGUI::ShowChildObject(const char* prefix, int uid)
 		GameObject* currentOBJ = objManager->Get(uid);
 		if (currentOBJ->GetChildCount() <= 0)
 			return;
-		
+
 		std::string name = "This (" + objectList[uid] + ")";
 
 		if (ImGui::Selectable(name.c_str(), currentObject == objManager->FindIndex(currentOBJ)))

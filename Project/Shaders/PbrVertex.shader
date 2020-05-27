@@ -14,24 +14,23 @@ out vec3 BiTangent;
 out vec4 FragPosLightSpace;;
 
 uniform mat4 ProjectionView;
-uniform mat4 Model; 
+uniform mat4 Model;
 uniform mat4 lightSpaceMatrix;
 
-void main() 
-{ 
+void main()
+{
+	TexCoord = aTexCoord;
+	TexCoord.y = -1 * TexCoord.y;
+	WorldPos = vec3(Model * vec4(aPos, 1.0));
+	Normal = mat3(Model) * aNormal;
 
-    TexCoord = aTexCoord;
-    TexCoord.y = -1 * TexCoord.y;
-    WorldPos = vec3(Model * vec4(aPos, 1.0));
-    Normal = mat3(Model) * aNormal;
+	Tangent = normalize(Tangent);
+	BiTangent = normalize(BiTangent);
 
-    Tangent = normalize(Tangent);
-    BiTangent = normalize(BiTangent);
+	Tangent = aTangent;
+	BiTangent = aBiTangent;
 
-    Tangent = aTangent;
-    BiTangent = aBiTangent;
-    
-    FragPosLightSpace = lightSpaceMatrix * vec4(WorldPos, 1.0);
+	FragPosLightSpace = lightSpaceMatrix * vec4(WorldPos, 1.0);
 
-    gl_Position = ProjectionView * vec4(WorldPos, 1.0);
+	gl_Position = ProjectionView * vec4(WorldPos, 1.0);
 }

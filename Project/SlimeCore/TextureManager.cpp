@@ -6,14 +6,17 @@
 TextureManager::TextureManager()
 {
 	CreateBlanks();
+
+	// Textures
+	CreateSkyBox("..\\Images\\SkyBox\\");
+	ImportAllTextures();
 }
 
 TextureManager::~TextureManager()
 {
-
-	Texture* white = Get("DefaultWhite",TEXTURETYPE::Albedo);
-	Texture* grey = Get("DefaultNormal",TEXTURETYPE::Normal);
-	Texture* normal = Get("DefaultGrey",TEXTURETYPE::Specular);
+	Texture* white = Get("DefaultWhite", TEXTURETYPE::Albedo);
+	Texture* grey = Get("DefaultNormal", TEXTURETYPE::Normal);
+	Texture* normal = Get("DefaultGrey", TEXTURETYPE::Specular);
 
 	delete white;
 	white = nullptr;
@@ -62,7 +65,7 @@ TextureManager::~TextureManager()
 
 	for (int i = 1; i < roughList.size(); i++)
 	{
-		if (roughList[i] != nullptr	)
+		if (roughList[i] != nullptr)
 		{
 			delete roughList[i];
 			roughList[i] = nullptr;
@@ -102,13 +105,12 @@ Texture* TextureManager::Get(int index, TEXTURETYPE type)
 {
 	std::vector<Texture*> textureList = GetTextureList(type);
 
-
 	return textureList[index] ? textureList[index] : NotFound(false, "---", index);
 }
 
 bool TextureManager::Create(std::string name, std::string dir, TEXTURETYPE type)
 {
-	if (Get(name,type, true) == nullptr)
+	if (Get(name, type, true) == nullptr)
 	{
 		Add(new Texture(name, dir), type);
 		return true;
@@ -149,7 +151,7 @@ void TextureManager::SetNameList()
 			diffuseNames.push_back(diffuseList[i]->GetName());
 		}
 	}
-	
+
 	if (specularList.size() > 0)
 	{
 		specularNames.clear();
@@ -158,7 +160,7 @@ void TextureManager::SetNameList()
 			specularNames.push_back(specularList[i]->GetName());
 		}
 	}
-	
+
 	if (normalList.size() > 0)
 	{
 		normalNames.clear();
@@ -404,7 +406,7 @@ bool TextureManager::DebugManager()
 		std::cout << "  - " << diffuseList[i]->GetName() << std::endl;
 	}
 	printf("\n");
-	
+
 	printf(" Specular: \n");
 	for (int i = 0; i < specularList.size(); i++)
 	{

@@ -3,6 +3,13 @@
 ShaderManager::ShaderManager()
 {
 	Create("None");
+
+	// Shaders
+	Create("skyBoxShader", "..\\Shaders\\SkyBoxVertex.shader", "..\\Shaders\\SkyBoxFragment.shader");
+	Create("defaultShader", "..\\Shaders\\Vertex.shader", "..\\Shaders\\Fragment.shader");
+	Create("pbrShader", "..\\Shaders\\PbrVertex.shader", "..\\Shaders\\PbrFragment.shader");
+	Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
+	Create("2DShader", "..\\Shaders\\DebugVertex.shader", "..\\Shaders\\DebugFragment.shader");
 }
 
 ShaderManager::~ShaderManager()
@@ -37,7 +44,7 @@ Shader* ShaderManager::Get(int index)
 
 Shader* ShaderManager::Create(std::string name, const char* vertex, const char* fragment, const char* geometry)
 {
-	if (Get(name,true) == nullptr)
+	if (Get(name, true) == nullptr)
 	{
 		Shader* tempShader = new Shader(name, vertex, fragment, geometry);
 		Add(tempShader);
@@ -90,7 +97,7 @@ Shader* ShaderManager::NotFound(bool creation, std::string name, int index)
 {
 	if (!creation)
 		printf("Shader Not Found with name: %s, index: %d.\n", name, index);
-	
+
 	return nullptr;
 }
 

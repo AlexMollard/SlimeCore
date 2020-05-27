@@ -14,7 +14,6 @@ int windowWidth, windowHeight;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
-
 Application::~Application()
 {
 	delete camera;
@@ -74,7 +73,7 @@ int Application::Create(int Width, int Height, std::string name)
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	glfwSwapInterval(0);
+	glfwSwapInterval(1);
 	projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 	camera = new Camera(projection);
 	projectionViewMat = &camera->ProjectionViewMat;
@@ -93,8 +92,6 @@ void Application::Update()
 
 void Application::Update_Window(GLFWwindow* window)
 {
-
-
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 

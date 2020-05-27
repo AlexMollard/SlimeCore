@@ -9,8 +9,8 @@ public:
 	DebugGUI(ObjectManager* objManager, MeshManager* meshManager, MaterialManager* materialManager, TextureManager* textureManager, ShaderManager* shaderManager);
 	~DebugGUI();
 
-	// Must run before first render to set default values 
-	// (Has to be after all managers are finished being set and populated) 
+	// Must run before first render to set default values
+	// (Has to be after all managers are finished being set and populated)
 	void FirstFrame();
 
 	// Render all windows and main menu bar
@@ -57,7 +57,7 @@ private:
 	//----------------------------------
 	// Hierarchy Window Variables
 	//----------------------------------
-	
+
 	// Default Object Vars
 	float pos[3] = { 0,0,0 };
 	float rot[3] = { 0,0,0 };
@@ -66,7 +66,7 @@ private:
 	// Object Name
 	std::string objName = "Testing";
 	char* objNameCharP = nullptr;
-	
+
 	// Object bools (Static / CastShadows)
 	bool* staticBool = nullptr;
 	bool* shadowCastBool = nullptr;
@@ -125,5 +125,9 @@ private:
 	std::vector<std::string> displacementList;
 	const char* currentDisplacement;
 	float displacementStrength = 1;
-};
 
+	//--------------
+	// Other
+	//--------------
+	bool firstFrameDone = false;
+};

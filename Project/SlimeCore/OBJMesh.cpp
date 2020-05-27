@@ -13,7 +13,6 @@ OBJMesh::~OBJMesh() {
 }
 
 bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool flipTextureV /* = false */) {
-
 	if (m_meshChunks.empty() == false) {
 		printf("Mesh already initialised, can't re-initialise!\n");
 		return false;
@@ -27,7 +26,7 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 	std::string folder = file.substr(0, file.find_last_of('/') + 1);
 
 	bool success = tinyobj::LoadObj(shapes, materials, error,
-									filename, folder.c_str());
+		filename, folder.c_str());
 
 	if (success == false) {
 		printf("%s\n", error.c_str());
@@ -63,7 +62,6 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 	// copy shapes
 	m_meshChunks.reserve(shapes.size());
 	for (auto& s : shapes) {
-
 		MeshChunk chunk;
 
 		// generate buffers
@@ -77,8 +75,8 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 		// set the index buffer data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk.ibo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-					 s.mesh.indices.size() * sizeof(unsigned int),
-					 s.mesh.indices.data(), GL_STATIC_DRAW);
+			s.mesh.indices.size() * sizeof(unsigned int),
+			s.mesh.indices.data(), GL_STATIC_DRAW);
 
 		// store index count for rendering
 		chunk.indexCount = (unsigned int)s.mesh.indices.size();
@@ -143,13 +141,12 @@ bool OBJMesh::load(const char* filename, bool loadTextures /* = true */, bool fl
 
 		m_meshChunks.push_back(chunk);
 	}
-	
+
 	// load obj
 	return true;
 }
 
 void OBJMesh::draw(bool usePatches /* = false */) {
-
 	int program = -1;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
@@ -194,8 +191,6 @@ void OBJMesh::draw(bool usePatches /* = false */) {
 
 	// draw the mesh chunks
 	for (auto& c : m_meshChunks) {
-
-
 		// bind and draw geometry
 		glBindVertexArray(c.vao);
 		if (usePatches)
@@ -239,9 +234,9 @@ void OBJMesh::calculateTangents(std::vector<Vertex>& vertices, const std::vector
 
 		float r = 1.0F / (s1 * t2 - s2 * t1);
 		glm::vec4 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
-					   (t2 * z1 - t1 * z2) * r, 0);
+			(t2 * z1 - t1 * z2) * r, 0);
 		glm::vec4 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
-					   (s1 * z2 - s2 * z1) * r, 0);
+			(s1 * z2 - s2 * z1) * r, 0);
 
 		tan1[i1] += sdir;
 		tan1[i2] += sdir;

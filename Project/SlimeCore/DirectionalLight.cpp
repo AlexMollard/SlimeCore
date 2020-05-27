@@ -8,7 +8,6 @@ DirectionalLight::DirectionalLight(std::string name, glm::vec3 pos)
 
 DirectionalLight::~DirectionalLight()
 {
-
 }
 
 void DirectionalLight::SetDirectionalLightAttributes(glm::vec3 newDirection, glm::vec3 newAmbient, glm::vec3 newAlbedo, glm::vec3 newSpecular)

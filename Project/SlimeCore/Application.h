@@ -7,7 +7,7 @@
 class Application
 {
 public:
-	Application(int windowWidth, int windowHeight, std::string name) { Create(windowWidth,windowHeight,name); };
+	Application(int windowWidth, int windowHeight, std::string name) { Create(windowWidth, windowHeight, name); };
 	~Application();
 
 	GLFWwindow* window = nullptr;
@@ -35,4 +35,3 @@ public:
 	Camera* GetCamera();
 	float* GetDeltaPointer() { return &delta; };
 };
-
