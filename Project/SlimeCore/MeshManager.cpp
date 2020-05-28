@@ -10,7 +10,7 @@ MeshManager::MeshManager()
 	Create("Plane", Primitives::Plane);
 
 	// Load Objs
-	Create("sphere", "..\\Models\\sphere.obj");
+	//Create("sphere", "..\\Models\\sphere.obj");
 }
 
 MeshManager::~MeshManager()
@@ -76,6 +76,7 @@ Mesh* MeshManager::Create(const char* name, Primitives::TYPE type)
 {
 	if (Get(name, true) == nullptr)
 	{
+		printf("Creating Primitive Mesh with name: %s.\n", name);
 		Mesh* tempMesh = new Mesh(name);
 		Add(tempMesh);
 		meshList.back()->create(type);

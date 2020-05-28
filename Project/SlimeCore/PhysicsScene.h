@@ -9,7 +9,7 @@ public:
 	void addActor(std::vector<RigidBody*> actors);
 	void addActor(RigidBody** actors, int amount);
 	void removeActor(RigidBody* actor);
-	void update(float dt); 
+	void update(float dt);
 	bool CheckCollision(RigidBody& one, RigidBody& two);
 	glm::vec3 GetOverLap(RigidBody& one, RigidBody& two);
 	void setGravity(const glm::vec3 gravity) { this->gravity = gravity; }

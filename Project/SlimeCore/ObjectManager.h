@@ -1,9 +1,9 @@
 #pragma once
 #include "PointLight.h"
 #include "DirectionalLight.h"
-#include "ShaderManager.h"
-#include "MaterialManager.h"
 #include "MeshManager.h"
+#include "MaterialManager.h"
+#include "ShaderManager.h"
 
 class ObjectManager
 {
@@ -22,7 +22,7 @@ public:
 	//------------------
 	GameObject* Create(GameObject* parent, std::string name);
 	GameObject* Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, int parent = 0, glm::vec3 pos = glm::vec3(0));
-	GameObject* Create(std::string name, Primitives::TYPE type, int materialIndex, int shaderIndex, int parent = 0, glm::vec3 pos = glm::vec3(0));
+	GameObject* Create(std::string name, Primitives::TYPE type, glm::vec3 pos = glm::vec3(0));
 	GameObject* Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos = glm::vec3(0));
 	void Add(GameObject* gameObject);
 	void Add(GameObject** gameObject, int amount);
@@ -45,6 +45,7 @@ public:
 	//------------------
 	int FindPointLight(GameObject* lightObject);
 	PointLight* CreatePointLight(std::string name, glm::vec3 pos, GameObject* parent = nullptr);
+	PointLight* CreatePointLight(std::string name, glm::vec3 pos, glm::vec3 color, GameObject* parent = nullptr);
 	void AddPointLight(PointLight* light);
 
 	void CreateDirectionalLight();

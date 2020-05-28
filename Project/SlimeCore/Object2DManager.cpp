@@ -29,7 +29,7 @@ void Object2DManager::Draw()
 		TwoDShader->setMat4("Model", objects[i]->model);
 		TwoDShader->setVec3("color", objects[i]->color);
 		TwoDShader->setVec3("position", objects[i]->GetPos());
-		
+
 		//Texture Binding
 		if (objects[i]->tex != nullptr && currentTexture != objects[i]->tex)
 		{
@@ -77,10 +77,10 @@ GameObject2D* Object2DManager::CreateBox(glm::vec3 Position, float width, float 
 	//Setting bounding box
 	glm::vec3 bLeft;
 	glm::vec3 tRight;
-	
+
 	bLeft = glm::vec3(-width / 2, -height / 2, 0);
 	tRight = glm::vec3(width * 0.5f, height * 0.5f, 0);
-	
+
 	currentObject->SetBoundingBox(bLeft, tRight);
 
 	return currentObject;
@@ -159,7 +159,6 @@ void Object2DManager::CreateMesh(GameObject2D* currentObject)
 		{
 			newvertices.push_back(0.5);
 			newvertices.push_back(0.5);
-
 		}
 		else
 		{
@@ -193,5 +192,4 @@ void Object2DManager::CreateMesh(GameObject2D* currentObject)
 	// Unbind buffer
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 }

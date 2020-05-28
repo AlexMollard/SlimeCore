@@ -2,7 +2,6 @@
 
 void RigidBody::Update(float deltaTime)
 {
-
 }
 
 void RigidBody::SetBoundingBox(glm::vec3 bLeft, glm::vec3 tRight)

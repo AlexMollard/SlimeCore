@@ -339,7 +339,6 @@ void TextureManager::ImportAllTextures()
 	Create(GetAllFiles("..\\Images\\Normal\\"), TEXTURETYPE::Normal);
 	Create(GetAllFiles("..\\Images\\Ambient\\"), TEXTURETYPE::Ambient);
 	Create(GetAllFiles("..\\Images\\Rough\\"), TEXTURETYPE::Rough);
-	Create(GetAllFiles("..\\Images\\Displacement\\"), TEXTURETYPE::Displacement);
 }
 
 std::vector<std::string> TextureManager::GetAllFiles(std::string dirType)

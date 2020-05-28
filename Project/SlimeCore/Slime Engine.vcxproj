@@ -149,7 +149,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c" />
+    <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="..\Dependencies\IMgui\imgui.cpp" />
     <ClCompile Include="..\Dependencies\IMgui\imgui_demo.cpp" />
     <ClCompile Include="..\Dependencies\IMgui\imgui_draw.cpp" />
@@ -159,7 +162,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugGUI.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="imgui_impl_glfw.cpp" />
@@ -192,7 +194,6 @@
     <ClInclude Include="DebugGUI.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="dirent.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="imgui_impl_glfw.h" />

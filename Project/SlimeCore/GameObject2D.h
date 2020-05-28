@@ -3,7 +3,7 @@
 
 class GameObject2D : public RigidBody
 {
-public :
+public:
 	GameObject2D() {};
 	~GameObject2D() {};
 
@@ -13,7 +13,6 @@ public :
 		std::vector<glm::vec2> uvs;
 		std::vector<unsigned int> indices;
 	};
-
 
 	void Draw();
 	void UpdatePos();
@@ -26,4 +25,3 @@ public :
 	Texture* tex = nullptr;
 	glm::mat4 model = glm::mat4(1);
 };
-

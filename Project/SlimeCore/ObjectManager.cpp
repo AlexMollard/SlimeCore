@@ -10,6 +10,7 @@ ObjectManager::ObjectManager(MeshManager* meshManager, MaterialManager* matManag
 	this->camPos = camPos;
 
 	CreateDirectionalLight();
+	Create("SkyBox", 1, 1, 1);
 }
 
 ObjectManager::~ObjectManager()
@@ -40,7 +41,7 @@ GameObject* ObjectManager::Create(std::string name, int meshIndex, int materialI
 	return objects.back();
 }
 
-GameObject* ObjectManager::Create(std::string name, Primitives::TYPE type, int materialIndex, int shaderIndex, int parent, glm::vec3 pos)
+GameObject* ObjectManager::Create(std::string name, Primitives::TYPE type, glm::vec3 pos)
 {
 	int objectType = 0;
 	switch (type)
@@ -52,7 +53,7 @@ GameObject* ObjectManager::Create(std::string name, Primitives::TYPE type, int m
 		break;
 	}
 
-	return Create("Block", objectType, 2, 3);
+	return Create(name, objectType, 2, 3, 0, pos);
 }
 
 GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos)
@@ -238,6 +239,23 @@ PointLight* ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, Gam
 	return pLight;
 }
 
+PointLight* ObjectManager::CreatePointLight(std::string name, glm::vec3 pos, glm::vec3 color, GameObject* parent)
+{
+	PointLight* pLight = new PointLight(name, pos);
+	pLight->SetShader(shaderManager->Get("lightShader"));
+	pLight->SetMaterial(matManager->Get("None"));
+	pLight->SetMesh(meshManager->Get("Cube"));
+	pLight->SetScale(glm::vec3(0.1f));
+	pLight->SetIsLight(true);
+	pLight->SetAlbedo(color);
+
+	if (parent != nullptr)
+		pLight->SetParent(parent);
+
+	AddPointLight(pLight);
+	return pLight;
+}
+
 void ObjectManager::AddPointLight(PointLight* light)
 {
 	pointLights.push_back(light);
@@ -410,6 +428,8 @@ bool ObjectManager::Draw(bool isBuffer)
 
 		if (objects[i]->GetName() == "SkyBox")
 		{
+			// Move skybox with camera
+			objects[i]->SetSkyBoxPos(camPos);
 			glActiveTexture(GL_TEXTURE0 + 0); // Texture unit 0
 			glBindTexture(GL_TEXTURE_CUBE_MAP, textureManager->GetSkyBox()->GetID());
 			glDepthMask(GL_FALSE);
@@ -449,7 +469,7 @@ bool ObjectManager::FixedUpdate(float deltaTime)
 		objects[i]->Update(deltaTime);
 	}
 	fixedUpdateCount++;
-	
+
 	return true;
 }
 

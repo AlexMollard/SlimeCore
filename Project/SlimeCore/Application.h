@@ -1,14 +1,12 @@
 #pragma once
 
-#include "GameManager.h"
-#include "Camera.h"
 #include "DebugGUI.h"
-#include "PhysicsScene.h"
+#include "Camera.h"
 
 class Application
 {
 public:
-	Application(int windowWidth, int windowHeight, std::string name) { Create(windowWidth, windowHeight, name); };
+	Application(int windowWidth, int windowHeight, std::string name);
 	~Application();
 
 	GLFWwindow* window = nullptr;

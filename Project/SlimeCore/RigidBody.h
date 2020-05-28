@@ -36,4 +36,3 @@ protected:
 	glm::vec3 bottomLeft;
 	glm::vec3 topRight;
 };
-

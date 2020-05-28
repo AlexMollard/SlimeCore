@@ -1,8 +1,8 @@
 #pragma once
 #include "glm.hpp"
-#include "Mesh.h"
 #include "Types.h"
 #include "Shader.h"
+#include "Mesh.h"
 #include "Material.h"
 
 class PhysicsObject
@@ -14,4 +14,3 @@ public:
 	void debug();
 	void resetPosition() {};
 };
-

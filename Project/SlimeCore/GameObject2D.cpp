@@ -8,7 +8,7 @@ void GameObject2D::Draw()
 }
 
 void GameObject2D::UpdatePos()
-{ 
+{
 	model[3] = glm::vec4(position, 1);
 }
 

@@ -1,7 +1,7 @@
 #include "PhysicsScene.h"
 #include "PhysicsObject.h"
 #include "GameObject2D.h"
-PhysicsScene::PhysicsScene() : timeStep(0.01f), gravity(glm::vec3(0, -0.32f,0))
+PhysicsScene::PhysicsScene() : timeStep(0.01f), gravity(glm::vec3(0, -0.32f, 0))
 {
 }
 
@@ -27,7 +27,7 @@ void PhysicsScene::addActor(RigidBody** actors, int amount)
 {
 	for (int i = 0; i < amount; i++)
 		this->actors.push_back(actors[i]);
-}		
+}
 
 void PhysicsScene::removeActor(RigidBody* actor)
 {
@@ -36,13 +36,12 @@ void PhysicsScene::removeActor(RigidBody* actor)
 }
 
 void PhysicsScene::update(float dt) {
-	
 	// update physics at a fixed time step
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += dt;
-	while(accumulatedTime >= timeStep)
+	while (accumulatedTime >= timeStep)
 	{
-		for(auto pActor : actors)
+		for (auto pActor : actors)
 		{
 			if (!pActor->GetKinematic())
 				pActor->fixedUpdate(gravity, timeStep);
@@ -64,8 +63,7 @@ void PhysicsScene::update(float dt) {
 				continue;
 			}
 
-
-			if (CheckCollision(*object,*other))
+			if (CheckCollision(*object, *other))
 			{
 				glm::vec3 overLap = GetOverLap(*object, *other);
 				if (overLap.x != 0 || overLap.y != 0)
@@ -86,7 +84,7 @@ void PhysicsScene::update(float dt) {
 				}
 
 				object->ApplyForceToActor(other, object->GetVelocity() * object->GetMass());
-				
+
 				std::cout << object->name << " Collided with: " << other->name << std::endl;
 
 				dirty.push_back(object);
@@ -95,7 +93,6 @@ void PhysicsScene::update(float dt) {
 		}
 	}
 	dirty.clear();
-
 }
 
 bool PhysicsScene::CheckCollision(RigidBody& one, RigidBody& two)
@@ -116,40 +113,39 @@ glm::vec3 PhysicsScene::GetOverLap(RigidBody& one, RigidBody& two)
 	bool hasChanged = false;
 
 	float a = one.GetPos().x + one.size.x - two.GetPos().x - two.size.x;
-	if (abs(a) < overlap_size) 
+	if (abs(a) < overlap_size)
 	{
-		overlap_size = a; 
+		overlap_size = a;
 		overlap.x = a;
 		hasChanged = true;
 	}
 
 	float b = one.GetPos().x - one.size.x - two.GetPos().x + two.size.x;
-	if (abs(b) < overlap_size) 
+	if (abs(b) < overlap_size)
 	{
 		overlap = { 0,0,0 };
 		overlap_size = b;
 		overlap.x = b;
 		hasChanged = true;
 	}
-	
+
 	float c = one.GetPos().y + one.size.y - two.GetPos().y - two.size.y;
-	if (abs(c) < overlap_size) 
+	if (abs(c) < overlap_size)
 	{
 		overlap = { 0,0,0 };
-		overlap_size = c; 
+		overlap_size = c;
 		overlap.y = c;
 		hasChanged = true;
 	}
 
 	float d = one.GetPos().y - one.size.y - two.GetPos().y + two.size.y;
-	if (abs(d) < overlap_size) 
+	if (abs(d) < overlap_size)
 	{
 		overlap = { 0,0,0 };
 		overlap_size = d;
 		overlap.y = d;
 		hasChanged = true;
 	}
-	
 
 	return (hasChanged) ? overlap : glm::vec3(0);
 }
