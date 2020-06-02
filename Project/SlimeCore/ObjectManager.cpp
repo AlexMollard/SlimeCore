@@ -67,6 +67,16 @@ GameObject* ObjectManager::Create(std::string name, std::string  meshName, std::
 	return objects.back();
 }
 
+GameObject* ObjectManager::CreateTerrain(std::string name, glm::vec3 pos)
+{
+	Mesh* terrainMesh = new Mesh(10.0f);
+	meshManager->Add(terrainMesh);
+	objects.push_back(new GameObject(name, terrainMesh, matManager->Get(2), shaderManager->Get(3)));
+
+	objects.back()->SetPos(pos);
+	return objects.back();
+}
+
 GameObject* ObjectManager::Create(GameObject* parent, std::string name)
 {
 	GameObject* go = new GameObject(name, nullptr, nullptr, nullptr, parent);

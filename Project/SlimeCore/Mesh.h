@@ -21,6 +21,7 @@ class Mesh
 {
 public:
 	Mesh(const char* name, const char* dir = nullptr);
+	Mesh(float heightMultiplier);
 	~Mesh();
 
 	void create(Primitives::TYPE type = Primitives::TYPE::Cube, float radius = 0.5f, float halfLength = 0.5f, int slices = 10);

@@ -24,6 +24,7 @@ public:
 	GameObject* Create(std::string name, int meshIndex, int materialIndex, int shaderIndex, int parent = 0, glm::vec3 pos = glm::vec3(0));
 	GameObject* Create(std::string name, Primitives::TYPE type, glm::vec3 pos = glm::vec3(0));
 	GameObject* Create(std::string name, std::string meshName, std::string materialName, std::string shaderName, std::string parent, glm::vec3 pos = glm::vec3(0));
+	GameObject* CreateTerrain(std::string name, glm::vec3 pos);
 	void Add(GameObject* gameObject);
 	void Add(GameObject** gameObject, int amount);
 	void Add(std::vector<GameObject*> gameObjects);

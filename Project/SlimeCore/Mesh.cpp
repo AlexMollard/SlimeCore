@@ -8,6 +8,229 @@ Mesh::Mesh(const char* name, const char* dir)
 		load(dir);
 }
 
+Mesh::Mesh(float heightMultiplier)
+{
+	name = "terrain";
+	int zSize = 10;
+	int xSize = 10;
+
+	std::vector<glm::vec3> vertices;
+	
+	std::vector<glm::vec3> normals;
+
+
+	std::vector<glm::vec2> uvs;
+
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> biTangents;
+
+	int uvIndex = 0;
+
+	for (int i = 0, z = 0; z <= zSize; z++)
+	{
+		for (int x = 0; x <= xSize; x++)
+		{
+			float y = glm::perlin(glm::vec2(x * 0.3f, z * 0.3f)) * 2.0f;
+			vertices.push_back(glm::vec3(x, y, z));
+			normals.push_back(glm::vec3(0));
+
+			if (uvIndex == 0) { uvs.push_back(glm::vec2(0, 1)); uvIndex++; }// 0
+			else if (uvIndex == 1) { uvs.push_back(glm::vec2(1, 1)); uvIndex++;} // 1
+			else if (uvIndex == 2) { uvs.push_back(glm::vec2(0, 0)); uvIndex++;} // 2
+			else if (uvIndex == 3) { uvs.push_back(glm::vec2(1, 0)); uvIndex = 0;} // 3
+			
+			
+			i++;
+		}
+	}
+
+	std::vector<unsigned int> indices;
+	indices.resize(xSize * zSize * 6);
+
+	int vert = 0;
+	int tris = 0;
+	for (int z = 0; z < zSize + 1; z++)
+	{
+		for (int x = 0; x < xSize + 1; x++)
+		{
+			if (x < xSize && z < zSize)
+			{
+				indices[tris + 0] = vert + 0;
+				indices[tris + 1] = vert + xSize + 1;
+				indices[tris + 2] = vert + 1;
+				indices[tris + 3] = vert + 1;
+				indices[tris + 4] = vert + xSize + 1;
+				indices[tris + 5] = vert + xSize + 2;
+				tris += 6;
+				normals.push_back(glm::normalize(glm::cross(vertices[vert + xSize] - vertices[vert + 0], vertices[vert + xSize + 1] - vertices[vert + 0])));
+			}
+			else
+			{
+				normals.push_back(glm::normalize(glm::cross(vertices[vert - xSize] - vertices[vert + 0], vertices[vert - xSize - 1] - vertices[vert + 0])));
+			}
+
+			vert++;
+		}
+		vert++;
+	}
+
+	//for (int i = 0; i <= vertices.size() - 3; i += 3)
+	//{
+	//	//glm::vec3 U = vertices[i + 1] - vertices[i];
+	//	//glm::vec3 V = vertices[i + 2] - vertices[i];
+
+	//	//glm::vec3 newNormal;
+
+	//	//newNormal.x = (U.y * V.z) - (U.z * V.y);
+	//	//newNormal.y = (U.z * V.x) - (U.x * V.z);
+	//	//newNormal.z = (U.x * V.y) - (U.y * V.x);
+
+	//	//normals.push_back(newNormal);
+	//	//normals.push_back(newNormal);
+	//	//normals.push_back(newNormal);
+
+	//	int a = i;
+	//	int b = i + 1;
+	//	int c = i + 2;
+	//	
+	//	normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+	//	normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+	//	normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+	//}
+		//normals.push_back(glm::vec3(1));
+
+
+
+	std::vector<Vertex> vertexes;
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		Vertex vert;
+		vert.position = vertices[i];
+		vert.normal = normals[i];
+		vert.texcoord = uvs[i];
+		vertexes.push_back(vert);
+	}
+
+
+	calculateTangents(vertexes, indices);
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		tangents.push_back(vertexes[i].tangent);
+		biTangents.push_back(vertexes[i].bitangent);
+	}
+
+	MeshChunk chunk;
+
+	// generate buffers
+	glGenBuffers(1, &chunk.vbo);
+	glGenBuffers(1, &chunk.ibo);
+	glGenVertexArrays(1, &chunk.vao);
+
+	// bind vertex array aka a mesh wrapper
+	glBindVertexArray(chunk.vao);
+
+	std::vector<float> newvertices;
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		// Postitions
+		newvertices.push_back(vertices[i].x);
+		newvertices.push_back(vertices[i].y);
+		newvertices.push_back(vertices[i].z);
+
+		// Normals
+		if (normals.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(normals[i].x);
+			newvertices.push_back(normals[i].y);
+			newvertices.push_back(normals[i].z);
+		}
+
+		// UVS
+		if (uvs.size() < 1)
+		{
+			newvertices.push_back(0.5);
+			newvertices.push_back(0.5);
+		}
+		else
+		{
+			newvertices.push_back(uvs[i].x);
+			newvertices.push_back(uvs[i].y);
+		}
+
+		// Tangents
+		if (tangents.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(tangents[i].x);
+			newvertices.push_back(tangents[i].y);
+			newvertices.push_back(tangents[i].z);
+		}
+
+		// Biangents
+		if (biTangents.size() < 1)
+		{
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+			newvertices.push_back(1);
+		}
+		else
+		{
+			newvertices.push_back(biTangents[i].x);
+			newvertices.push_back(biTangents[i].y);
+			newvertices.push_back(biTangents[i].z);
+		}
+	}
+
+	// store index count for rendering
+	chunk.indexCount = (unsigned int)indices.size();
+
+	// Fill vertex Buffer
+	glBindBuffer(GL_ARRAY_BUFFER, chunk.vbo);
+	glBufferData(GL_ARRAY_BUFFER, newvertices.size() * sizeof(float), newvertices.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk.ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+
+	// Enable first element as position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// Enable second element as normals
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	// Enable third element as UVS
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	// Enable third element as Tangents
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	// Enable third element as BiTangents
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+	glEnableVertexAttribArray(4);
+
+	// Unbind buffer
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	m_meshChunks.push_back(chunk);
+}
+
 Mesh::~Mesh()
 {
 	for (auto& c : m_meshChunks) {

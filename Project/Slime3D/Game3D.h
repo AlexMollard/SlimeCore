@@ -8,6 +8,8 @@ public:
 	Game3D(Camera* cam, ObjectManager* objManager, float* deltaTime);
 	~Game3D();
 
+	void Init();
+
 	void Update();
 
 private:
