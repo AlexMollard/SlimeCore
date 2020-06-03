@@ -11,8 +11,8 @@ Mesh::Mesh(const char* name, const char* dir)
 Mesh::Mesh(float heightMultiplier)
 {
 	name = "terrain";
-	int zSize = 10;
-	int xSize = 10;
+	int zSize = 50;
+	int xSize = 50;
 
 	std::vector<glm::vec3> vertices;
 	
@@ -25,14 +25,13 @@ Mesh::Mesh(float heightMultiplier)
 	std::vector<glm::vec3> biTangents;
 
 	int uvIndex = 0;
-
+	float random = rand() % 100000;
 	for (int i = 0, z = 0; z <= zSize; z++)
 	{
 		for (int x = 0; x <= xSize; x++)
 		{
-			float y = glm::perlin(glm::vec2(x * 0.3f, z * 0.3f)) * 2.0f;
+			float y = glm::perlin(glm::vec2(x * 0.3f + random, z * 0.3f + random)) * 2.0f;
 			vertices.push_back(glm::vec3(x, y, z));
-			normals.push_back(glm::vec3(0));
 
 			if (uvIndex == 0) { uvs.push_back(glm::vec2(0, 1)); uvIndex++; }// 0
 			else if (uvIndex == 1) { uvs.push_back(glm::vec2(1, 1)); uvIndex++;} // 1
@@ -49,56 +48,58 @@ Mesh::Mesh(float heightMultiplier)
 
 	int vert = 0;
 	int tris = 0;
-	for (int z = 0; z < zSize + 1; z++)
+	for (int z = 0; z < zSize; z++)
 	{
-		for (int x = 0; x < xSize + 1; x++)
+		for (int x = 0; x < xSize; x++)
 		{
-			if (x < xSize && z < zSize)
-			{
-				indices[tris + 0] = vert + 0;
-				indices[tris + 1] = vert + xSize + 1;
-				indices[tris + 2] = vert + 1;
-				indices[tris + 3] = vert + 1;
-				indices[tris + 4] = vert + xSize + 1;
-				indices[tris + 5] = vert + xSize + 2;
-				tris += 6;
-				normals.push_back(glm::normalize(glm::cross(vertices[vert + xSize] - vertices[vert + 0], vertices[vert + xSize + 1] - vertices[vert + 0])));
-			}
-			else
-			{
-				normals.push_back(glm::normalize(glm::cross(vertices[vert - xSize] - vertices[vert + 0], vertices[vert - xSize - 1] - vertices[vert + 0])));
-			}
+
+			indices[tris + 0] = vert + 0;
+			indices[tris + 1] = vert + xSize + 1;
+			indices[tris + 2] = vert + 1;
+			indices[tris + 3] = vert + 1;
+			indices[tris + 4] = vert + xSize + 1;
+			indices[tris + 5] = vert + xSize + 2;
 
 			vert++;
+			tris += 6;
 		}
 		vert++;
 	}
 
-	//for (int i = 0; i <= vertices.size() - 3; i += 3)
-	//{
-	//	//glm::vec3 U = vertices[i + 1] - vertices[i];
-	//	//glm::vec3 V = vertices[i + 2] - vertices[i];
+	for (int i = 0; i < vertices.size();)
+	{
+		//glm::vec3 U = vertices[indices[i + 1]] - vertices[indices[i]];
+		//glm::vec3 V = vertices[indices[i + 2]] - vertices[indices[i]];
+		//
+		//glm::vec3 newNormal;
+		//
+		//newNormal.x = (U.y * V.z) - (U.z * V.y);
+		//newNormal.y = (U.z * V.x) - (U.x * V.z);
+		//newNormal.z = (U.x * V.y) - (U.y * V.x);
+		//
+		//normals.push_back(newNormal);
+		//normals.push_back(newNormal);
+		//normals.push_back(newNormal);
+		
+		//normals.push_back(glm::vec3(0.5f));
+		//normals.push_back(glm::vec3(0.5f));
+		//normals.push_back(glm::vec3(0.5f));
 
-	//	//glm::vec3 newNormal;
-
-	//	//newNormal.x = (U.y * V.z) - (U.z * V.y);
-	//	//newNormal.y = (U.z * V.x) - (U.x * V.z);
-	//	//newNormal.z = (U.x * V.y) - (U.y * V.x);
-
-	//	//normals.push_back(newNormal);
-	//	//normals.push_back(newNormal);
-	//	//normals.push_back(newNormal);
-
-	//	int a = i;
-	//	int b = i + 1;
-	//	int c = i + 2;
-	//	
-	//	normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
-	//	normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
-	//	normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
-	//}
-		//normals.push_back(glm::vec3(1));
-
+		int a = indices[i];
+		int b = indices[i + 1];
+		int c = indices[i + 2];
+		
+		normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+		normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+		normals.push_back(glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+		
+		i += 3;
+		//if (i >= vertices.size())
+		//{
+		//	normals.push_back(glm::vec3(1));
+		//	break;
+		//}
+	}
 
 
 	std::vector<Vertex> vertexes;
