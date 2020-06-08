@@ -25,6 +25,10 @@ uniform int pointLightTotal;
 
 uniform vec3 viewPos;
 
+uniform vec3 dirtColor;
+uniform vec3 grassColor;
+
+
 const float PI = 3.14159265359;
 
 struct DirectionalLight
@@ -53,6 +57,12 @@ struct PointLight
 #define MAX_LIGHTS 32
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform DirectionalLight dirLight;
+
+vec3 Lerp(vec3 pointOne, vec3 pointTwo, float time)
+{
+	time = (time < 0) ? 0 : (time > 1) ? 1 : time;
+	return pointOne + time * (pointTwo - pointOne);
+}
 
 vec3 getNormalFromMap()
 {
@@ -201,5 +211,6 @@ void main()
 	color = pow(color, vec3(1.0 / 2.2));
 
 	FragColor = vec4(color, 1);
+	FragColor = vec4(Lerp(dirtColor, grassColor, WorldPos.y) , 1);
 	//FragColor = vec4(Normal, 1);
 }

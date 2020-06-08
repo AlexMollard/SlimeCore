@@ -231,6 +231,8 @@
     <None Include="..\Shaders\PointShadowDepthVertex.shader" />
     <None Include="..\Shaders\SkyBoxFragment.shader" />
     <None Include="..\Shaders\SkyBoxVertex.shader" />
+    <None Include="..\Shaders\TerrainFragment.shader" />
+    <None Include="..\Shaders\TerrainVertex.shader" />
     <None Include="..\Shaders\Vertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

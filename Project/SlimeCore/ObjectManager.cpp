@@ -71,7 +71,7 @@ GameObject* ObjectManager::CreateTerrain(std::string name, glm::vec3 pos)
 {
 	Mesh* terrainMesh = new Mesh(10.0f);
 	meshManager->Add(terrainMesh);
-	objects.push_back(new GameObject(name, terrainMesh, matManager->Get(2), shaderManager->Get(3)));
+	objects.push_back(new GameObject(name, terrainMesh, matManager->Get(2), shaderManager->Get("TerrainShader")));
 
 	objects.back()->SetPos(pos);
 	return objects.back();
@@ -454,6 +454,12 @@ bool ObjectManager::Draw(bool isBuffer)
 		BindTexture(i, TEXTURETYPE::Ambient, objects[i]->GetTexture(TEXTURETYPE::Ambient));
 		BindTexture(i, TEXTURETYPE::Rough, objects[i]->GetTexture(TEXTURETYPE::Rough));
 		BindTexture(i, TEXTURETYPE::Displacement, objects[i]->GetTexture(TEXTURETYPE::Displacement));
+
+		if (objShader->GetName() == "TerrainShader")
+		{
+			objShader->setVec3("dirtColor", glm::vec3(0.6f,0.46f,0.32f));
+			objShader->setVec3("grassColor", glm::vec3(0.44f,0.89f,0));
+		}
 
 		objects[i]->Draw(projectionView);
 	}

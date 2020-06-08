@@ -11,8 +11,8 @@ Mesh::Mesh(const char* name, const char* dir)
 Mesh::Mesh(float heightMultiplier)
 {
 	name = "terrain";
-	int zSize = 50;
-	int xSize = 50;
+	int zSize = 1000;
+	int xSize = 1000;
 
 	std::vector<glm::vec3> vertices;
 	
@@ -25,15 +25,17 @@ Mesh::Mesh(float heightMultiplier)
 	std::vector<glm::vec3> biTangents;
 
 	int uvIndex = 0;
-	//float random = rand() % 100000;
-	float random = 21;
+	float random = rand() % 100000;
+	//float random = 21;
+
+
 	for (int i = 0, z = 0; z <= zSize; z++)
 	{
 		for (int x = 0; x <= xSize; x++)
 		{
-			float y = (glm::perlin(glm::vec2(x * 0.3f + random, z * 0.3f + random))+ 1) * 2.0f;
-			vertices.push_back(glm::vec3(x, y, z));
-
+			float y = (glm::perlin(glm::vec2(x * 0.005f + random, z * 0.005f + random)));
+			vertices.push_back(glm::vec3(x * 0.01f, y, z * 0.01f));
+		
 			i++;
 		}
 	}
@@ -59,7 +61,7 @@ Mesh::Mesh(float heightMultiplier)
 			int a = indices[tris + 0];
 			int b = indices[tris + 1];
 			int c = indices[tris + 2];
-			normals[vert] = (glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a])));
+			normals[vert] = (glm::normalize(glm::cross(vertices[b] - vertices[a], vertices[c] - vertices[a]))) * glm::vec3(-1);  // NORMALS
 
 			vert++;
 			tris += 6;

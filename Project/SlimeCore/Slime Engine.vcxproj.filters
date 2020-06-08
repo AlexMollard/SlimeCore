@@ -253,5 +253,11 @@
     <None Include="..\Shaders\2DFragment.shader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\TerrainFragment.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\TerrainVertex.shader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

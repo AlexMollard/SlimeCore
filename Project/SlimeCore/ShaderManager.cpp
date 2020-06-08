@@ -10,6 +10,7 @@ ShaderManager::ShaderManager()
 	Create("pbrShader", "..\\Shaders\\PbrVertex.shader", "..\\Shaders\\PbrFragment.shader");
 	Create("lightShader", "..\\Shaders\\litVertex.shader", "..\\Shaders\\litFragment.shader");
 	Create("2DShader", "..\\Shaders\\DebugVertex.shader", "..\\Shaders\\DebugFragment.shader");
+	Create("TerrainShader", "..\\Shaders\\TerrainVertex.shader", "..\\Shaders\\TerrainFragment.shader");
 }
 
 ShaderManager::~ShaderManager()

@@ -74,6 +74,8 @@ int Application::Create(int Width, int Height, std::string name)
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	// Line renderer
+
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
