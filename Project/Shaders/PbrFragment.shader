@@ -140,7 +140,7 @@ void main()
 {
 	vec3 albedo = pow(texture(diffuseTexture, TexCoord).rgb, vec3(2.2)) * diffuseStrength;
 	float metallic = texture(specularTexture, TexCoord).r * specularStrength;
-	float ao = texture(ambientTexture, TexCoord).r * ambientStrength;
+	float ao = texture(ambientTexture, TexCoord).r * (ambientStrength * 2.0); // I doubled strength change back later
 	float roughness = texture(roughTexture, TexCoord).r * roughStrength;
 
 	vec3 N = getNormalFromMap();

@@ -10,12 +10,13 @@ Mesh::Mesh(const char* name, const char* dir)
 
 Mesh::Mesh(float heightMultiplier)
 {
+	std::cout << "Creating Terrain Mesh" << std::endl;
 	name = "terrain";
 	int zSize = 1000;
 	int xSize = 1000;
 
 	std::vector<glm::vec3> vertices;
-	
+	vertices.reserve((zSize + 1) * (xSize + 1));
 	std::vector<glm::vec3> normals;
 
 
@@ -24,20 +25,29 @@ Mesh::Mesh(float heightMultiplier)
 	std::vector<glm::vec3> tangents;
 	std::vector<glm::vec3> biTangents;
 
+	std::vector<std::vector<glm::vec3*>> verticeArray;
+
 	int uvIndex = 0;
 	float random = rand() % 100000;
 	//float random = 21;
 
-
-	for (int i = 0, z = 0; z <= zSize; z++)
+	float progress = 0.0f;
+	for (int z = 0; z <= zSize; z++)
 	{
+		if (progress != 0.0f && (int)progress % 100 == 0)
+			std::cout << "Creating Vertices Progress: " << (progress / (float)zSize) * 100.0f << std::endl;
+		
+		verticeArray.push_back(std::vector<glm::vec3*>());
+
 		for (int x = 0; x <= xSize; x++)
 		{
 			float y = (glm::perlin(glm::vec2(x * 0.005f + random, z * 0.005f + random)));
+			y += glm::perlin(glm::vec2(x * 0.001f + (random + 10.0f),z * 0.001f + (random + 10.0f)));
+			y += glm::perlin(glm::vec2(x * 0.002f + (random - 10.0f), z * 0.002f + (random - 10.0f)));
 			vertices.push_back(glm::vec3(x * 0.01f, y, z * 0.01f));
-		
-			i++;
+			verticeArray[z].push_back(&vertices.back());
 		}
+		progress++;
 	}
 
 	std::vector<unsigned int> indices;
@@ -45,8 +55,12 @@ Mesh::Mesh(float heightMultiplier)
 	normals.resize(vertices.size());
 	int vert = 0;
 	int tris = 0;
+
+	progress = 0.0f;
 	for (int z = 0; z < zSize; z++)
 	{
+		if (progress != 0.0f && (int)progress % 100 == 0)
+			std::cout << "Creating Indices & Normals Progress: " << (progress / (float)zSize) * 100.0f << std::endl;
 		for (int x = 0; x < xSize; x++)
 		{
 
@@ -67,8 +81,9 @@ Mesh::Mesh(float heightMultiplier)
 			tris += 6;
 		}
 		vert++;
+		progress++;
 	}
-
+	std::cout << "Creating Indices & Normals Progress: 100" << std::endl;
 
 	uvs.resize(vertices.size());
 
@@ -101,6 +116,15 @@ Mesh::Mesh(float heightMultiplier)
 	{
 		tangents.push_back(vertexes[i].tangent);
 		biTangents.push_back(vertexes[i].bitangent);
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		int randomX = rand() % xSize;
+		int randomZ = rand() % zSize;
+		float currentY = verticeArray[randomX][randomZ]->y;
+
+		float left = 9999999, right = 9999999, up = 9999999, down = 9999999;
 	}
 
 	MeshChunk chunk;
@@ -211,6 +235,7 @@ Mesh::Mesh(float heightMultiplier)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	m_meshChunks.push_back(chunk);
+	std::cout << "Terrain Mesh Was Created!" << std::endl;
 }
 
 Mesh::~Mesh()

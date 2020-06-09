@@ -457,8 +457,8 @@ bool ObjectManager::Draw(bool isBuffer)
 
 		if (objShader->GetName() == "TerrainShader")
 		{
-			objShader->setVec3("dirtColor", glm::vec3(0.6f,0.46f,0.32f));
-			objShader->setVec3("grassColor", glm::vec3(0.44f,0.89f,0));
+			objShader->setVec3("dirtColor", glm::vec3(0.5f,0.36f,0.22f));
+			objShader->setVec3("grassColor", glm::vec3(0.24f,0.79f,0));
 		}
 
 		objects[i]->Draw(projectionView);
