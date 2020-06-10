@@ -12,8 +12,8 @@ Mesh::Mesh(float heightMultiplier)
 {
 	std::cout << "Creating Terrain Mesh" << std::endl;
 	name = "terrain";
-	int zSize = 1000;
-	int xSize = 1000;
+	int zSize = 500;
+	int xSize = 500;
 
 	std::vector<glm::vec3> vertices;
 	vertices.reserve((zSize + 1) * (xSize + 1));
@@ -41,10 +41,10 @@ Mesh::Mesh(float heightMultiplier)
 
 		for (int x = 0; x <= xSize; x++)
 		{
-			float y = (glm::perlin(glm::vec2(x * 0.005f + random, z * 0.005f + random)));
+			float y = (glm::perlin(glm::vec2(x * 0.05f + random, z * 0.05f + random)));
 			y += glm::perlin(glm::vec2(x * 0.001f + (random + 10.0f),z * 0.001f + (random + 10.0f)));
 			y += glm::perlin(glm::vec2(x * 0.002f + (random - 10.0f), z * 0.002f + (random - 10.0f)));
-			vertices.push_back(glm::vec3(x * 0.01f, y, z * 0.01f));
+			vertices.push_back(glm::vec3(x * 0.1f, y, z * 0.1f));
 			verticeArray[z].push_back(&vertices.back());
 		}
 		progress++;
@@ -118,13 +118,243 @@ Mesh::Mesh(float heightMultiplier)
 		biTangents.push_back(vertexes[i].bitangent);
 	}
 
-	for (int i = 0; i < 10; i++)
+	int maxIterationsForStream = 10000;
+	int currentStreamIteration = 0;
+
+	std::vector<glm::vec2> previousPositions;
+	int streamTotal = 10000;
+
+	progress = 0.0f;
+	for (int i = 0; i < streamTotal; i++)
 	{
+		if (progress != 0.0f && (int)progress % 100 == 0)
+			std::cout << "Creating Streams Progress: " << (progress / (float)streamTotal) * 100.0f << std::endl;
+
+
 		int randomX = rand() % xSize;
 		int randomZ = rand() % zSize;
-		float currentY = verticeArray[randomX][randomZ]->y;
+		glm::vec3* first = verticeArray[randomX][randomZ];
+		
+		float currentY = first->y;
+		float left = 9999999, right = 9999999, up = 9999999, down = 9999999, upRight = 9999999, upLeft = 9999999, downRight = 9999999, downLeft = 9999999;
+		float smallestVert = 999999999;
+		glm::vec2 startOffset = glm::vec2(randomX, randomZ);
+		currentStreamIteration = 0;
 
-		float left = 9999999, right = 9999999, up = 9999999, down = 9999999;
+		do 
+		{
+			currentStreamIteration++;
+			previousPositions.push_back(startOffset);
+			if (randomX + 1 <= xSize)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX + 1, randomZ)) == previousPositions.end())
+				{
+					right = verticeArray[randomX + 1][randomZ]->y;
+					smallestVert = right;
+					startOffset = glm::vec2(randomX + 1, randomZ);
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomZ + 1 <= zSize)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX, randomZ + 1)) == previousPositions.end())
+				{
+					up = verticeArray[randomX][randomZ + 1]->y;
+					if (smallestVert > up)
+					{
+						smallestVert = up;
+						startOffset = glm::vec2(randomX, randomZ + 1);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomX - 1 >= 0)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX - 1, randomZ)) == previousPositions.end())
+				{
+					left = verticeArray[randomX - 1][randomZ]->y;
+					if (smallestVert > left)
+					{
+						smallestVert = left;
+						startOffset = glm::vec2(randomX - 1, randomZ);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomZ - 1 >= 0)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX, randomZ - 1)) == previousPositions.end())
+				{
+					down = verticeArray[randomX][randomZ - 1]->y;
+					if (smallestVert > down)
+					{
+						smallestVert = down;
+						startOffset = glm::vec2(randomX, randomZ - 1);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomZ + 1 <= zSize && randomX + 1 <= xSize)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX + 1, randomZ + 1)) == previousPositions.end())
+				{
+					upRight = verticeArray[randomX + 1][randomZ + 1]->y;
+					if (smallestVert > upRight)
+					{
+						smallestVert = upRight;
+						startOffset = glm::vec2(randomX + 1, randomZ + 1);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomZ + 1 <= zSize && randomX - 1 >= 0)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX - 1, randomZ + 1)) == previousPositions.end())
+				{
+					upLeft = verticeArray[randomX - 1][randomZ + 1]->y;
+					if (smallestVert > upLeft)
+					{
+						smallestVert = upLeft;
+						startOffset = glm::vec2(randomX - 1, randomZ + 1);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomZ - 1 >= 0 && randomX - 1 >= 0)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX - 1, randomZ - 1)) == previousPositions.end())
+				{
+					downLeft = verticeArray[randomX - 1][randomZ - 1]->y;
+					if (smallestVert > downLeft)
+					{
+						smallestVert = downLeft;
+						startOffset = glm::vec2(randomX - 1, randomZ - 1);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+			if (randomZ - 1 >= 0 && randomX + 1 <= xSize)
+			{
+				if (std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX + 1, randomZ - 1)) == previousPositions.end())
+				{
+					downRight = verticeArray[randomX + 1][randomZ - 1]->y;
+					if (smallestVert > downRight)
+					{
+						smallestVert = downRight;
+						startOffset = glm::vec2(randomX + 1, randomZ - 1);
+					}
+				}
+			}
+			else
+			{
+				break;
+			}
+
+
+
+			randomX = startOffset.x;
+			randomZ = startOffset.y;
+			verticeArray[randomX][randomZ]->y -= 0.1f;
+		} while (maxIterationsForStream > currentStreamIteration && std::find(previousPositions.begin(), previousPositions.end(), glm::vec2(randomX, randomZ)) == previousPositions.end());
+		previousPositions.clear();
+		progress++;
+	}
+
+	std::vector<glm::vec3> colors;
+
+	for (int i = 0, z = 0; z <= zSize; z++)
+	{
+		for (int x = 0; x <= xSize; x++)
+		{
+			float height = 0.0f;
+			int totalNeighbours = 0;
+
+			if (z + 1 <= zSize)
+			{
+				height += verticeArray[z + 1][x]->y; \
+					totalNeighbours++;
+			}
+
+			if (x + 1 <= xSize)
+			{
+				height += verticeArray[z][x + 1]->y;
+				totalNeighbours++;
+			}
+
+			if (z - 1 >= 0)
+			{
+				height += verticeArray[z - 1][x]->y;
+				totalNeighbours++;
+			}
+
+			if (x - 1 >= 0)
+			{
+				height += verticeArray[z][x - 1]->y;
+				totalNeighbours++;
+			}
+
+			if (z + 1 <= zSize && x + 1 <= xSize)
+			{
+				height += verticeArray[z + 1][x + 1]->y;
+				totalNeighbours++;
+			}
+
+			if (z - 1 >= 0 && x + 1 <= xSize)
+			{
+				height += verticeArray[z - 1][x + 1]->y;
+				totalNeighbours++;
+			}
+
+
+			if (z - 1 >= 0 && x - 1 >= 0)
+			{
+				height += verticeArray[z - 1][x - 1]->y;
+				totalNeighbours++;
+			}
+
+			if (z + 1 <= zSize && x - 1 >= 0)
+			{
+				height += verticeArray[z + 1][x - 1]->y;
+				totalNeighbours++;
+			}
+
+			if (height / totalNeighbours > verticeArray[z][x]->y)
+			{
+				colors.push_back(glm::vec3(0.5f, 0.36f, 0.22f));
+			}																 
+			else
+			{
+				colors.push_back(glm::vec3(0.24f, 0.79f, 0));
+			}
+		}
 	}
 
 	MeshChunk chunk;
@@ -198,6 +428,11 @@ Mesh::Mesh(float heightMultiplier)
 			newvertices.push_back(biTangents[i].y);
 			newvertices.push_back(biTangents[i].z);
 		}
+
+		//Colors
+		newvertices.push_back(colors[i].x);
+		newvertices.push_back(colors[i].y);
+		newvertices.push_back(colors[i].z);
 	}
 
 	// store index count for rendering
@@ -211,24 +446,28 @@ Mesh::Mesh(float heightMultiplier)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
 	// Enable first element as position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 17 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// Enable second element as normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 17 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	// Enable third element as UVS
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 17 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	// Enable third element as Tangents
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
+	// Enable forth element as Tangents
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 17 * sizeof(float), (void*)(8 * sizeof(float)));
 	glEnableVertexAttribArray(3);
 
-	// Enable third element as BiTangents
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+	// Enable fifth element as BiTangents
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 17 * sizeof(float), (void*)(11 * sizeof(float)));
 	glEnableVertexAttribArray(4);
+
+	// Enable sixith element as Colors
+	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 17 * sizeof(float), (void*)(14 * sizeof(float)));
+	glEnableVertexAttribArray(5);
 
 	// Unbind buffer
 	glBindVertexArray(0);

@@ -5,6 +5,7 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoord;
 layout(location = 3) in vec3 aTangent;
 layout(location = 4) in vec3 aBiTangent;
+layout(location = 5) in vec3 aColor;
 
 out vec2 TexCoord;
 out vec3 WorldPos;
@@ -12,6 +13,7 @@ out vec3 Normal;
 out vec3 Tangent;
 out vec3 BiTangent;
 out vec4 FragPosLightSpace;;
+out vec3 TerrainColor;
 
 uniform mat4 ProjectionView;
 uniform mat4 Model;
@@ -33,6 +35,8 @@ void main()
 
 	Tangent = aTangent;
 	BiTangent = aBiTangent;
+	
+	TerrainColor = aColor;
 
 	FragPosLightSpace = lightSpaceMatrix * vec4(WorldPos, 1.0);
 
