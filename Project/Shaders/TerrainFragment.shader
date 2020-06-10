@@ -210,8 +210,7 @@ void main()
 	// gamma correct
 	color = pow(color, vec3(1.0 / 2.2));
 
-	//FragColor = vec4(color, 1);
 	//FragColor = vec4(Lerp(dirtColor, grassColor, WorldPos.y) , 1);
 	//FragColor = vec4(Normal, 1);
-	FragColor = vec4(TerrainColor, 1);
+	FragColor = vec4(color * TerrainColor, 1);
 }
