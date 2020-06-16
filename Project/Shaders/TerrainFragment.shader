@@ -148,18 +148,18 @@ vec3 CalculatespotLight(PointLight light, vec3 V, vec3 N, vec3 F0, float roughne
 
 void main()
 {
-	vec3 albedo = pow(texture(diffuseTexture, TexCoord).rgb, vec3(2.2)) * diffuseStrength;
-	float metallic = texture(specularTexture, TexCoord).r * specularStrength;
-	float ao = texture(ambientTexture, TexCoord).r * ambientStrength;
-	float roughness = texture(roughTexture, TexCoord).r * roughStrength;
+	vec3 albedo = vec3(1);
+	float metallic = 1;
+	float ao = 1;
+	float roughness = 1;
 
-	vec3 N = getNormalFromMap();
+	vec3 N = Normal;
 	vec3 V = normalize(viewPos - WorldPos);
 
 	// calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
 	// of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)
 	vec3 F0 = vec3(0.04);
-	F0 = mix(F0, albedo, metallic);
+	F0 = mix(F0, vec3(1), metallic);
 
 	// reflectance equation
 	vec3 Lo = vec3(0.0);

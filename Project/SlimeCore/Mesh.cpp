@@ -32,7 +32,6 @@ Mesh::Mesh(float heightMultiplier)
 
 	int uvIndex = 0;
 	float random = rand() % 100000;
-	//float random = 21;
 
 	float progress = 0.0f;
 	for (int z = 0; z <= zSize; z++)
@@ -45,9 +44,9 @@ Mesh::Mesh(float heightMultiplier)
 		
 		for (int x = 0; x <= xSize; x++)
 		{
-			float y = (glm::perlin(glm::vec2(x * 0.002f + random, z * 0.002f + random))) * 6;
-			y += glm::perlin(glm::vec2(x * 0.01f + (random + 10.0f),z * 0.01f + (random + 10.0f))) * 2;
-			//y += glm::perlin(glm::vec2(x * 0.002f + (random - 10.0f), z * 0.002f + (random - 10.0f)));
+			float y = (glm::perlin(glm::vec2(x * 0.001f + random, z * 0.001f + random))) * 6;
+			y += glm::perlin(glm::vec2(x * 0.005f + (random * 2.0f),z * 0.005f + (random * 2.0f))) * 2;
+			y += glm::perlin(glm::vec2(x * 0.01f + (random * 8.0f), z * 0.01f + (random * 8.0f)));
 			vertices.push_back(glm::vec3(x * 0.035f, y, z * 0.035f));
 			verticeArray[z].push_back(&vertices.back());
 			verticeDefaultValues[z].push_back(glm::vec3(x * 0.035f, y, z * 0.035f));
@@ -123,11 +122,11 @@ Mesh::Mesh(float heightMultiplier)
 		biTangents.push_back(vertexes[i].bitangent);
 	}
 
-	int maxIterationsForStream = 100000;
+	int maxIterationsForStream = 1000000;
 	int currentStreamIteration = 0;
 
 	std::vector<glm::vec2> previousPositions;
-	int streamTotal = 100000;
+	int streamTotal = 1000000;
 
 	progress = 0.0f;
 	for (int i = 0; i < streamTotal; i++)
@@ -286,7 +285,7 @@ Mesh::Mesh(float heightMultiplier)
 			randomX = startOffset.x;
 			randomZ = startOffset.y;
 			
-			if(verticeArray[randomX][randomZ]->y < verticeDefaultValues[randomX][randomZ].y - 1.75f)
+			if(verticeArray[randomX][randomZ]->y < verticeDefaultValues[randomX][randomZ].y - 1.5f)
 				break;
 			
 			verticeArray[randomX][randomZ]->y -= 0.1f;
@@ -297,7 +296,7 @@ Mesh::Mesh(float heightMultiplier)
 	}
 
 
-	for (int q = 0; q < 6; q++)
+	for (int q = 0; q < 10; q++)
 	{
 
 
@@ -369,64 +368,90 @@ Mesh::Mesh(float heightMultiplier)
 		}
 	}
 
+
 	std::vector<glm::vec3> colors;
 
 	for (int i = 0, z = 0; z <= zSize; z++)
 	{
 		for (int x = 0; x <= xSize; x++)
 		{
-			float height = 0.0f;
+			float heightist = 0.0f;
+			float lowest = 0.0f;
 			int totalNeighbours = 0;
 
 			if (z + 1 <= zSize)
 			{
-				if (height < glm::abs(verticeArray[z + 1][x]->y))
-					height = glm::abs(verticeArray[z + 1][x]->y);
+				if (heightist < glm::abs(verticeArray[z + 1][x]->y))
+					heightist = glm::abs(verticeArray[z + 1][x]->y);
+
+				if (lowest > glm::abs(verticeArray[z + 1][x]->y))
+					lowest = glm::abs(verticeArray[z + 1][x]->y);
 			}
 
 			if (x + 1 <= xSize)
 			{
-				if (height < glm::abs(verticeArray[z][x + 1]->y))
-					height = glm::abs(verticeArray[z][x + 1]->y);
+				if (heightist < glm::abs(verticeArray[z][x + 1]->y))
+					heightist = glm::abs(verticeArray[z][x + 1]->y);
+
+				if (lowest > glm::abs(verticeArray[z][x + 1]->y))
+					lowest = glm::abs(verticeArray[z][x + 1]->y);
 			}
 
 			if (z - 1 >= 0)
 			{
-				if (height < glm::abs(verticeArray[z - 1][x]->y))
-					height = glm::abs(verticeArray[z - 1][x]->y);
+				if (heightist < glm::abs(verticeArray[z - 1][x]->y))
+					heightist = glm::abs(verticeArray[z - 1][x]->y);
+
+				if (lowest > glm::abs(verticeArray[z - 1][x]->y))
+					lowest = glm::abs(verticeArray[z - 1][x]->y);
 			}
 
 			if (x - 1 >= 0)
 			{
-				if (height < glm::abs(verticeArray[z][x - 1]->y))
-					height = glm::abs(verticeArray[z][x - 1]->y);
+				if (heightist < glm::abs(verticeArray[z][x - 1]->y))
+					heightist = glm::abs(verticeArray[z][x - 1]->y);
+
+				if (lowest > glm::abs(verticeArray[z][x - 1]->y))
+					lowest = glm::abs(verticeArray[z][x - 1]->y);
 			}
 
 			if (z + 1 <= zSize && x + 1 <= xSize)
 			{
-				if (height < glm::abs(verticeArray[z + 1][x + 1]->y))
-					height = glm::abs(verticeArray[z + 1][x + 1]->y);
+				if (heightist < glm::abs(verticeArray[z + 1][x + 1]->y))
+					heightist = glm::abs(verticeArray[z + 1][x + 1]->y);
+
+				if (lowest > glm::abs(verticeArray[z + 1][x + 1]->y))
+					lowest = glm::abs(verticeArray[z + 1][x + 1]->y);
 			}
 
 			if (z - 1 >= 0 && x + 1 <= xSize)
 			{
-				if (height < glm::abs(verticeArray[z - 1][x + 1]->y))
-					height = glm::abs(verticeArray[z - 1][x + 1]->y);
+				if (heightist < glm::abs(verticeArray[z - 1][x + 1]->y))
+					heightist = glm::abs(verticeArray[z - 1][x + 1]->y);
+
+				if (lowest > glm::abs(verticeArray[z - 1][x + 1]->y))
+					lowest = glm::abs(verticeArray[z - 1][x + 1]->y);
 			}
 
 			if (z - 1 >= 0 && x - 1 >= 0)
 			{
-				if (height < glm::abs(verticeArray[z - 1][x - 1]->y))
-					height = glm::abs(verticeArray[z - 1][x - 1]->y);
+				if (heightist < glm::abs(verticeArray[z - 1][x - 1]->y))
+					heightist = glm::abs(verticeArray[z - 1][x - 1]->y);
+
+				if (lowest > glm::abs(verticeArray[z - 1][x - 1]->y))
+					lowest = glm::abs(verticeArray[z - 1][x - 1]->y);
 			}
 
 			if (z + 1 <= zSize && x - 1 >= 0)
 			{
-				if (height < glm::abs(verticeArray[z + 1][x - 1]->y))
-					height = glm::abs(verticeArray[z + 1][x - 1]->y);
+				if (heightist < glm::abs(verticeArray[z + 1][x - 1]->y))
+					heightist = glm::abs(verticeArray[z + 1][x - 1]->y);
+
+				if (lowest > glm::abs(verticeArray[z + 1][x - 1]->y))
+					lowest = glm::abs(verticeArray[z + 1][x - 1]->y);
 			}
 
-			if (height < 1.0f)
+			if (heightist < verticeArray[z][x]->y - 2.0f || heightist > verticeArray[z][x]->y + 2.0f)
 			{
 				colors.push_back(glm::vec3(0.5f, 0.36f, 0.22f));
 			}
